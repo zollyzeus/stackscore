@@ -1,0 +1,29 @@
+# dependencies / build output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# secrets — never commit
+.env
+.env.local
+.env.*.local
+*.json.key
+*.pem
+# GCP service-account keys
+beaming-crowbar-*.json
+*-e7f6349cad26.json
+service-account*.json
+
+# test artifacts & generated auth state
+tests/.auth-state.json
+tests/.auth-state-cand.json
+tests/.auth-tokens.json
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# misc
+*.log
+.DS_Store

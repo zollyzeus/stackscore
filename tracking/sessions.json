@@ -1,0 +1,44 @@
+{
+  "project": "StackScore",
+  "buildathonDeadline": "2026-11-13",
+  "note": "Token counts are estimates — update from Claude Code usage display or Anthropic console after each session.",
+  "sessions": [
+    {
+      "id": "sess-001",
+      "date": "2026-11-04",
+      "type": "planning",
+      "description": "Market benchmarking, USP definition, PRD scoping, 5×5 matrix design, 5-stage flow, 10-axis rubric, flagship cell selection. Full PRD written.",
+      "inputTokens": 85000,
+      "outputTokens": 42000,
+      "totalTokens": 127000,
+      "isEstimate": true
+    },
+    {
+      "id": "sess-002",
+      "date": "2026-11-04",
+      "type": "implementation",
+      "description": "Full codebase scaffolding: lib/ (matrix, scoring, vertex, firestore, sandbox), all API routes, assessment UI, score card, panel UI, MatrixPicker, globals.css, Dockerfile, .env.example. TypeScript compile clean.",
+      "inputTokens": 95000,
+      "outputTokens": 55000,
+      "totalTokens": 150000,
+      "isEstimate": true
+    },
+    {
+      "id": "sess-003",
+      "date": "2026-11-05",
+      "type": "implementation",
+      "description": "Architecture diagram (HTML artifact). Claude claude-opus-5-5 judge integration (lib/judge.ts, removed judgeSubmission from vertex.ts). CLAUDE.md. Session tracker scaffold. @anthropic-ai/sdk added to package.json.",
+      "inputTokens": 70000,
+      "outputTokens": 38000,
+      "totalTokens": 108000,
+      "isEstimate": true
+    }
+  ],
+  "totals": {
+    "inputTokens": 250000,
+    "outputTokens": 135000,
+    "totalTokens": 385000,
+    "sessionsCount": 3,
+    "lastUpdated": "2026-11-05"
+  }
+}

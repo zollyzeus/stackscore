@@ -1,0 +1,9 @@
+.git
+node_modules
+.next
+npm-debug.log*
+*.test.ts
+tests/
+*.md
+.env*
+.vscode

@@ -1,0 +1,15 @@
+.git
+.gitignore
+node_modules
+.next
+test-results
+playwright-report
+demo-voiceover
+assets/backup
+*.log
+.env
+.env.local
+tests/.auth-state*.json
+tests/.auth-tokens.json
+tsconfig.tsbuildinfo
+*.html

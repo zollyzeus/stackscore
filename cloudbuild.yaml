@@ -1,0 +1,163 @@
+steps:
+  # ── 0. Verify gate — nothing ships that does not type-check ────────────────
+  # CLAUDE.md requires `tsc --noEmit` clean before every deploy; this enforces it
+  # in the pipeline rather than relying on it being run by hand.
+  - name: 'node:20-slim'
+    id: verify
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        set -e
+        npm ci
+        npx tsc --noEmit
+        echo "type-check clean"
+
+  # ── 1. Compute a build version tag: YYMMDD + zero-padded daily count ───────
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: compute-version
+    waitFor: ['-']
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        TODAY=$$(date -u +%y%m%d)
+        EXISTING=$$(gcloud container images list-tags gcr.io/$PROJECT_ID/stackscore \
+          --format="get(tags)" --filter="tags~^$$TODAY" 2>/dev/null \
+          | tr ',' '\n' | grep "^$$TODAY" | sort | tail -1)
+        if [ -z "$$EXISTING" ]; then
+          SEQ=1
+        else
+          SEQ=$$(( 10#$${EXISTING#$$TODAY} + 1 ))
+        fi
+        VERSION="$${TODAY}$$(printf '%03d' $$SEQ)"
+        echo "$$VERSION" > /workspace/version.txt
+        echo "Build version: $$VERSION"
+
+  # ── 2. Build the image with both the versioned tag and :latest ─────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build
+    waitFor: ['verify', 'compute-version']
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        VERSION=$$(cat /workspace/version.txt)
+        docker build \
+          --tag=gcr.io/$PROJECT_ID/stackscore:$$VERSION \
+          --tag=gcr.io/$PROJECT_ID/stackscore:latest \
+          --label=build.version=$$VERSION \
+          --label=build.sha=$SHORT_SHA \
+          .
+
+  # ── 3. Push both tags ──────────────────────────────────────────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    id: push
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        VERSION=$$(cat /workspace/version.txt)
+        docker push gcr.io/$PROJECT_ID/stackscore:$$VERSION
+        docker push gcr.io/$PROJECT_ID/stackscore:latest
+
+  # ── 4. Deploy the revision WITHOUT traffic, smoke-test it, then shift ──────
+  # A bad revision never reaches users: it is deployed to a tagged URL, probed via
+  # /api/health, and only promoted to 100% once the probe passes.
+  # Manual rollback: gcloud run services update-traffic stackscore \
+  #                    --region=us-central1 --to-revisions=stackscore-<previous>=100
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: deploy-canary
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        set -e
+        VERSION=$$(cat /workspace/version.txt)
+
+        # Base secrets, always required.
+        SECRETS="GEMINI_API_KEY=GEMINI_API_KEY:latest"
+        SECRETS="$$SECRETS,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest"
+        SECRETS="$$SECRETS,FIREBASE_PRIVATE_KEY=FIREBASE_PRIVATE_KEY:latest"
+        SECRETS="$$SECRETS,PANELIST_SECRET=PANELIST_SECRET:latest"
+        SECRETS="$$SECRETS,CANDIDATE_SECRET=CANDIDATE_SECRET:latest"
+        SECRETS="$$SECRETS,RESEND_API_KEY=RESEND_API_KEY:latest"
+        SECRETS="$$SECRETS,GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID:latest"
+        SECRETS="$$SECRETS,GOOGLE_CLIENT_SECRET=GOOGLE_CLIENT_SECRET:latest"
+
+        # Per-role signing keys. Optional at the infrastructure level: when a secret is
+        # absent the app derives a namespaced key from PANELIST_SECRET (see
+        # lib/adminAuth.ts and lib/credential.ts). Creating them is strictly better -- a
+        # PANELIST_SECRET leak then does not compromise the other roles -- and this loop
+        # picks each one up on the next deploy with no change to this file.
+        # See AUDIT_TODO.md A12 for the create commands.
+        for OPT in ADMIN_SECRET CREDENTIAL_SECRET; do
+          if gcloud secrets describe "$$OPT" >/dev/null 2>&1; then
+            SECRETS="$$SECRETS,$$OPT=$$OPT:latest"
+            echo "using dedicated $$OPT"
+          else
+            echo "WARNING: $$OPT absent - falling back to a PANELIST_SECRET-derived key"
+          fi
+        done
+
+        gcloud run deploy stackscore \
+          --image=gcr.io/$PROJECT_ID/stackscore:$$VERSION \
+          --region=us-central1 \
+          --platform=managed \
+          --allow-unauthenticated \
+          --port=8080 \
+          --memory=512Mi \
+          --cpu=1 \
+          --min-instances=1 \
+          --max-instances=10 \
+          --cpu-boost \
+          --no-traffic \
+          --tag=v$$VERSION \
+          --set-secrets="$$SECRETS" \
+          --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=us-central1,VERTEX_MODEL=gemini-2.5-flash,FIREBASE_PROJECT_ID=$PROJECT_ID,FIREBASE_CLIENT_EMAIL=stackscore-server@$PROJECT_ID.iam.gserviceaccount.com,NEXT_PUBLIC_BASE_URL=https://stackscore.anandrajendran.dev,BUILD_VERSION=$$VERSION,CREDENTIAL_KEY_ID=ss-mvp-1,PANELIST_EMAILS=$_PANELIST_EMAILS,ADMIN_EMAILS=$_ADMIN_EMAILS,ADMIN_IP_ALLOWLIST=$_ADMIN_IP_ALLOWLIST
+
+        # The traffic list formatter returns a bracketed, quoted list, so strip the
+        # punctuation -- a quote left in the URL makes curl fail with no HTTP code at all,
+        # which looks like a dead revision rather than a malformed probe.
+        CANARY_URL=$$(gcloud run services describe stackscore --region=us-central1 \
+          --format="value(status.traffic.filter(tag:v$$VERSION).extract(url))" \
+          | tr -d "[]'\"" | tr -d '[:space:]')
+        echo "Canary URL: [$$CANARY_URL]"
+        if [ -z "$$CANARY_URL" ]; then
+          echo "Could not resolve the canary URL; refusing to shift traffic."
+          exit 1
+        fi
+
+        OK=0
+        for i in 1 2 3 4 5 6 7 8 9 10; do
+          CODE=$$(curl -sS -m 25 -o /tmp/health.json -w '%{http_code}' "$$CANARY_URL/api/health" 2>/tmp/curl.err || true)
+          if [ "$$CODE" = "200" ]; then
+            echo "health ok:"; cat /tmp/health.json; echo; OK=1; break
+          fi
+          echo "attempt $$i: health returned [$$CODE]"
+          head -c 400 /tmp/health.json 2>/dev/null || true
+          head -c 200 /tmp/curl.err 2>/dev/null || true
+          echo
+          sleep 8
+        done
+        if [ "$$OK" != "1" ]; then
+          echo "SMOKE TEST FAILED - leaving traffic on the previous revision"
+          exit 1
+        fi
+
+        gcloud run services update-traffic stackscore --region=us-central1 --to-latest
+        echo "promoted $$VERSION to 100% traffic"
+
+images:
+  - 'gcr.io/$PROJECT_ID/stackscore:latest'
+
+# Role registries and the admin IP allowlist are deploy-time configuration, not source.
+# Override per-invocation with --substitutions, e.g.
+#   gcloud builds submit --substitutions=_ADMIN_IP_ALLOWLIST=1.2.3.4
+substitutions:
+  _PANELIST_EMAILS: 'zollyzeus@gmail.com'
+  _ADMIN_EMAILS: 'stackscoreofficial@gmail.com'
+  _ADMIN_IP_ALLOWLIST: ''
+
+options:
+  logging: CLOUD_LOGGING_ONLY

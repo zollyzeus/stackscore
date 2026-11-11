@@ -1,0 +1,61 @@
+{
+  "rows": [
+    {
+      "id": "R1",
+      "label": "Data-Intensive Service",
+      "seeds": ["URL shortener", "file storage/sharing", "leaderboard/ranking", "key-value cache tier", "content archive"]
+    },
+    {
+      "id": "R2",
+      "label": "User-Facing Workflow",
+      "seeds": ["signup/onboarding", "checkout flow", "booking/reservation system", "multi-step save-and-resume form", "subscription management"]
+    },
+    {
+      "id": "R3",
+      "label": "Real-Time / Event-Driven System",
+      "seeds": ["chat/messaging", "live notification feed", "pub/sub order pipeline", "presence/status system", "live collaborative editing"]
+    },
+    {
+      "id": "R4",
+      "label": "Integration / API Layer",
+      "seeds": ["third-party payment integration", "webhook ingestion service", "multi-service orchestration/saga", "external data-sync connector", "public API gateway"]
+    },
+    {
+      "id": "R5",
+      "label": "Admin / Operational Tooling",
+      "seeds": ["internal moderation queue", "batch reporting/export job", "feature-flag/config service", "audit-log viewer", "scheduled-job orchestrator"]
+    }
+  ],
+  "columns": [
+    {
+      "id": "C1",
+      "label": "Scale & Performance",
+      "pressures": ["sudden 10x traffic spike", "sub-100ms read SLA", "high write throughput", "global/multi-region latency"]
+    },
+    {
+      "id": "C2",
+      "label": "Reliability & Fault Tolerance",
+      "pressures": ["must survive single-region outage", "idempotent retries", "graceful degradation", "no data loss on crash"]
+    },
+    {
+      "id": "C3",
+      "label": "Consistency & Data Integrity",
+      "pressures": ["concurrent write conflicts", "exactly-once processing", "schema evolution without downtime", "auditability"]
+    },
+    {
+      "id": "C4",
+      "label": "Security & Compliance",
+      "pressures": ["PII encryption at rest", "multi-tenant isolation", "abuse/rate-limit prevention", "right-to-erasure deletion"]
+    },
+    {
+      "id": "C5",
+      "label": "Cost & Operability",
+      "pressures": ["fixed serverless budget", "must be observable/monitorable", "zero-downtime deploys", "maintainable by a 1-2 person team"]
+    }
+  ],
+  "flagshipCell": {
+    "row": "R2",
+    "column": "C1",
+    "note": "MVP flagship: user-facing workflow under a sudden scale spike. Chosen because it's immediately legible to judges in <30s and exercises both design (architecture under load) and code (correctness under concurrency) axes clearly."
+  }
+}

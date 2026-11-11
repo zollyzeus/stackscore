@@ -1,0 +1,33 @@
+{
+  "levels": [
+    {
+      "id": "design",
+      "label": "Solution Design / Approach",
+      "weight": 0.55,
+      "axes": [
+        { "id": "D1", "label": "Requirement Framing", "weight": 0.11, "description": "Quality of clarifying questions; did they scope the real ambiguity in stage 1?" },
+        { "id": "D2", "label": "Architecture & Component Design", "weight": 0.11, "description": "Soundness and clarity of the proposed structure." },
+        { "id": "D3", "label": "Tradeoff Reasoning", "weight": 0.11, "description": "Explicit justification of choices against the assigned column constraint." },
+        { "id": "D4", "label": "Constraint Satisfaction", "weight": 0.11, "description": "Does the design actually hold up against the assigned constraint, not just mention it." },
+        { "id": "D5", "label": "Adaptability", "weight": 0.11, "description": "How well the design absorbs the stage-4 twist: patched vs re-architected vs collapsed." }
+      ]
+    },
+    {
+      "id": "code",
+      "label": "Code-Level Best Practices",
+      "weight": 0.45,
+      "axes": [
+        { "id": "K1", "label": "Design-Code Alignment", "weight": 0.075, "description": "Does the implementation match what was proposed in stage 2; flags drift/contradiction." },
+        { "id": "K2", "label": "Correctness & Edge Cases", "weight": 0.075, "description": "Does it work, including boundary/failure conditions." },
+        { "id": "K3", "label": "Code Quality & Maintainability", "weight": 0.075, "description": "Naming, modularity, separation of concerns." },
+        { "id": "K4", "label": "Security & Defensive Coding", "weight": 0.075, "description": "Input validation, secrets handling, authz checks. Up-weighted in Phase 2 when C4 is the assigned column." },
+        { "id": "K5", "label": "Testing & Observability", "weight": 0.075, "description": "Tests written, error handling, logging/instrumentation present." },
+        { "id": "K6", "label": "AI Collaboration Quality", "weight": 0.075, "description": "If AI tools were referenced or used: quality of prompting, critical evaluation of AI output, knowing when to override or verify — demonstrates AI-augmented engineering judgment rather than passive AI delegation." }
+      ]
+    }
+  ],
+  "dynamicReweighting": {
+    "enabled": false,
+    "note": "Phase 2, not MVP. When enabled, the code axis matching the session's assigned column constraint gets an up-weighted multiplier, since that's the skill the session was specifically designed to pressure-test."
+  }
+}
