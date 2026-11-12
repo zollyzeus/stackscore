@@ -11,7 +11,21 @@ export async function POST(req: NextRequest) {
   try {
     const { sessionId } = await req.json();
     const session = await getSession(sessionId);
+    const sessionExt = session as unknown as Record<string, unknown>;
 
+    // If this session was allocated from the scenario bank, the twist is pre-generated.
+    if (sessionExt.bankPackId && sessionExt.bankTwist) {
+      const twistColumnId = sessionExt.bankTwistColumnId as string;
+      const twistColumnLabel = sessionExt.bankTwistColumnLabel as string;
+      const twistText = sessionExt.bankTwist as string;
+
+      await db().collection("sessions").doc(sessionId).update({ twistColumnId });
+      await appendTranscript(sessionId, "adapt", { twist: twistText, source: "bank" });
+
+      return NextResponse.json({ twistColumnId, twistColumnLabel, twist: twistText });
+    }
+
+    // Live path: generate twist with Gemini (→ Claude Haiku) or fall back to template.
     const twist = twistColumn(session.columnId);
     const twistPressure = twist.pressures[Math.floor(Math.random() * twist.pressures.length)];
 
@@ -19,7 +33,7 @@ export async function POST(req: NextRequest) {
     try {
       twistText = await generateTwist({
         brief: session.brief,
-        rowLabel: ((session as unknown as Record<string, unknown>).rowLabel as string) ?? session.rowId,
+        rowLabel: (sessionExt.rowLabel as string) ?? session.rowId,
         twistColumnLabel: twist.label,
         twistPressure,
       });

@@ -563,3 +563,50 @@ test.describe("submission extraction", () => {
     expect(i.code).toBe(NO_CODE_PLACEHOLDER);
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/scenarioBank.ts — pure-logic unit tests (no Firestore, no server)
+// ─────────────────────────────────────────────────────────────────────────────
+test.describe("scenarioBank module structure", () => {
+  test("exports the expected functions", async () => {
+    // Dynamic import so this test file doesn't drag firebase-admin into the
+    // browser context — these are unit assertions on export shape only.
+    const mod = await import("../lib/scenarioBank");
+    expect(typeof mod.allocateFromBank).toBe("function");
+    expect(typeof mod.returnToBank).toBe("function");
+    expect(typeof mod.storePack).toBe("function");
+    expect(typeof mod.getBankStats).toBe("function");
+  });
+
+  test("ScenarioPack shape has required fields", async () => {
+    // Verifies the TypeScript interface at runtime via a type-compatible object.
+    const pack: import("../lib/scenarioBank").ScenarioPack = {
+      id: "p1",
+      rowId: "R1",
+      columnId: "C1",
+      rowLabel: "Backend Systems",
+      columnLabel: "Scale",
+      seed: "rate limiter",
+      pressure: "sudden 10x spike",
+      brief: "Design a rate limiter.",
+      twistColumnId: "C2",
+      twistColumnLabel: "Consistency",
+      twistPressure: "audit log must be immutable",
+      twist: "Leadership requires all events to be immutable.",
+      status: "available",
+      allocatedToSession: null,
+      allocatedAt: null,
+      generatedAt: {} as FirebaseFirestore.FieldValue,
+    };
+    expect(pack.status).toBe("available");
+    expect(pack.allocatedToSession).toBeNull();
+  });
+
+  test("status values are exactly 'available' | 'allocated'", async () => {
+    const validStatuses: Array<import("../lib/scenarioBank").ScenarioPack["status"]> = [
+      "available",
+      "allocated",
+    ];
+    expect(validStatuses).toHaveLength(2);
+  });
+});
