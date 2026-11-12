@@ -190,17 +190,10 @@ longer true.
 
 ## Baseline results (2026-11-12, `claude-opus-5-5` effort `high`, 3 runs x 10 fixtures)
 
-> **STALE — pre-anchor.** This baseline was measured against the rubric *before* score
-> anchors existed, and the anchors were added specifically to attack Findings 1, 2 and 3
-> below. Its numbers describe a judge that no longer exists. It is kept because it is the
-> evidence that motivated the anchors and the only before-measurement available, so it is
-> the comparison point for the next sweep — not because it is current.
->
-> **Nothing should cite these numbers as the judge's present behaviour.** Re-run the sweep
-> (~$4) and compare against this section; the three claims to test are slope moving toward
-> 1.0, the K2/K4/K5 lean closing, and F02's D2 rising while its D3/D4 stay low. A fourth
-> thing to watch is overshoot: if the "expected bar for a timed submission" clauses push the
-> weak fixtures (F06, F07) *up* out of their bands, the anchors traded one bias for another.
+> **SUPERSEDED — pre-anchor.** This is the *before* measurement. The anchors were added to
+> attack Findings 1-3 below; the after-measurement is in `post-anchor-report.md` and is
+> summarised in "Post-anchor results" at the end of this file. Keep this section as the
+> comparison point, not as a description of current behaviour.
 
 Committed as `baseline-report.md` (full report) and `baseline-runs.json` (the 30 raw
 per-axis scores). Re-analyze without spending anything:
@@ -292,3 +285,78 @@ In priority order:
 5. Re-run after any change to `lib/judge.ts` **or `data/rubric.json`**. The rubric is now
    part of the prompt, so an anchor edit moves these numbers exactly as a prompt edit does.
    The report header records the model and effort for the same reason.
+
+---
+
+## Post-anchor results (2026-11-12, after D10)
+
+Full report: `post-anchor-report.md`; raw scores: `post-anchor-runs.json`. Same model,
+effort, fixtures and run count as the baseline, so the only changed variable is the rubric.
+
+**Verdict: the anchors helped where they were aimed and overshot where they were not. The
+sweep gate fails. Do not ship this to candidates without one more iteration.**
+
+| Measure | Pre-anchor | Post-anchor | |
+|---|---|---|---|
+| Mean StackScore sd | 1.0 | **0.8** | better |
+| Fixtures in band | 8/10 | 8/10 | same count, smaller misses |
+| F01 deviation (ceiling) | -7.0 | **-4.7** | better |
+| F02 deviation | -6.0 | **-1.0** | better |
+| Slope | 0.835 | **0.797** | **worse** |
+| Intercept | +5.09 | +9.63 | — |
+| R² | 0.868 | 0.865 | unchanged |
+| Implied error at expected 85 | -8.9 | **-7.6** | better |
+| Implied error at expected 15 | +2.6 | **+6.6** | **worse** |
+| Rule compliance | 5/5 | **4/5** | **regression** |
+| F02 halo (D2) | 32.3 | **53.3** | much better, still flagged |
+
+### What worked
+
+- **Halo (Finding 3) is substantially fixed.** F02's D2 went 32.3 → 53.3 (runs 52, 50, 58)
+  while its D3/D4 stayed at 11.3. The architecture is now scored as architecture. The
+  `scoredElsewhere` note on D2 is the most effective single line added.
+- **The over-strict axes relaxed toward their bands.** K4 +9.2 mean, K5 +3.9, K2 +2.6;
+  K5's recommended offset fell from +17 to +14, K4's recommendation disappeared entirely.
+- **Reliability improved slightly** (sd 1.0 → 0.8; three fixtures now return identical
+  scores on all three runs).
+- **D4 got *stricter*** (-3.4), which is the right direction: constraint satisfaction should
+  discriminate, and it was the axis the anchors asked to demand concrete evidence.
+
+### What broke
+
+**1. The floor inflated more than the ceiling did, so compression got worse.** Every fixture
+rose (mean +2.9), but the weak ones rose most: F07 13.3 → 17.7, F08 11.0 → 14.0, F09 35.0 →
+43.7, against F01's +2.3. Slope therefore fell 0.835 → 0.797. The `scale.note` clause
+declaring the top band reachable did not lift the top; the "expected bar for a timed
+submission" clauses lifted the bottom. This is the overshoot the baseline section predicted,
+and it landed on the axes that got the explicit bar language.
+
+**2. K1 is now vacuously generous — the clearest single defect.** K1's lean went +1.3 →
++13.3, driven by F07 (the near-empty fixture) scoring K1 35 → **52**. The `50-74` anchor
+reads "The code follows the proposal", which is *trivially true when there is almost no code
+and almost no proposal*. Absence of evidence is being scored as alignment. K1's low bands
+need to say that too little material to establish alignment scores low, not middle.
+
+**3. The coherence rule stopped firing on D1 — a hard-assertion failure.** F09/D1 required
+0-30, observed **32.3** (runs 32, 35, 30; was 28, 30, 30). Precise cause: D1's anchors
+describe *question quality only*, and F09's Stage 1 questions are genuinely good — its
+failure is that Stage 2 ignores their answers. The COHERENCE CHECK clause in the system
+prompt requires lowering D1 for exactly that, but the anchor text sits next to the axis and
+won. **An anchor that omits a rule silently overrides it.** D1's anchors need a coherence
+cap; note that D4's did not regress (5.3) because D4's anchors are about the constraint
+holding up, which does not conflict.
+
+### Next iteration
+
+1. Add a coherence clause to D1's anchors so the hard assertion passes again. This is a
+   correctness bug, not calibration — fix before anything else.
+2. Rewrite K1's `25-49` / `50-74` boundary so insufficient material scores low.
+3. Soften the "expected bar" language on K2/K4/K5 — it over-delivered. The aim was to stop
+   those axes being 12-17 points stricter than the rest, not to raise the floor globally.
+4. Re-run and compare against *this* section. Target: slope ≥ 0.85 with the bottom-end error
+   back under ~4 points, 5/5 rule compliance, F02's D2 holding, and K1's lean under ~5.
+
+Still true, and unchanged by any of this: the bands are one person's authored judgements.
+Two iterations of tuning a judge against them does not make them panel consensus — it makes
+the judge agree with one person more precisely. The panel re-label matters more now, not
+less, because the fitted corrections are getting more specific.

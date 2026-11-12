@@ -376,9 +376,20 @@ Also reconciled a conflict this exposed: the K6 paragraph in the system prompt h
 keeps only the rule the anchors cannot express (no AI evidence → exactly 50) and defers the
 rest to the bands.
 
-**Unverified.** `npx tsc --noEmit` is clean and all 30 unit tests pass, but the calibration
-sweep has **not** been re-run, so the effect on Findings 1-3 is an expectation, not a result.
-The D7 baseline is now pre-anchor and stale; `data/calibration/README.md` says so in place.
+**Measured 2026-11-12** (`data/calibration/post-anchor-report.md`, 30 calls, same model /
+effort / fixtures as the baseline, so the rubric is the only changed variable). **Mixed, and
+the sweep gate now fails — see D12. Do not ship this scale to candidates as it stands.**
+
+Worked: halo largely fixed (F02's D2 32.3 → 53.3 while D3/D4 held at 11.3 — the
+`scoredElsewhere` line was the most effective thing added); the over-strict axes relaxed
+toward their bands (K4 +9.2, K5 +3.9, K2 +2.6 mean; K4's recommended offset disappeared,
+K5's fell +17 → +14); reliability improved (sd 1.0 → 0.8); F01 and F02 band deviations
+shrank from -7.0/-6.0 to -4.7/-1.0.
+
+Overshot: every fixture rose (mean +2.9) but the weak ones rose most (F07 13.3 → 17.7, F08
+11.0 → 14.0, F09 35.0 → 43.7, vs F01 +2.3), so **slope got worse, 0.835 → 0.797**, and the
+bottom-end implied error went +2.6 → +6.6. The `scale.note` clause did not lift the ceiling;
+the "expected bar" clauses lifted the floor. R² held at 0.865, so ordering is intact.
 
 **One real design flaw surfaced and deliberately not fixed:** on K6, `50` now means both
 "AI use was reviewed" (the `50-74` band) and "no AI evidence — cannot assess" (the rule).
@@ -387,6 +398,39 @@ cannot tell which they got. The honest fix is a null/not-assessed state distinct
 0-100 scale, which is a schema and UI change across `AxisScores`, the score page and the
 weighted sum — out of scope for an anchors change, and it would alter how the StackScore is
 computed for every submission with no AI evidence. Flagged rather than smuggled in.
+
+### D12. Anchors introduced two scoring regressions — **[OPEN]**
+
+Measured by the post-anchor sweep (see D10). Both are defects in the anchor text I wrote,
+not in the judge, and both have precise causes.
+
+**D12a — the coherence rule stopped firing on D1. Hard-assertion failure, so the sweep gate
+is red.** F09/D1 requires 0-30; observed **32.3** (runs 32, 35, 30; previously 28, 30, 30).
+Cause: D1's anchors describe *question quality only*, and F09's Stage 1 questions are
+genuinely good — its failure is that Stage 2 ignores their answers. The COHERENCE CHECK
+clause in the system prompt requires lowering D1 for exactly that, but the anchor text sits
+immediately beside the axis and won the conflict.
+
+The general lesson is worth more than the fix: **an anchor that omits a rule silently
+overrides it.** Anchors are the most specific instruction the judge has about an axis, so
+any rule stated elsewhere in the prompt must be restated in the anchors of every axis it
+constrains, or it stops applying there. D4 did not regress (5.3) precisely because its
+anchors happen to align with the coherence requirement rather than cut across it.
+
+**D12b — K1 is now vacuously generous.** K1's median lean went +1.3 → +13.3, driven by F07
+(the near-empty fixture) scoring K1 35 → **52**. The `50-74` anchor reads "The code follows
+the proposal", which is trivially satisfied when there is almost no code and almost no
+proposal. Absence of evidence is being read as alignment.
+
+Fix both in the anchor text, then re-run and compare against `post-anchor-report.md`:
+
+1. Add a coherence cap to D1's anchors (correctness bug — do this first).
+2. Rewrite K1's `25-49`/`50-74` boundary so insufficient material scores low, not middle.
+3. Soften the "expected bar for a timed submission" language on K2/K4/K5. It over-delivered:
+   the aim was to stop those three being 12-17 points stricter than everything else, not to
+   raise the floor across the whole set.
+4. Target: 5/5 rule compliance, slope ≥ 0.85, bottom-end implied error under ~4 points,
+   F02's D2 holding above 50, K1 lean under ~5.
 
 ### D11. Judge failure silently produces a fake score — **[OPEN — highest-severity open item]**
 
@@ -609,11 +653,9 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
    judge call costs, whether the prompt cache is ever hit, or whether cost moved when the
    anchors added ~2.5k tokens to the system prompt. Log `input_tokens`,
    `cache_creation_input_tokens`, `cache_read_input_tokens` and `output_tokens` per call.
-3. **Re-run the calibration sweep against the new anchors** (~$4, `RUN_CALIBRATION=1`).
-   The anchors (D10) are the intervention for every calibration finding and nothing has
-   measured them. Until that runs, the repo claims a fix it has not demonstrated — and the
-   specific risk is *overshoot*, the anchors pushing weak submissions up as hard as they
-   were pushing strong ones down.
+3. **Fix D12a and D12b, then re-run the sweep.** The anchor sweep has run; the gate is red
+   on F09/D1 and K1 is vacuously generous. Until D12a is fixed the judge is not applying a
+   rule it was explicitly given, which is a bug rather than drift.
 4. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
 5. Decide on secret rotation (gap 3).
 6. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
