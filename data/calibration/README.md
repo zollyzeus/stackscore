@@ -59,18 +59,39 @@ offset moves the whole axis, while compression is a slope problem.
 The last row matters most. A rescale applied to a weak ordering does not improve anything;
 it redistributes the same error more confidently. If R² is low, the fix is upstream.
 
-## Known upstream cause: the rubric has no score anchors
+## The rubric's score anchors
 
-`data/rubric.json` gives each axis a `label` and a one-line `description` on a 0-100 scale,
-and nothing else. Nothing anywhere states what 40 means versus 60 versus 80. The judge is
-asked for a number on a scale that was never defined, so whatever consistency it achieves
-is its own invention rather than the rubric's.
+`data/rubric.json` now carries four contiguous anchor bands per axis (`0-24`, `25-49`,
+`50-74`, `75-100`) plus a `scale.note`, and `lib/judge.ts` renders all of it into the cached
+system prefix. Before 2026-11-12 it did not: each axis had a one-line `description` and a
+0-100 scale, with nothing stating what 40 meant versus 60 or 80. The judge was asked for a
+number on a scale that was never defined, so whatever consistency it achieved was its own
+invention rather than the rubric's. That was the diagnosed root cause of Findings 1 and 2
+below.
 
-If the sweep shows wide spread or a low R², **add anchors before considering
-normalization.** Three or four per axis ("0-20: …, 40-60: …, 80-100: …") is the
-highest-leverage change available to this product, and no amount of post-hoc arithmetic
-substitutes for it. Normalizing an undefined scale makes the output look more rigorous
-without making it more right.
+Three deliberate choices in how the anchors are written:
+
+- **Contiguous, not gapped.** The obvious form ("0-20 …, 40-60 …, 80-100 …") leaves 21-39
+  and 61-79 undefined — exactly the mid-range where most real submissions land, and exactly
+  the region the judge then has to invent. Full coverage is the point.
+- **The top band is declared attainable.** `scale.note` states that `75-100` describes what
+  a strong engineer produces *inside a timed assessment*, not a flawless artifact, and that
+  an axis with no identified defect belongs there. An LLM judge left to itself reserves 90+
+  for hypothetical perfection, which is precisely the compression in Finding 1.
+- **Axis independence is written into the anchors, not just the preamble.** D2 carries a
+  `scoredElsewhere` note ("a competent architecture that ignores the budget is a high D2 and
+  a low D3/D4 — not a mediocre everything"), which is Finding 3 stated where the judge reads
+  it per-axis rather than once at the top.
+
+K2, K4 and K5 — the three axes graded 12-17 points harder than the rest — each say
+explicitly in their `50-74` band that it is **the expected bar for a timed submission**.
+That is the targeted fix for Finding 2, and it is the clause most likely to have overshot;
+it is the first thing to check in the next sweep.
+
+Anchors are not a substitute for panel labels, and they do not make normalization
+unnecessary — they make it *measurable*, because the scale now means something fixed. No
+amount of post-hoc arithmetic substitutes for defining the scale first: normalizing an
+undefined scale makes the output look more rigorous without making it more right.
 
 ## The fixtures
 
@@ -159,13 +180,27 @@ leaves the artifact that explains it.
 ## If you change the judge
 
 Re-run the sweep. `lib/judge.ts`'s prompt, model, and `effort` setting all move these
-numbers, and the report's header records the model and effort for exactly that reason. A
+numbers, and the report's header records the model and effort for exactly that reason.
+**`data/rubric.json` counts as changing the judge**: the axis descriptions and the anchor
+bands are rendered into the system prompt, so editing an anchor is editing the prompt. A
 stale calibration report is worse than none, because it is evidence for a claim that is no
 longer true.
 
 ---
 
 ## Baseline results (2026-11-12, `claude-opus-5-5` effort `high`, 3 runs x 10 fixtures)
+
+> **STALE — pre-anchor.** This baseline was measured against the rubric *before* score
+> anchors existed, and the anchors were added specifically to attack Findings 1, 2 and 3
+> below. Its numbers describe a judge that no longer exists. It is kept because it is the
+> evidence that motivated the anchors and the only before-measurement available, so it is
+> the comparison point for the next sweep — not because it is current.
+>
+> **Nothing should cite these numbers as the judge's present behaviour.** Re-run the sweep
+> (~$4) and compare against this section; the three claims to test are slope moving toward
+> 1.0, the K2/K4/K5 lean closing, and F02's D2 rising while its D3/D4 stay low. A fourth
+> thing to watch is overshoot: if the "expected bar for a timed submission" clauses push the
+> weak fixtures (F06, F07) *up* out of their bands, the anchors traded one bias for another.
 
 Committed as `baseline-report.md` (full report) and `baseline-runs.json` (the 30 raw
 per-axis scores). Re-analyze without spending anything:
@@ -243,12 +278,17 @@ person's taste as measurement.
 
 In priority order:
 
-1. **Add score anchors to `data/rubric.json`** (3-4 per axis). Each axis currently has a
-   one-line description and a 0-100 scale, with nothing stating what 40 means versus 60 or
-   80. This is the root cause of Findings 1 and 2 and the only fix that addresses them at
-   the source rather than downstream.
-2. **Panel re-label K2/K4/K5**, then re-run. Decide from the panel's numbers whether the
-   strictness is bias or correctness.
-3. **Treat Finding 3 as a prompt bug.** Strengthen axis independence for the D axes.
-4. Re-run after any change to `lib/judge.ts`. The report header records the model and effort
-   because both move these numbers.
+1. ~~**Add score anchors to `data/rubric.json`**~~ — **done 2026-11-12.** Four contiguous
+   bands per axis plus a `scale.note`, rendered into the system prefix. See "The rubric's
+   score anchors" above. **Unverified**: the sweep has not been re-run against them, so
+   whether they fixed Findings 1-3 is currently an expectation, not a result.
+2. **Re-run the sweep against the anchors** and compare to the stale baseline below. This is
+   now the top item — the anchors are the intervention and nothing has measured them.
+3. **Panel re-label K2/K4/K5**, then re-run. Decide from the panel's numbers whether the
+   strictness is bias or correctness. Still needed: the anchors assert a bar for those three
+   axes on one person's judgement, which is the same authored-label problem one level up.
+4. **Treat Finding 3 as a prompt bug.** Partly addressed — D2 now carries a `scoredElsewhere`
+   note. Re-measure F02 before calling it closed.
+5. Re-run after any change to `lib/judge.ts` **or `data/rubric.json`**. The rubric is now
+   part of the prompt, so an anchor edit moves these numbers exactly as a prompt edit does.
+   The report header records the model and effort for the same reason.

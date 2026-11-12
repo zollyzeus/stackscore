@@ -278,9 +278,12 @@ Baseline (`claude-opus-5-5`, effort `high`, 3 runs x 10 fixtures, 30/30 calls su
 
 **Recommendation: ship raw scores, apply no normalization.** Both computed corrections are
 fitted to authored bands, so applying either would encode one person's taste as measurement.
-The real fix is upstream: `data/rubric.json` gives each axis a one-line description and a
-0-100 scale and **never says what 40 means versus 60 or 80**. Add 3-4 anchors per axis; that
-addresses the compression and the K-axis strictness at the source.
+The real fix is upstream: `data/rubric.json` gave each axis a one-line description and a
+0-100 scale and **never said what 40 meant versus 60 or 80**.
+
+**Anchors added 2026-11-12** (see D10) — four contiguous bands per axis, rendered into the
+judge's system prefix. The baseline above is therefore **pre-anchor and stale**, and the
+sweep has not been re-run, so the anchors' effect is an expectation, not a result.
 
 Finding the bug below was worth more than the calibration numbers themselves.
 
@@ -330,6 +333,53 @@ of nothing.
 
 Worth stating plainly: a test that fails when its preconditions are absent is as misleading
 as one that passes when it should not. The first costs time, the second costs trust.
+
+### D10. Rubric had no score anchors — **[DONE 2026-11-12]**
+
+The root cause behind calibration Findings 1 and 2 (see D7). Each axis in `data/rubric.json`
+carried a `label`, a `weight` and a one-line `description`, and the judge was asked for a
+number on a 0-100 scale that nothing anywhere defined. Whatever consistency it achieved was
+its own invention rather than the rubric's — and an undefined scale is not a scale a hiring
+team can act on.
+
+`data/rubric.json` now carries, per axis, four **contiguous** anchor bands (`0-24`, `25-49`,
+`50-74`, `75-100`), plus a top-level `scale.note`. `lib/judge.ts` renders all of it into the
+system prompt, which is the cached prefix, so the added ~1.8k tokens are billed at the cache
+read rate after the first call of a session.
+
+Four decisions worth keeping, each traceable to a measured finding:
+
+- **Contiguous rather than gapped bands.** The conventional form ("0-20 …, 40-60 …, 80-100
+  …") leaves 21-39 and 61-79 undefined — exactly the mid-range most submissions occupy, and
+  exactly where an undefined scale does the most damage.
+- **The top band is declared reachable.** `scale.note` states that `75-100` describes what a
+  strong engineer produces *inside a timed assessment*, not a flawless artifact, and that an
+  axis with no identified defect belongs there. Left to itself an LLM judge reserves 90+ for
+  hypothetical perfection — which is Finding 1's compression (slope 0.835, ≈-9 at the top).
+- **K2/K4/K5 each name `50-74` as "the expected bar for a timed submission".** Targeted at
+  Finding 2 (those three graded 12-17 points harder than everything else). This is the
+  clause most likely to have overshot and the first thing to check in the next sweep.
+- **Axis independence moved into the per-axis text.** D2 gained a `scoredElsewhere` note —
+  "a competent architecture that ignores the budget is a high D2 and a low D3/D4, not a
+  mediocre everything" — which is Finding 3 stated where the judge reads it while scoring
+  D2, instead of once in a preamble it has already passed.
+
+Also reconciled a conflict this exposed: the K6 paragraph in the system prompt hardcoded
+"score 20-40 / score 70-90", which would have contradicted the anchor bands. The prompt now
+keeps only the rule the anchors cannot express (no AI evidence → exactly 50) and defers the
+rest to the bands.
+
+**Unverified.** `npx tsc --noEmit` is clean and all 30 unit tests pass, but the calibration
+sweep has **not** been re-run, so the effect on Findings 1-3 is an expectation, not a result.
+The D7 baseline is now pre-anchor and stale; `data/calibration/README.md` says so in place.
+
+**One real design flaw surfaced and deliberately not fixed:** on K6, `50` now means both
+"AI use was reviewed" (the `50-74` band) and "no AI evidence — cannot assess" (the rule).
+Those are different statements wearing the same number, and a panelist reading `K6: 50`
+cannot tell which they got. The honest fix is a null/not-assessed state distinct from the
+0-100 scale, which is a schema and UI change across `AxisScores`, the score page and the
+weighted sum — out of scope for an anchors change, and it would alter how the StackScore is
+computed for every submission with no AI evidence. Flagged rather than smuggled in.
 
 ---
 
@@ -443,8 +493,13 @@ is measured directly.
 
 Say the limitation out loud rather than waiting to be asked: the expected bands are one
 person's judgements, not panel consensus, so the dataset currently demonstrates *consistency*
-and *rule-following*, not *correctness*. The named next step — panel re-labelling plus score
-anchors in `data/rubric.json` — is a credible roadmap item rather than a gap.
+and *rule-following*, not *correctness*. The named next step — panel re-labelling — is a
+credible roadmap item rather than a gap.
+
+The dataset has also already paid for itself twice, which is the better story: it found a
+total production scoring outage (D8) that a 358-test green suite had hidden, and it diagnosed
+a missing-anchors root cause that is now fixed (D10). That is what a calibration harness is
+*for* — the numbers it reports are the smaller half of its value.
 
 ---
 
@@ -493,9 +548,11 @@ anchors in `data/rubric.json` — is a credible roadmap item rather than a gap.
 
 ## Suggested next steps
 
-1. **Add score anchors to `data/rubric.json`** — 3-4 per axis stating what 40 vs 60 vs 80
-   means. Highest leverage item in the repo: it is the root cause of both calibration
-   findings, and no downstream arithmetic substitutes for it.
+1. **Re-run the calibration sweep against the new anchors** (~$4, `RUN_CALIBRATION=1`).
+   The anchors (D10) are the intervention for every calibration finding and nothing has
+   measured them. Until that runs, the repo claims a fix it has not demonstrated — and the
+   specific risk is *overshoot*, the anchors pushing weak submissions up as hard as they
+   were pushing strong ones down.
 2. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
 3. Decide on secret rotation (gap 3).
 4. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
