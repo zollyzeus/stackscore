@@ -8,6 +8,7 @@ interface CandidateSession { authenticated: boolean; email?: string; name?: stri
 interface AdminSession { authenticated: boolean; email?: string; name?: string; }
 
 const NAV = [
+  { href: "/watch",      label: "Watch Demo" },
   { href: "/demo",       label: "Try Demo" },
   { href: "/why",        label: "Why StackScore" },
   { href: "/me",         label: "My Scores" },
