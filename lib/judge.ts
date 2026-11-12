@@ -4,7 +4,10 @@ import type { AxisId, AxisScores } from "./scoring";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const MODEL = "claude-opus-5-5";
+export const JUDGE_MODEL = "claude-opus-5-5";
+const MODEL = JUDGE_MODEL;
+/** Exported so the calibration monitor can fingerprint what it is checking (B5). */
+export const JUDGE_EFFORT = "high";
 
 /**
  * Per-call token accounting for one judge invocation.

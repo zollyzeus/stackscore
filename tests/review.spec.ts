@@ -120,3 +120,37 @@ test.describe("Re-judge worker", () => {
     expect(res.status()).toBe(401);
   });
 });
+
+test.describe("Calibration monitor and scoring hold (B5)", () => {
+  test("the monitor cannot be triggered without the task-runner secret", async ({ request }) => {
+    // It spends money on judge calls, so an open version is a billing vulnerability.
+    const res = await request.post(`${BASE}/api/tasks/calibration-monitor`);
+    expect(res.status()).toBe(401);
+  });
+
+  test("the pending-queue drain cannot be triggered anonymously", async ({ request }) => {
+    const res = await request.post(`${BASE}/api/tasks/drain-pending`);
+    expect(res.status()).toBe(401);
+  });
+
+  test("scoring settings are admin-only to read", async ({ request }) => {
+    const res = await request.get(`${BASE}/api/admin/settings`);
+    expect(res.status()).toBe(401);
+  });
+
+  test("scoring cannot be paused by an anonymous caller", async ({ request }) => {
+    // Pausing scoring is a denial-of-service against the whole product if it is reachable
+    // without an admin session.
+    const res = await request.post(`${BASE}/api/admin/settings`, {
+      data: { holdActive: true, reason: "unauthorised" },
+    });
+    expect(res.status()).toBe(401);
+  });
+
+  test("the automatic hold cannot be armed by an anonymous caller", async ({ request }) => {
+    const res = await request.post(`${BASE}/api/admin/settings`, {
+      data: { scoringHoldEnabled: true },
+    });
+    expect(res.status()).toBe(401);
+  });
+});

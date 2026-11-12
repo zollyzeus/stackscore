@@ -5,6 +5,7 @@ import { db, getAllScores } from "../../lib/firestore";
 import { getPanelistCreditInfo } from "../../lib/freeCredits";
 import { ApproveRejectButtons, RevokePanelistButton, PromoteAdminButton, AwardCreditsButton } from "./actions";
 import PanelistManager from "../components/PanelistManager";
+import ScoringControls from "./ScoringControls";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -314,6 +315,9 @@ export default async function AdminPage() {
           </table>
         </div>
       )}
+
+      {/* Scoring hold, calibration status, reviewer registry, manual verification queue */}
+      <ScoringControls />
     </main>
   );
 }

@@ -7,6 +7,7 @@ import { similarity } from "../../../lib/similarity";
 import { notifyPanelist, gradeLabel } from "../../../lib/notify";
 import { createReviewTask, isAuthoritativeStatus, type JudgeStatus } from "../../../lib/reviewQueue";
 import { enqueueRejudge } from "../../../lib/rejudgeQueue";
+import { getScoringHold, enqueuePendingScoring } from "../../../lib/scoringHold";
 import { logError } from "../../../lib/logger";
 import { requirePanelist } from "../../../lib/requirePanelist";
 import { getCandidateSessionFromRequest } from "../../../lib/candidateAuth";
@@ -63,6 +64,26 @@ export async function POST(req: NextRequest) {
         : twistText,
       debugResponse: extract("debug", "code"),
     };
+
+    // Scoring hold (B5). Checked before any model call: the candidate's work is already
+    // complete and saved, so a hold parks the judging, never the submission. Nothing the
+    // candidate did is lost, and they are told plainly that the score is coming later.
+    if (await getScoringHold().catch(() => false)) {
+      const heldSlug = nanoid(10);
+      await enqueuePendingScoring({
+        sessionId,
+        publicSlug: heldSlug,
+        reason: "scoring paused by the calibration monitor",
+      });
+      console.warn("[evaluate] SCORING_HELD queued for later judging:", sessionId);
+      return NextResponse.json({
+        queued: true,
+        publicSlug: heldSlug,
+        message:
+          "Your submission is saved. Scoring is temporarily paused for a calibration check, "
+          + "and your result will be available shortly.",
+      });
+    }
 
     let axisScores: import("../../../lib/scoring").AxisScores;
     let feedback: Record<string, string>;

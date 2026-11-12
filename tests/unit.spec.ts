@@ -11,6 +11,8 @@ import rubric from "../data/rubric.json";
 import { isJudgedScore } from "../lib/firestore";
 import { estimateCostUsd } from "../lib/judge";
 import { isAuthoritativeStatus, JUDGE_STATUS_BADGE } from "../lib/reviewQueue";
+import { DEFAULT_SETTINGS } from "../lib/settings";
+import { calibrationFingerprint, fingerprintOf } from "../lib/calibrationMonitor";
 
 const SECRET = "test-secret-at-least-32-characters-long!!";
 
@@ -452,5 +454,48 @@ test.describe("judge fallback quarantine — status aware", () => {
   test("either signal alone is enough to exclude", () => {
     expect(isJudgedScore({ judgeFallback: true, judgeStatus: "judged" })).toBe(false);
     expect(isJudgedScore({ judgeFallback: false, judgeStatus: "partial" })).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// B5 — calibration monitor and the scoring hold
+// ─────────────────────────────────────────────────────────────────────────────
+test.describe("scoring hold defaults", () => {
+  test("the automatic hold is OFF by default", () => {
+    // The most consequential default in the system: an automation that can stop the
+    // product scoring must not be on because nobody looked at it. Changing this should
+    // require changing this test and explaining why.
+    expect(DEFAULT_SETTINGS.scoringHoldEnabled).toBe(false);
+  });
+});
+
+test.describe("calibration fingerprint", () => {
+  test("is stable across calls", () => {
+    expect(calibrationFingerprint()).toBe(calibrationFingerprint());
+  });
+
+  test("is short enough to read in a log line", () => {
+    // It gets printed in alerts and shown in the admin console; a 64-char hash there is
+    // noise nobody compares.
+    expect(calibrationFingerprint()).toHaveLength(16);
+  });
+
+  test("changes when the rubric changes", () => {
+    // The whole point. D10 established that editing an anchor IS editing the judge, so a
+    // fingerprint over the model alone would keep calling stale evidence current.
+    const base = { scale: { note: "a" }, levels: [] };
+    const edited = { scale: { note: "a (edited)" }, levels: [] };
+    expect(fingerprintOf(edited, "m", "high")).not.toBe(fingerprintOf(base, "m", "high"));
+  });
+
+  test("changes when the model or effort changes", () => {
+    const r = { scale: { note: "a" }, levels: [] };
+    expect(fingerprintOf(r, "model-b", "high")).not.toBe(fingerprintOf(r, "model-a", "high"));
+    expect(fingerprintOf(r, "model-a", "medium")).not.toBe(fingerprintOf(r, "model-a", "high"));
+  });
+
+  test("is identical for identical inputs", () => {
+    const r = { scale: { note: "a" }, levels: [{ id: "d" }] };
+    expect(fingerprintOf(r, "m", "high")).toBe(fingerprintOf(r, "m", "high"));
   });
 });
