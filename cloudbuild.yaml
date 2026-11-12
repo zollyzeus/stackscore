@@ -117,7 +117,10 @@ steps:
         # PANELIST_SECRET leak then does not compromise the other roles -- and this loop
         # picks each one up on the next deploy with no change to this file.
         # See AUDIT_TODO.md A12 for the create commands.
-        for OPT in ADMIN_SECRET CREDENTIAL_SECRET; do
+        # TASK_RUNNER_SECRET authenticates the scheduled workers (re-judge, calibration
+        # monitor, pending drain). Those endpoints fail CLOSED when it is absent, so a
+        # missing secret disables the schedulers rather than exposing paid model calls.
+        for OPT in ADMIN_SECRET CREDENTIAL_SECRET REVIEWER_SECRET TASK_RUNNER_SECRET; do
           if gcloud secrets describe "$$OPT" >/dev/null 2>&1; then
             SECRETS="$$SECRETS,$$OPT=$$OPT:latest"
             echo "using dedicated $$OPT"
