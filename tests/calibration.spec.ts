@@ -4,6 +4,9 @@ import path from "path";
 import { judgeSubmission } from "../lib/judge";
 import { computeScoreCard, rubricDefinition, type AxisId } from "../lib/scoring";
 import { FIXTURES, type Band, type CalibrationFixture } from "../data/calibration/fixtures";
+import { fingerprintOf } from "../lib/calibrationFingerprint";
+import { JUDGE_MODEL, JUDGE_EFFORT } from "../lib/judge";
+import rubric from "../data/rubric.json";
 
 /**
  * Judge calibration sweep.
@@ -311,7 +314,8 @@ function renderMarkdown(rep: ReturnType<typeof buildReport>): string {
   L.push("# Judge calibration report");
   L.push("");
   L.push(`- Generated: ${new Date().toISOString()}`);
-  L.push(`- Model: \`claude-opus-5-5\`, effort \`high\` (as configured in \`lib/judge.ts\`)`);
+  L.push(`- Model: \`${JUDGE_MODEL}\`, effort \`${JUDGE_EFFORT}\` (as configured in \`lib/judge.ts\`)`);
+  L.push(`- Rubric/judge fingerprint: \`${fingerprintOf(rubric, JUDGE_MODEL, JUDGE_EFFORT)}\``);
   L.push(`- Fixtures: ${perFixture.length}; runs per fixture: ${RUNS}`);
   L.push(`- Judge calls: ${rep.ok.length} succeeded, ${rep.failed.length} failed`);
   L.push("");
@@ -643,7 +647,17 @@ test.describe("judge calibration", () => {
       // `results` first-class in the artifact: it is the only irreproducible part (it cost
       // money and cannot be recomputed), and it is what CALIBRATION_REPLAY reads back.
       JSON.stringify(
-        { runs: RUNS, generatedAt: new Date().toISOString(), results, ...rep },
+        {
+          runs: RUNS,
+          generatedAt: new Date().toISOString(),
+          // Stamped so the calibration monitor can tell whether the COMMITTED evidence
+          // describes the judge that is actually deployed. Without it the monitor can only
+          // compare against its own previous probe, and reports "results are stale" after
+          // every rubric edit even when a sweep has since been run.
+          fingerprint: fingerprintOf(rubric, JUDGE_MODEL, JUDGE_EFFORT),
+          results,
+          ...rep,
+        },
         null,
         2,
       ),

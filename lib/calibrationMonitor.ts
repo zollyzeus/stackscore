@@ -16,8 +16,12 @@
  *    class of problem worth paging someone about. Band compliance, slope and R² are NOT
  *    checked here; they need the full sweep and the statistical power of three runs.
  */
-import { createHash } from "crypto";
 import rubric from "../data/rubric.json";
+import { fingerprintOf } from "./calibrationFingerprint";
+// The fingerprint the committed sweep was run under. Shipped in the image, so the
+// monitor can answer "does the committed evidence describe the deployed judge?"
+// rather than only "has anything changed since my last probe?".
+import committedSweep from "../data/calibration/post-anchor-runs.json";
 import { FIXTURES } from "../data/calibration/fixtures";
 import { judgeSubmission, JUDGE_MODEL, JUDGE_EFFORT } from "./judge";
 import { db } from "./firestore";
@@ -27,6 +31,8 @@ export interface CalibrationProbeResult {
   ok: boolean;
   fingerprint: string;
   fingerprintChanged: boolean;
+  /** True when the COMMITTED sweep was run under a different rubric/judge. */
+  evidenceStale?: boolean;
   checkedAt: string;
   model: string;
   effort: string;
@@ -48,16 +54,7 @@ export interface CalibrationProbeResult {
  * anchors are rendered into the system prompt -- editing an anchor IS editing the judge,
  * which is the point AUDIT_TODO D10 established the hard way.
  */
-export function fingerprintOf(rubricJson: unknown, model: string, effort: string): string {
-  return createHash("sha256")
-    .update(JSON.stringify(rubricJson))
-    .update(model)
-    .update(effort)
-    .digest("hex")
-    // Short enough to read in an alert and compare by eye in the admin console. A 64-char
-    // hash there is noise nobody actually diffs.
-    .slice(0, 16);
-}
+export { fingerprintOf };
 
 export function calibrationFingerprint(): string {
   return fingerprintOf(rubric, JUDGE_MODEL, JUDGE_EFFORT);
@@ -87,6 +84,12 @@ export async function runCalibrationProbe(): Promise<CalibrationProbeResult> {
   const fingerprint = calibrationFingerprint();
   const prior = await getCalibrationState();
   const fingerprintChanged = Boolean(prior?.fingerprint && prior.fingerprint !== fingerprint);
+  // The question that actually matters for the evidence: was the committed sweep run
+  // against THIS judge? Comparing to the last probe instead reports "stale" after every
+  // rubric edit, including ones a fresh sweep has already covered -- a false alarm that
+  // would fire during a demo.
+  const sweepFingerprint = (committedSweep as { fingerprint?: string }).fingerprint;
+  const evidenceStale = Boolean(sweepFingerprint && sweepFingerprint !== fingerprint);
 
   const fixtures = FIXTURES.filter((f) => (f.hardAssertions?.length ?? 0) > 0);
   const assertions: CalibrationProbeResult["assertions"] = [];
@@ -138,14 +141,19 @@ export async function runCalibrationProbe(): Promise<CalibrationProbeResult> {
 
   const ok = judgeUnreachable ? true : assertions.every((a) => a.pass);
   if (fingerprintChanged) {
+    notes.push(`rubric/judge fingerprint changed since the last probe (${prior?.fingerprint} → ${fingerprint})`);
+  }
+  if (evidenceStale) {
     notes.push(
-      `rubric/judge fingerprint changed (${prior?.fingerprint} → ${fingerprint}); ` +
-      "the committed sweep results describe a different judge and are now stale",
+      `the committed sweep was run under ${sweepFingerprint}, not ${fingerprint}: ` +
+      "its slope, R² and per-axis leans describe a different judge. Re-run the full sweep.",
     );
+  } else if (sweepFingerprint) {
+    notes.push(`committed sweep matches the deployed judge (${sweepFingerprint})`);
   }
 
   const result: CalibrationProbeResult = {
-    ok, fingerprint, fingerprintChanged,
+    ok, fingerprint, fingerprintChanged, evidenceStale,
     checkedAt: new Date().toISOString(),
     model: JUDGE_MODEL, effort: JUDGE_EFFORT,
     assertions, callsAttempted, callsFailed, notes,
