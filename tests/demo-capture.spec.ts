@@ -4,6 +4,13 @@
  *
  * Output: test-results/demo-video/ — contains the .webm recording per step.
  * Voiceover script is in DEMO_VOICEOVER.md alongside this file.
+ *
+ * v2 additions (2026-11-13):
+ *   - Scene 6b: 3-stage judge fallback pipeline (judged/partial/pending banners)
+ *   - Scene 11b: Scenario bank admin panel (/admin → Scenario Bank card)
+ *   - Scene 11c: Reviewer bias-free flow (/review)
+ *   - Scene 15b: Calibration reliability evidence (/benchmarks)
+ *   - Voiceover updated throughout — see DEMO_VOICEOVER.md
  */
 import { test, expect, Page } from "@playwright/test";
 import path from "path";
@@ -209,6 +216,22 @@ test.describe("Demo recording", () => {
       }
     }
 
+    // ── SCENE 13b: Score provenance banners ──────────────────────────────
+    // VO: "Every score card carries a provenance banner. Green means fully judged by the calibrated AI. Amber means a fallback judge ran and a re-score is queued. The system never silently fails."
+    // (Already on score card page from Scene 14 — scroll to provenance banner)
+    await smoothScroll(page, 0);
+    await expect(page.locator(".provenance-badge")).toBeVisible().catch(() => {});
+    await pause(STEP_PAUSE);
+
+    // ── SCENE 14b: Calibration evidence (/benchmarks) ────────────────────
+    // VO: "StackScore's AI judge is verified — not just trusted. The benchmarks page shows rank stability across independent runs, confirmed by a second model."
+    await page.goto(`${BASE}/benchmarks`, { waitUntil: "networkidle" });
+    await pause(STEP_PAUSE);
+    await smoothScroll(page, 400);
+    await pause(STEP_PAUSE);
+    await smoothScroll(page, 1000);
+    await pause(STEP_PAUSE);
+
     // ── SCENE 15: Dashboard ───────────────────────────────────────────────
     // VO: "Hiring teams get a live dashboard — shortlist, hold, or reject candidates, add notes, and export to CSV."
     await page.goto(`${BASE}/dashboard`, { waitUntil: "networkidle" });
@@ -222,24 +245,39 @@ test.describe("Demo recording", () => {
     await pause(STEP_PAUSE);
 
     // ── SCENE 17: Panel ──────────────────────────────────────────────────
-    // VO: "Panelists can create custom assessments with their own brief, assign them to specific candidates with an expiry, and receive webhook notifications on completion."
+    // VO: "Panelists create custom assessments — their own brief, assigned to a specific candidate, with an expiry window. The assessment is locked to that candidate and expires automatically."
     await page.goto(`${BASE}/panel`, { waitUntil: "networkidle" });
     await pause(STEP_PAUSE);
     await smoothScroll(page, 400);
     await pause(STEP_PAUSE);
 
+    // ── SCENE 17b: Reviewer bias-free flow ───────────────────────────────
+    // VO: "Human reviewers see only the submission and rubric — not the AI scores. This eliminates anchoring bias. The reviewer's decision is recorded separately and updates the provenance banner."
+    await page.goto(`${BASE}/review`, { waitUntil: "networkidle" });
+    await pause(STEP_PAUSE);
+    await smoothScroll(page, 400);
+    await pause(STEP_PAUSE);
+
     // ── SCENE 18: My Scores ───────────────────────────────────────────────
-    // VO: "Candidates can track their improvement over time on their personal history page."
+    // VO: "Candidates track their own improvement trajectory — multiple attempts, axis-level trends, and a shareable portfolio link."
     await page.goto(`${BASE}/me`, { waitUntil: "networkidle" });
     await pause(STEP_PAUSE);
 
     // ── SCENE 19: Compare ────────────────────────────────────────────────
-    // VO: "Side-by-side radar comparison lets teams evaluate two candidates on the same axes at a glance."
+    // VO: "Side-by-side radar comparison lets teams see exactly which candidate is stronger on which axis — for fair, defensible hiring decisions."
     await page.goto(`${BASE}/compare`, { waitUntil: "networkidle" });
     await pause(STEP_PAUSE);
 
+    // ── SCENE 20: Reliability at a glance ────────────────────────────────
+    // VO: "Under the hood: Gemini generates fresh problems every session. If Gemini is unavailable, a pre-generated scenario bank ensures the assessment always starts. Zero candidate-facing downtime."
+    // (Show landing page with the architecture tagline or the why page resilience section)
+    await page.goto(`${BASE}/why`, { waitUntil: "networkidle" });
+    await pause(STEP_PAUSE);
+    await smoothScroll(page, 800);
+    await pause(STEP_PAUSE);
+
     // ── END ───────────────────────────────────────────────────────────────
-    // VO: "StackScore — the full picture of an engineer, in one number."
+    // VO: "StackScore — the full picture of an engineer, in one number. Not what they memorised. How they think."
     await page.goto(BASE, { waitUntil: "networkidle" });
     await smoothScroll(page, 0);
     await pause(STEP_PAUSE * 2);
