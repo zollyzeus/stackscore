@@ -13,7 +13,7 @@
  *   or with .env.local:
  *   npx dotenv -e .env.local -- tsx scripts/gemini-cross-judge.ts
  *
- * Cost: ~5 fixtures × ~3000 tokens input × $0.075/MTok ≈ $0.001 (Gemini 2.5 Flash is cheap)
+ * Cost: ~5 fixtures × ~3000 tokens input × $0.075/MTok ≈ $0.001 (Gemini 3.8 Flash is cheap)
  */
 
 import { readFileSync, writeFileSync } from "fs";

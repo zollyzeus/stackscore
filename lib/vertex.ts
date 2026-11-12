@@ -1,12 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import Anthropic from "@anthropic-ai/sdk";
 
-// Primary: Gemini 2.5 Flash via Google AI (Gemini API key from aistudio.google.com).
+// Primary: Gemini 3.8 Flash via Google AI (Gemini API key from aistudio.google.com).
 // Fallback: Claude Haiku if Gemini key is missing or call fails.
 const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 const claudeClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const GEMINI_MODEL = process.env.VERTEX_MODEL ?? "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.VERTEX_MODEL ?? "gemini-3.8-flash";
 
 async function generateWithGemini(prompt: string): Promise<string> {
   if (!process.env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not set");

@@ -148,7 +148,7 @@ steps:
           --no-traffic \
           --tag=v$$VERSION \
           --set-secrets="$$SECRETS" \
-          --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=us-central1,VERTEX_MODEL=gemini-2.5-flash,FIREBASE_PROJECT_ID=$PROJECT_ID,FIREBASE_CLIENT_EMAIL=stackscore-server@$PROJECT_ID.iam.gserviceaccount.com,NEXT_PUBLIC_BASE_URL=https://stackscore.anandrajendran.dev,BUILD_VERSION=$$VERSION,CREDENTIAL_KEY_ID=ss-mvp-1,PANELIST_EMAILS=$_PANELIST_EMAILS,ADMIN_EMAILS=$_ADMIN_EMAILS
+          --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=us-central1,VERTEX_MODEL=gemini-3.8-flash,FIREBASE_PROJECT_ID=$PROJECT_ID,FIREBASE_CLIENT_EMAIL=stackscore-server@$PROJECT_ID.iam.gserviceaccount.com,NEXT_PUBLIC_BASE_URL=https://stackscore.anandrajendran.dev,BUILD_VERSION=$$VERSION,CREDENTIAL_KEY_ID=ss-mvp-1,PANELIST_EMAILS=$_PANELIST_EMAILS,ADMIN_EMAILS=$_ADMIN_EMAILS
 
         # The traffic list formatter returns a bracketed, quoted list, so strip the
         # punctuation -- a quote left in the URL makes curl fail with no HTTP code at all,

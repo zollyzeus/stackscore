@@ -200,7 +200,7 @@ for the single-card case.
 
 ### C8. Doc/code drift — **[DONE]**
 `CLAUDE.md` and `PRD.md` corrected: 11 axes not 10 (K6 AI Collaboration shipped), the judge is
-Claude not Vertex, the generator is `gemini-2.5-flash` not `gemini-1.5-pro`, session creation is
+Claude not Vertex, the generator is `gemini-3.8-flash` not `gemini-1.5-pro`, session creation is
 `/api/session`. `CLAUDE.md` gained the auth invariants this audit established (including "never
 `try { verifyXToken() } catch {}`" and "always `await rateLimit()`").
 
@@ -757,7 +757,7 @@ the deploy, not label it.
 ### F1. Solo-team eligibility — **[VERIFIED]** Confirmed acceptable 2026-11-11.
 
 ### F2. Reframe the Google-AI story — **[DONE in docs, OPEN as a pitch asset]**
-Today Gemini (`gemini-2.5-flash`, via an AI Studio key) drives the live assessment engine —
+Today Gemini (`gemini-3.8-flash`, via an AI Studio key) drives the live assessment engine —
 brief, stakeholder agent, twist, defect — and Claude runs the judge. PRD NFR1 now states this
 as a deliberate design claim: **the model that authors a problem must not grade the answer, so
 the grader is independent of the generator.** That is a stronger story than a single-vendor one.

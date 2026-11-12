@@ -7,7 +7,7 @@
 | | |
 |---|---|
 | Stack | Next.js 14 App Router · TypeScript · Firestore · Firebase Auth |
-| AI — generation | Gemini 2.5 Flash via `@google/genai` (`lib/vertex.ts`), Claude Haiku 5.5 fallback |
+| AI — generation | Gemini 3.8 Flash via `@google/genai` (`lib/vertex.ts`), Claude Haiku 5.5 fallback |
 | AI — evaluation | Claude claude-opus-5-5 w/ adaptive thinking (`lib/judge.ts`) |
 | Compute | GCP Cloud Run (`Dockerfile`, `output: standalone`) |
 | Path | `/media/anand/WD BLACK/projects2/stackscore` |
@@ -74,7 +74,7 @@ npx tsc --noEmit             # type-check (must be clean before every deploy)
 ```
 GCP_PROJECT_ID=
 GCP_LOCATION=us-central1
-VERTEX_MODEL=gemini-2.5-flash
+VERTEX_MODEL=gemini-3.8-flash
 FIREBASE_PROJECT_ID=
 FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
