@@ -71,9 +71,14 @@ echo "==> building request from cloudbuild.yaml"
 # Cloud Build's REST API takes the same fields as the YAML, so the config is converted
 # rather than retyped -- the YAML stays the single source of truth for the deploy.
 # Substitution defaults live in the YAML and are passed through as-is.
-python3 -I - "$SCRATCH/build.json" "$BUCKET" "$OBJECT" <<'PY'
+python3 -I - "$SCRATCH/build.json" "$BUCKET" "$OBJECT" "$ADMIN_IP_ALLOWLIST" <<'PY'
 import json, sys, yaml
 
+# Unpack explicitly rather than by slice width: this line silently took the wrong number
+# of arguments once already, and the failure surfaced only after the source tarball had
+# been built and uploaded.
+if len(sys.argv) != 5:
+    sys.exit(f"deploy-rest.sh: expected 4 arguments, got {len(sys.argv) - 1}")
 out_path, bucket, obj, admin_ips = sys.argv[1:5]
 with open("cloudbuild.yaml") as f:
     cfg = yaml.safe_load(f)
