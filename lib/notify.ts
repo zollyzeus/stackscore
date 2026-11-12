@@ -10,8 +10,12 @@ export async function notifyPanelist(params: {
   gradeLabel: string;
   scoreCardUrl: string;
   role?: string;
-  /** True when the judge never ran and the score is a mechanical substitute. */
-  judgeFallback?: boolean;
+  /**
+   * Provenance of the score (A3). Anything other than "judged"/"reviewed" means the number
+   * in this email is provisional or absent, and the mail has to say so -- a panelist who
+   * reads only the subject line must not be told a held submission scored 0.
+   */
+  judgeStatus?: "judged" | "partial" | "pending_review" | "reviewed";
 }) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.PANELIST_EMAIL;
@@ -24,21 +28,27 @@ export async function notifyPanelist(params: {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://stackscore.anandrajendran.dev";
   const url = `${baseUrl}${params.scoreCardUrl}`;
 
-  // A substituted score must never arrive looking like an assessment result. The subject
+  // A provisional or held score must never arrive looking like a final result. The subject
   // line carries it too, because that is all a panelist sees in a notification list.
-  const fallbackBanner = params.judgeFallback
-    ? `<p style="margin:0 0 16px;padding:12px 14px;border-radius:8px;background:#3a1d1d;border:1px solid #a33;color:#ffb3b3;font-size:13px;">
-<strong>This is not a judged score.</strong> The AI judge failed for this submission and
-StackScore substituted a mechanical placeholder based only on which stages contained text.
-It does not reflect the quality of the work. Re-run the evaluation before making any
-decision on this candidate.</p>`
-    : "";
+  const status = params.judgeStatus ?? "judged";
+  const banners: Record<string, string> = {
+    partial: `<p style="margin:0 0 16px;padding:12px 14px;border-radius:8px;background:#3a2d1d;border:1px solid #a80;color:#ffd9a3;font-size:13px;">
+<strong>Partially judged \u2014 subject to change.</strong> The calibrated judge was
+unavailable, so this was scored by a reduced pass. The numbers are real model output but are
+not comparable to a normal StackScore, and a full re-judge is queued. Wait for the final
+score before making a decision.</p>`,
+    pending_review: `<p style="margin:0 0 16px;padding:12px 14px;border-radius:8px;background:#3a1d1d;border:1px solid #a33;color:#ffb3b3;font-size:13px;">
+<strong>On hold for human verification.</strong> The AI judge could not score this
+submission, so no score has been produced. It has been queued for a human reviewer. There is
+nothing to act on yet.</p>`,
+  };
+  const fallbackBanner = banners[status] ?? "";
 
   const html = `
 <p>Hi,</p>
 ${fallbackBanner}
 <p><strong>${candidateDisplay}</strong> has completed their StackScore assessment${params.role ? ` (${params.role} level)` : ""}.</p>
-<table cellpadding="0" cellspacing="0" style="margin:16px 0;">
+<table cellpadding="0" cellspacing="0" style="margin:16px 0;${status === "pending_review" ? "display:none;" : ""}">
   <tr><td style="padding:4px 12px 4px 0;color:#888;font-size:13px;">Score</td><td style="font-size:22px;font-weight:800;color:#f5a623;">${params.stackScore} / 100</td></tr>
   <tr><td style="padding:4px 12px 4px 0;color:#888;font-size:13px;">Grade</td><td style="font-size:14px;font-weight:600;">${params.gradeLabel}</td></tr>
 </table>
@@ -56,9 +66,12 @@ ${fallbackBanner}
       body: JSON.stringify({
         from: "StackScore <noreply@stackscore.anandrajendran.dev>",
         to: [to],
-        subject: params.judgeFallback
-          ? `[JUDGE FAILED - not a real score] StackScore: ${candidateDisplay}`
-          : `StackScore: ${candidateDisplay} scored ${params.stackScore} (${params.gradeLabel})`,
+        subject:
+          status === "pending_review"
+            ? `[ON HOLD - awaiting human review] StackScore: ${candidateDisplay}`
+            : status === "partial"
+              ? `[PARTIAL - subject to change] StackScore: ${candidateDisplay} ~${params.stackScore}`
+              : `StackScore: ${candidateDisplay} scored ${params.stackScore} (${params.gradeLabel})`,
         html,
       }),
     });

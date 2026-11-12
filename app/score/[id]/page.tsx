@@ -142,6 +142,12 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
   const axisScores = doc.axisScores as AxisScores;
   const feedback = doc.feedback as Record<string, string>;
   const { label: gradeLabel, color: gradeColor } = grade(doc.stackScore as number);
+  // A held card carries zeroed axis scores purely so the record has a shape. Rendering them
+  // would show a candidate a wall of zeros under a "this is on hold" banner, which is worse
+  // than showing nothing -- people read the chart, not the banner.
+  const judgeStatus = (doc.judgeStatus as string | undefined)
+    ?? (doc.judgeFallback === true ? "pending_review" : "judged");
+  const scoresAreHeld = judgeStatus === "pending_review";
   const dateStr = doc.createdAt?.toDate
     ? doc.createdAt.toDate().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
     : "";
@@ -291,10 +297,27 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
         </a>
       </div>
 
-      {/* A substituted score must not present as an assessment result. This sits above the
-          number rather than beside it: a reader who sees the figure first has already drawn
-          the conclusion. See AUDIT_TODO D11. */}
-      {doc.judgeFallback === true && (
+      {/* Provenance banner (A3). Above the number, not beside it: a reader who has seen
+          the figure has already drawn the conclusion. */}
+      {judgeStatus === "partial" && (
+        <div
+          role="alert"
+          style={{
+            margin: "0 0 20px", padding: "14px 16px", borderRadius: 10,
+            background: "rgba(168,136,0,0.12)", border: "1px solid #a80",
+            color: "#ffd9a3", fontSize: 14, lineHeight: 1.5,
+          }}
+        >
+          <strong style={{ display: "block", marginBottom: 4 }}>
+            Partially judged \u2014 subject to change.
+          </strong>
+          The calibrated judge was unavailable, so this was scored by a reduced pass. These
+          are real model scores, but they were not produced against the anchored rubric and
+          are not comparable to a normal StackScore. A full re-judge is queued; this page
+          will update when it completes.
+        </div>
+      )}
+      {judgeStatus === "pending_review" && (
         <div
           role="alert"
           style={{
@@ -304,20 +327,36 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
           }}
         >
           <strong style={{ display: "block", marginBottom: 4 }}>
-            This is not a judged score.
+            On hold for human verification.
           </strong>
-          The AI judge could not evaluate this submission, so StackScore substituted a
-          placeholder derived only from which stages contained text. It does not reflect the
-          quality of the work and must not be used to make a decision. Re-run the evaluation.
+          The AI judge could not evaluate this submission, so no score has been produced.
+          It has been queued for a human reviewer and this page will show the result once
+          the review is complete. Nothing here should be read as a score.
+        </div>
+      )}
+      {judgeStatus === "reviewed" && (
+        <div
+          style={{
+            margin: "0 0 20px", padding: "14px 16px", borderRadius: 10,
+            background: "rgba(62,207,142,0.1)", border: "1px solid #3ecf8e",
+            color: "#b7f0d6", fontSize: 14, lineHeight: 1.5,
+          }}
+        >
+          <strong style={{ display: "block", marginBottom: 4 }}>Human reviewed.</strong>
+          The AI judge could not score this submission, so it was assessed by a human
+          reviewer against the same rubric.
         </div>
       )}
 
       {/* Hero score */}
       <div className="sc-hero">
-        <div className="sc-score-num">{doc.stackScore}</div>
-        <div className="sc-grade" style={{ background: `${gradeColor}22`, color: gradeColor }}>
-          {gradeLabel}
-        </div>
+        <div className="sc-score-num">{scoresAreHeld ? "—" : doc.stackScore}</div>
+        {!scoresAreHeld && (
+          <div className="sc-grade" style={{ background: `${gradeColor}22`, color: gradeColor }}>
+            {gradeLabel}
+          </div>
+        )}
+        {!scoresAreHeld && (
         <div className="sc-levels">
           <div className="sc-level">
             <span className="sc-level-val" style={{ color: "var(--design-color)" }}>
@@ -334,9 +373,13 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
             <div className="sc-level-bar" style={{ background: "var(--code-color)", width: `${(doc.levelScores as { design: number; code: number })?.code ?? 0}%`, maxWidth: "100%" }} />
           </div>
         </div>
+        )}
       </div>
 
-      {/* Radar chart */}
+      {/* Radar chart. Suppressed when held: eleven zeroed axes draw a collapsed shape that
+          reads as "scored terribly" rather than "not scored yet", and the picture carries
+          further than the banner above it. */}
+      {!scoresAreHeld && (
       <div className="sc-radar-wrap">
         <RadarChart axisScores={axisScores} />
         <div className="sc-radar-legend">
@@ -350,6 +393,7 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
           </div>
         </div>
       </div>
+      )}
 
       {/* Meta */}
       <div className="sc-meta">

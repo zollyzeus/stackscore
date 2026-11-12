@@ -5,6 +5,8 @@ import { getTranscript, getSession, saveScore, updateScoreFields, getAllScores }
 import { extractFromTranscript } from "../../../lib/transcriptExtract";
 import { similarity } from "../../../lib/similarity";
 import { notifyPanelist, gradeLabel } from "../../../lib/notify";
+import { createReviewTask, isAuthoritativeStatus, type JudgeStatus } from "../../../lib/reviewQueue";
+import { enqueueRejudge } from "../../../lib/rejudgeQueue";
 import { logError } from "../../../lib/logger";
 import { requirePanelist } from "../../../lib/requirePanelist";
 import { getCandidateSessionFromRequest } from "../../../lib/candidateAuth";
@@ -66,51 +68,59 @@ export async function POST(req: NextRequest) {
     let feedback: Record<string, string>;
     let evidence: Record<string, string> = {};
     let thinkingLog: string | undefined;
-    // Set only on the fallback path below. Everything downstream that presents or
-    // aggregates this score has to be able to tell a judged card from a substituted one.
-    let judgeFallback = false;
-    let judgeFallbackReason: string | undefined;
     let judgeUsage: import("../../../lib/judge").JudgeUsage | undefined;
 
+    // Provenance of the numbers below. Every surface that shows or counts this score reads
+    // it, so it is set on every path -- there is no "unset means fine" default. See
+    // lib/reviewQueue.ts for what each value means.
+    let judgeStatus: JudgeStatus = "judged";
+    let judgeFallbackReason: string | undefined;
+
     const sessionAny = session as unknown as Record<string, unknown>;
+
+    // Pass 1: the calibrated judge. The normal path.
     try {
       ({ axisScores, feedback, evidence, thinkingLog, usage: judgeUsage } = await judgeSubmission({
         ...submissionInput,
         role: sessionAny.role as string | undefined,
       }));
     } catch (judgeErr: unknown) {
-      // Judge failed — score based on what was submitted (blank = 0, something = 20 baseline)
-      // JUDGE_FALLBACK is the alert token: the service stays healthy during a judge
-      // outage, so this log line is the only runtime signal that scoring is broken.
-      // Alert on it. AUDIT_TODO D8 ran undetected for want of exactly this.
       judgeFallbackReason = judgeErr instanceof Error ? judgeErr.message : String(judgeErr);
-      judgeFallback = true;
-      console.error("[evaluate] JUDGE_FALLBACK judge failed, substituting mechanical scores:", judgeFallbackReason);
-      const hasDesign = submissionInput.designProposal.trim().length > 20;
-      const hasCode = submissionInput.code.trim().length > 20;
-      const hasClarify = submissionInput.clarifyingTranscript.trim().length > 10;
-      const hasAdapt = submissionInput.twistResponse.trim().length > 10;
-      const base = (v: boolean) => v ? 20 : 0;
-      axisScores = {
-        D1: base(hasClarify), D2: base(hasDesign), D3: base(hasDesign),
-        D4: base(hasAdapt),   D5: base(hasDesign),
-        K1: base(hasCode),    K2: base(hasCode),   K3: base(hasCode),
-        K4: base(hasCode),    K5: base(hasCode),   K6: 50,
-      };
-      feedback = {
-        D1: hasClarify ? "Some clarifying questions provided." : "No clarifying questions submitted.",
-        D2: hasDesign ? "A design proposal was submitted." : "No design proposal submitted.",
-        D3: hasDesign ? "Design constraints partially addressed." : "No constraints addressed.",
-        D4: hasAdapt ? "Adaptation response provided." : "No adaptation response submitted.",
-        D5: hasDesign ? "Some tradeoffs considered." : "No tradeoffs discussed.",
-        K1: hasCode ? "Code was submitted." : "No code submitted.",
-        K2: hasCode ? "Code structure present." : "No code to evaluate.",
-        K3: hasCode ? "Some implementation detail present." : "Nothing to evaluate.",
-        K4: hasCode ? "Debug attempt noted." : "No debug response.",
-        K5: hasCode ? "Code submitted for review." : "No code submitted.",
-        K6: "AI tool usage could not be assessed from the submitted content.",
-      };
-      evidence = {};
+      // JUDGE_FALLBACK is the alert token. The service stays healthy during a judge outage
+      // -- /api/health reports on the service, not its model dependency -- so this log line
+      // is the only runtime signal that scoring is degraded. AUDIT_TODO D8 ran undetected
+      // in production for want of exactly this.
+      console.error("[evaluate] JUDGE_FALLBACK calibrated judge failed:", judgeFallbackReason);
+
+      // Pass 2: the UNCALIBRATED judge. A real model pass against the bare axis list rather
+      // than mechanical placeholder numbers. Retrying the identical prompt would mostly
+      // reproduce the identical failure, so the thinner prompt is a genuinely different
+      // attempt -- and its output is model judgement, which placeholder arithmetic is not.
+      try {
+        ({ axisScores, feedback, evidence, thinkingLog, usage: judgeUsage } = await judgeSubmission({
+          ...submissionInput,
+          role: sessionAny.role as string | undefined,
+          calibrated: false,
+        }));
+        judgeStatus = "partial";
+        console.warn("[evaluate] JUDGE_PARTIAL uncalibrated pass succeeded; queueing re-judge");
+      } catch (uncalErr: unknown) {
+        // Both passes failed. Hold the result rather than inventing one: no AI numbers are
+        // shown, and a human review task is created. Axis scores are zeroed only because
+        // the record needs a shape -- `judgeStatus` is what every reader must branch on,
+        // and the score page refuses to render numbers for a held card.
+        const second = uncalErr instanceof Error ? uncalErr.message : String(uncalErr);
+        judgeFallbackReason = `calibrated: ${judgeFallbackReason} | uncalibrated: ${second}`;
+        judgeStatus = "pending_review";
+        console.error("[evaluate] JUDGE_HELD both passes failed:", judgeFallbackReason);
+        const zero = 0;
+        axisScores = {
+          D1: zero, D2: zero, D3: zero, D4: zero, D5: zero,
+          K1: zero, K2: zero, K3: zero, K4: zero, K5: zero, K6: zero,
+        };
+        feedback = {};
+        evidence = {};
+      }
     }
 
     const scoreCard = computeScoreCard(axisScores);
@@ -144,9 +154,32 @@ export async function POST(req: NextRequest) {
       ...(typeof tabSwitchCount === "number" && tabSwitchCount > 0 ? { tabSwitchCount } : {}),
       ...(thinkingLog ? { thinkingLog } : {}),
       ...(Object.keys(evidence).length > 0 ? { evidence } : {}),
-      ...(judgeFallback ? { judgeFallback: true, judgeFallbackReason } : {}),
+      judgeStatus,
+      ...(judgeFallbackReason ? { judgeFallbackReason } : {}),
+      // judgeFallback stays as the single boolean every aggregate filters on, so a new
+      // status can never be added without deciding whether it counts in statistics.
+      ...(isAuthoritativeStatus(judgeStatus) ? {} : { judgeFallback: true }),
       ...(judgeUsage ? { judgeUsage } : {}),
     });
+
+    // A held score needs a human. Created after saveScore so a task never points at a
+    // score document that does not exist.
+    if (judgeStatus === "pending_review") {
+      await createReviewTask({
+        sessionId,
+        publicSlug,
+        reason: judgeFallbackReason ?? "judge unavailable",
+        candidateName: sessionAny.candidateName as string | undefined,
+        role: sessionAny.role as string | undefined,
+      }).catch((e) => console.error("[evaluate] failed to create review task:", e));
+    }
+
+    // A partial score is a placeholder for a proper one. Queue the re-judge; the hourly
+    // worker picks it up. Fire-and-forget by design: the candidate must not wait on it.
+    if (judgeStatus === "partial") {
+      await enqueueRejudge(sessionId, judgeFallbackReason ?? "calibrated pass failed")
+        .catch((e) => console.error("[evaluate] failed to enqueue re-judge:", e));
+    }
 
     // Also logged, so cost is visible in Cloud Run logs during an incident without a
     // Firestore round-trip. The stored copy is the one that survives log rotation.
@@ -175,7 +208,7 @@ export async function POST(req: NextRequest) {
           role: sessionAny.role,
           fastSubmit,
           tabSwitchCount,
-          judgeFallback,
+          judgeStatus,
           scoreCardUrl: `/score/${publicSlug}`,
           timestamp: new Date().toISOString(),
         }),
@@ -188,7 +221,7 @@ export async function POST(req: NextRequest) {
       candidateEmail: sessionAny.candidateEmail as string | undefined,
       stackScore: scoreCard.stackScore,
       gradeLabel: gradeLabel(scoreCard.stackScore),
-      judgeFallback,
+      judgeStatus,
       scoreCardUrl: `/score/${publicSlug}`,
       role: sessionAny.role as string | undefined,
     }).catch(console.error);

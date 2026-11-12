@@ -107,6 +107,8 @@ export async function saveScore(
     // got a plausible ~20 StackScore instead of an error. Anything that reads a score has
     // to be able to ask whether a judge produced it.
     judgeFallback?: boolean; judgeFallbackReason?: string;
+    /** Provenance of the numbers (A3). See lib/reviewQueue.ts. */
+    judgeStatus?: import("./reviewQueue").JudgeStatus;
     // Per-call token accounting (AUDIT_TODO B4). Stored on the record, not just logged,
     // because the question it answers -- what scoring costs at 10x/100x volume -- is asked
     // retrospectively, and by then the logs have rotated.
@@ -128,8 +130,16 @@ export async function saveScore(
  * makes a judge outage look like a population of weak candidates. Statistical surfaces must
  * filter with this; surfaces that list individual candidates should show them, flagged.
  */
-export function isJudgedScore(s: { judgeFallback?: unknown }): boolean {
-  return s.judgeFallback !== true;
+export function isJudgedScore(s: { judgeFallback?: unknown; judgeStatus?: unknown }): boolean {
+  // Two conditions, deliberately. `judgeStatus` is the real provenance (A3) and is what new
+  // code should reason about; `judgeFallback` is the older boolean and still guards records
+  // written before statuses existed. A record failing EITHER test is excluded, so adding a
+  // status later cannot silently readmit provisional scores into cohort statistics --
+  // whoever adds it has to extend isAuthoritativeStatus and make that decision explicitly.
+  if (s.judgeFallback === true) return false;
+  const st = s.judgeStatus;
+  if (st === undefined) return true;
+  return st === "judged" || st === "reviewed";
 }
 
 export async function getScoreBySlug(publicSlug: string) {
@@ -168,7 +178,7 @@ const SCORE_LIST_FIELDS = [
   "sessionId", "publicSlug", "stackScore", "levelScores", "axisScores",
   "role", "candidateName", "candidateEmail", "decision", "hiredAt",
   "notes", "createdAt", "rowLabel", "columnLabel", "fastSubmit",
-  "tabSwitchCount", "summary", "judgeFallback", "judgeUsage",
+  "tabSwitchCount", "summary", "judgeFallback", "judgeUsage", "judgeStatus",
 ];
 
 export async function getAllScores(limit = 100): Promise<Record<string, unknown>[]> {

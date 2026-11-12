@@ -1,3 +1,4 @@
+import type { OTPType } from "./otp";
 const FROM = process.env.RESEND_FROM ?? "noreply@stackscore.anandrajendran.dev";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://stackscore.anandrajendran.dev";
 
@@ -12,9 +13,9 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
   if (!res.ok) throw new Error(`Resend error ${res.status}: ${await res.text()}`);
 }
 
-export async function sendOTPEmail(to: string, code: string, type: "panelist" | "candidate" | "admin"): Promise<void> {
-  const role = type === "panelist" ? "Panelist" : type === "admin" ? "Admin" : "Candidate";
-  const dest = type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : "/me";
+export async function sendOTPEmail(to: string, code: string, type: OTPType): Promise<void> {
+  const role = type === "panelist" ? "Panelist" : type === "admin" ? "Admin" : type === "reviewer" ? "Reviewer" : "Candidate";
+  const dest = type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : type === "reviewer" ? "/review" : "/me";
   await sendEmail(
     to,
     `Your StackScore sign-in code: ${code}`,

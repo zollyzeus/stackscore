@@ -3,6 +3,8 @@ import { createSessionToken, sessionCookieOptions, clearCookieOptions } from "..
 import { createCandidateToken, candidateCookieOptions, clearCandidateCookieOptions } from "../../../../../lib/candidateAuth";
 import { createAdminToken, adminCookieOptions, clearAdminCookieOptions } from "../../../../../lib/adminAuth";
 import { isAdmin } from "../../../../../lib/requireAdmin";
+import {createReviewerToken, reviewerCookieOptions, clearReviewerCookieOptions} from "../../../../../lib/reviewerAuth";
+import { isReviewer } from "../../../../../lib/reviewerRegistry";
 import { isPanelistEmail } from "../../../../../lib/panelistRegistry";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
@@ -58,11 +60,11 @@ export async function GET(req: NextRequest) {
     }
 
     let { type, next } = decoded;
-    if (!["panelist", "candidate", "admin"].includes(type)) type = "candidate";
+    if (!["panelist", "candidate", "admin", "reviewer"].includes(type)) type = "candidate";
 
     // Sanitise open-redirect: next must be a relative path
     if (!next.startsWith("/") || next.includes("://")) {
-      next = type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : "/me";
+      next = type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : type === "reviewer" ? "/review" : "/me";
     }
 
     if (type === "panelist" && !(await isPanelistEmail(info.email))) {
@@ -75,9 +77,24 @@ export async function GET(req: NextRequest) {
     if (type === "admin" && !(await isAdmin(info.email))) {
       return NextResponse.redirect(`${BASE_URL}/login?error=not_authorised`);
     }
+    if (type === "reviewer" && !(await isReviewer(info.email))) {
+      return NextResponse.redirect(`${BASE_URL}/login?error=not_authorised`);
+    }
 
     const redirect = NextResponse.redirect(`${BASE_URL}${next}`);
     redirect.cookies.set("oauth_nonce", "", { maxAge: 0, path: "/" }); // clear nonce
+    if (type === "reviewer") {
+      const token = await createReviewerToken(info.email, info.name ?? info.email.split("@")[0]);
+      const opts = reviewerCookieOptions(token);
+      redirect.cookies.set(opts.name, opts.value, opts);
+      const pc = clearCookieOptions();
+      redirect.cookies.set(pc);
+      const cc = clearCandidateCookieOptions();
+      redirect.cookies.set(cc.name, cc.value, cc);
+      const ac = clearAdminCookieOptions();
+      redirect.cookies.set(ac.name, ac.value, ac);
+      return redirect;
+    }
     if (type === "admin") {
       const token = await createAdminToken(info.email, info.name ?? info.email.split("@")[0]);
       const opts = adminCookieOptions(token);
@@ -91,6 +108,8 @@ export async function GET(req: NextRequest) {
     }
     const adminClear = clearAdminCookieOptions();
     redirect.cookies.set(adminClear.name, adminClear.value, adminClear);
+    const revClear = clearReviewerCookieOptions();
+    redirect.cookies.set(revClear.name, revClear.value, revClear);
     if (type === "panelist") {
       const token = await createSessionToken(info.email, info.name ?? info.email.split("@")[0]);
       const opts = sessionCookieOptions(token);

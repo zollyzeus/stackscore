@@ -10,6 +10,7 @@ import { runJavaScript } from "../lib/sandbox";
 import rubric from "../data/rubric.json";
 import { isJudgedScore } from "../lib/firestore";
 import { estimateCostUsd } from "../lib/judge";
+import { isAuthoritativeStatus, JUDGE_STATUS_BADGE } from "../lib/reviewQueue";
 
 const SECRET = "test-secret-at-least-32-characters-long!!";
 
@@ -396,5 +397,60 @@ test.describe("judge cost accounting", () => {
     const usd = estimateCostUsd("claude-opus-5-5", { ...z, cacheReadTokens: 3_900 });
     expect(usd).toBeGreaterThan(0);
     expect(usd).toBeLessThan(0.01);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/reviewQueue.ts — score provenance (AUDIT_TODO A3)
+// ─────────────────────────────────────────────────────────────────────────────
+test.describe("judge status provenance", () => {
+  test("only judged and reviewed scores are authoritative", () => {
+    expect(isAuthoritativeStatus("judged")).toBe(true);
+    expect(isAuthoritativeStatus("reviewed")).toBe(true);
+    expect(isAuthoritativeStatus("partial")).toBe(false);
+    expect(isAuthoritativeStatus("pending_review")).toBe(false);
+  });
+
+  test("a record written before statuses existed is treated as authoritative", () => {
+    // Back-compat matters here: every score in Firestore predates this field, and
+    // excluding them all would empty the benchmarks page rather than fail loudly.
+    expect(isAuthoritativeStatus(undefined)).toBe(true);
+  });
+
+  test("a provisional score carries a badge; a normal one does not", () => {
+    expect(JUDGE_STATUS_BADGE.judged).toBeNull();
+    expect(JUDGE_STATUS_BADGE.partial?.label).toMatch(/subject to change/i);
+    expect(JUDGE_STATUS_BADGE.pending_review?.label).toMatch(/human verification/i);
+    expect(JUDGE_STATUS_BADGE.reviewed?.label).toMatch(/human reviewed/i);
+  });
+
+  test("every status is either authoritative or badged — none is silently neither", () => {
+    // The failure this guards: adding a status and forgetting to decide whether it counts
+    // in statistics, which is exactly how a provisional score rejoins a cohort mean.
+    for (const [status, badge] of Object.entries(JUDGE_STATUS_BADGE)) {
+      const authoritative = isAuthoritativeStatus(status);
+      if (!authoritative) expect(badge, `${status} must warn the reader`).not.toBeNull();
+    }
+  });
+});
+
+test.describe("judge fallback quarantine — status aware", () => {
+  test("a partial score is excluded from statistics", () => {
+    expect(isJudgedScore({ judgeStatus: "partial" })).toBe(false);
+  });
+
+  test("a held score is excluded from statistics", () => {
+    expect(isJudgedScore({ judgeStatus: "pending_review" })).toBe(false);
+  });
+
+  test("a human-reviewed score rejoins the statistics", () => {
+    // The whole point of the review pipeline: a reviewed card is authoritative again, and
+    // must not stay quarantined just because the judge originally failed on it.
+    expect(isJudgedScore({ judgeStatus: "reviewed" })).toBe(true);
+  });
+
+  test("either signal alone is enough to exclude", () => {
+    expect(isJudgedScore({ judgeFallback: true, judgeStatus: "judged" })).toBe(false);
+    expect(isJudgedScore({ judgeFallback: false, judgeStatus: "partial" })).toBe(false);
   });
 });

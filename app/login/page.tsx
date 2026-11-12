@@ -16,7 +16,7 @@ function GoogleButton({ href }: { href: string }) {
   );
 }
 
-type UserType = "candidate" | "panelist" | "admin";
+type UserType = "candidate" | "panelist" | "admin" | "reviewer";
 
 function LoginForm() {
   const params = useSearchParams();
@@ -27,8 +27,13 @@ function LoginForm() {
   // Both OTP and Google are offered for it (A1); authorisation is the admin registry,
   // enforced server-side in send-otp, verify-otp and the Google callback alike.
   const isAdminMode = urlType === "admin";
+  const isReviewerMode = urlType === "reviewer";
 
-  const [type, setType] = useState<UserType>(urlType === "panelist" ? "panelist" : isAdminMode ? "admin" : "candidate");
+  const [type, setType] = useState<UserType>(
+    urlType === "panelist" ? "panelist"
+      : isAdminMode ? "admin"
+      : isReviewerMode ? "reviewer"
+      : "candidate");
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -38,7 +43,10 @@ function LoginForm() {
   const [notice, setNotice] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  const defaultNext = type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : "/me";
+  const defaultNext = type === "panelist" ? "/dashboard"
+    : type === "admin" ? "/admin"
+    : type === "reviewer" ? "/review"
+    : "/me";
 
   /**
    * `next` is attacker-controllable, and it is assigned to window.location.href after a
@@ -58,7 +66,10 @@ function LoginForm() {
 
   // Auto-redirect if already signed in
   useEffect(() => {
-    const checkUrl = type === "candidate" ? "/api/auth/candidate-me" : type === "admin" ? "/api/auth/admin-me" : "/api/auth/me";
+    const checkUrl = type === "candidate" ? "/api/auth/candidate-me"
+      : type === "admin" ? "/api/auth/admin-me"
+      : type === "reviewer" ? "/api/auth/reviewer-me"
+      : "/api/auth/me";
     fetch(checkUrl).then(r => r.ok ? r.json() : null).then((d: { authenticated?: boolean } | null) => {
       if (d?.authenticated) window.location.href = defaultNext;
     });
@@ -131,6 +142,7 @@ function LoginForm() {
     candidate: { title: "Candidate sign in", sub: "Track your assessment scores and improvement over time." },
     panelist:  { title: "Panelist sign in",  sub: "Access the hiring dashboard and candidate pipeline." },
     admin:     { title: "Admin sign in",     sub: "Restricted to addresses on the admin registry." },
+    reviewer:  { title: "Reviewer sign in",  sub: "Restricted to addresses on the reviewer registry." },
   }[type];
 
   return (

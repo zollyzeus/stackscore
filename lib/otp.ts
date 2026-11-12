@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { FieldValue } from "firebase-admin/firestore";
 import { db } from "./firestore";
 
-export type OTPType = "panelist" | "candidate" | "admin";
+export type OTPType = "panelist" | "candidate" | "admin" | "reviewer";
 
 const MAX_ATTEMPTS = 5;
 /** Lifetime budget of verification attempts across all resends in a window.

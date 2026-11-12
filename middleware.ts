@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken } from "./lib/auth";
 import { verifyAdminToken } from "./lib/adminAuth";
+import { verifyReviewerToken } from "./lib/reviewerAuth";
 
 // Panelist-cookie (ss_panel) protected routes — admin is intentionally excluded,
 // since admin is a separate role/cookie (ss_admin), not a privileged panelist.
@@ -11,6 +12,7 @@ const PROTECTED_API = [
 ];
 const COOKIE = "ss_panel";
 const ADMIN_COOKIE = "ss_admin";
+const REVIEWER_COOKIE = "ss_reviewer";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -49,6 +51,25 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Reviewer routes. A separate cookie from the panelist one on purpose: a panelist can
+  // see AI scores across the dashboard, and a review is only worth having if it was
+  // produced without them. Keeping the sessions disjoint makes that structural.
+  if (pathname.startsWith("/review") || pathname.startsWith("/api/review")) {
+    const token = req.cookies.get(REVIEWER_COOKIE)?.value;
+    const session = token ? await verifyReviewerToken(token).catch(() => null) : null;
+    if (!session) {
+      if (pathname.startsWith("/api/review")) {
+        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+      }
+      const url = req.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("next", pathname);
+      url.searchParams.set("type", "reviewer");
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
+  }
+
   const isProtectedPage = PROTECTED_PAGES.some((p) => pathname.startsWith(p));
   const isProtectedApi = PROTECTED_API.some((p) => pathname.startsWith(p));
 
@@ -80,6 +101,9 @@ export const config = {
     "/admin/:path*",
     "/admin",
     "/api/admin/:path*",
+    "/review/:path*",
+    "/review",
+    "/api/review/:path*",
     "/api/generate-problem",
     "/api/export-csv",
   ],

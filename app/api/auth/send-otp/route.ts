@@ -4,6 +4,7 @@ import { sendOTPEmail } from "../../../../lib/resend";
 import { db } from "../../../../lib/firestore";
 import { FieldValue } from "firebase-admin/firestore";
 import { isAdmin } from "../../../../lib/requireAdmin";
+import { isReviewer } from "../../../../lib/reviewerRegistry";
 import { isPanelistEmail } from "../../../../lib/panelistRegistry";
 
 // Max 3 OTPs per email per 15 minutes
@@ -30,8 +31,8 @@ export async function POST(req: NextRequest) {
   if (!email || !email.includes("@")) {
     return NextResponse.json({ error: "Valid email required" }, { status: 400 });
   }
-  if (!type || !["panelist", "candidate", "admin"].includes(type)) {
-    return NextResponse.json({ error: "type must be panelist, candidate, or admin" }, { status: 400 });
+  if (!type || !["panelist", "candidate", "admin", "reviewer"].includes(type)) {
+    return NextResponse.json({ error: "type must be panelist, candidate, admin, or reviewer" }, { status: 400 });
   }
   if (type === "admin") {
     // Admin sign-in is never self-serve: the email must already be on the admin registry.
@@ -40,6 +41,14 @@ export async function POST(req: NextRequest) {
     if (!(await isAdmin(email))) {
       return NextResponse.json({ error: "access_denied", message: "This email is not registered as an admin." }, { status: 403 });
     }
+  }
+  // Reviewer, like admin, is never self-serve: an unregistered address cannot even
+  // request a code, so the registry is the gate rather than the OTP.
+  if (type === "reviewer" && !(await isReviewer(email))) {
+    return NextResponse.json(
+      { error: "access_denied", message: "This email is not registered as a reviewer." },
+      { status: 403 },
+    );
   }
   if (type === "panelist" && !(await isPanelistEmail(email))) {
     // Not an approved panelist — record a pending request so admin can approve

@@ -4,6 +4,8 @@ import { createSessionToken, sessionCookieOptions, clearCookieOptions } from "..
 import { createCandidateToken, candidateCookieOptions, clearCandidateCookieOptions } from "../../../../lib/candidateAuth";
 import { createAdminToken, adminCookieOptions, clearAdminCookieOptions } from "../../../../lib/adminAuth";
 import { isAdmin } from "../../../../lib/requireAdmin";
+import {createReviewerToken, reviewerCookieOptions, clearReviewerCookieOptions} from "../../../../lib/reviewerAuth";
+import { isReviewer } from "../../../../lib/reviewerRegistry";
 import { isPanelistEmail } from "../../../../lib/panelistRegistry";
 
 // Only one role session may be active per browser at a time — logging in as one
@@ -12,6 +14,7 @@ function clearOtherSessions(res: NextResponse, keep: OTPType) {
   if (keep !== "panelist") { const o = clearCookieOptions(); res.cookies.set(o); }
   if (keep !== "candidate") { const o = clearCandidateCookieOptions(); res.cookies.set(o.name, o.value, o); }
   if (keep !== "admin") { const o = clearAdminCookieOptions(); res.cookies.set(o.name, o.value, o); }
+  if (keep !== "reviewer") { const o = clearReviewerCookieOptions(); res.cookies.set(o.name, o.value, o); }
 }
 
 export async function POST(req: NextRequest) {
@@ -26,6 +29,11 @@ export async function POST(req: NextRequest) {
     if (!(await isAdmin(email))) {
       return NextResponse.json({ error: "access_denied" }, { status: 403 });
     }
+  }
+  // Reviewers are re-checked here as well as at send-otp: access can be revoked between
+  // the two calls, and a reviewer's output is written into a candidate's permanent record.
+  if (type === "reviewer" && !(await isReviewer(email))) {
+    return NextResponse.json({ error: "access_denied" }, { status: 403 });
   }
   // Re-check the panelist registry at verification time too: approval can be revoked
   // between send-otp and verify-otp, and only the admin path re-checked before.
@@ -43,6 +51,11 @@ export async function POST(req: NextRequest) {
     const displayName = name?.trim() || email.split("@")[0];
     const token = await createSessionToken(email, displayName);
     const opts = sessionCookieOptions(token);
+    res.cookies.set(opts.name, opts.value, opts);
+  } else if (type === "reviewer") {
+    const displayName = name?.trim() || email.split("@")[0];
+    const token = await createReviewerToken(email, displayName);
+    const opts = reviewerCookieOptions(token);
     res.cookies.set(opts.name, opts.value, opts);
   } else if (type === "admin") {
     const displayName = name?.trim() || email.split("@")[0];
