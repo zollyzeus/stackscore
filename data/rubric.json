@@ -14,7 +14,7 @@
           "label": "Requirement Framing",
           "weight": 0.11,
           "description": "Quality of clarifying questions; did they scope the real ambiguity in stage 1?",
-          "note": "COHERENCE CAP: if the Stage 2 design ignores or contradicts what the candidate's own Stage 1 questions established, D1 is capped at 30 however good the questions were. Questions whose answers are then discarded are the appearance of requirement framing, not the thing itself. Apply this cap before reading the bands below.",
+          "note": "COHERENCE CAP: if the Stage 2 design ignores or contradicts what the candidate's own Stage 1 questions established, D1 is capped at 25 however good the questions were. Questions whose answers are then discarded are the appearance of requirement framing, not the thing itself. Apply this cap before reading the bands below.",
           "anchors": {
             "0-24": "No questions, or questions already answered by the brief. Nothing asked would change the design.",
             "25-49": "Genuine questions, but they circle surface details. The central ambiguity — the one whose answer forks the architecture — is never named.",

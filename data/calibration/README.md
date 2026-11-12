@@ -337,6 +337,25 @@ follows the proposal", which is trivially true when there is almost no code. F07
 near-empty fixture) scored K1 52. Fixed by making insufficient material score low rather
 than middle: F07's K1 is now 32.3.
 
+### Amendment 2026-11-12: the D1 coherence cap was lowered 30 → 25
+
+The numbers above were measured with the cap at 30, which is also the ceiling of F09's D1
+hard assertion. Production returned **exactly 30** on the first scheduled probe. That is the
+judge obeying its instruction precisely — F09's Stage 1 questions are genuinely good, so the
+cap is the only thing holding the score down and a compliant judge lands *on* it. With
+ceiling == cap, perfect compliance and assertion failure sit one point of noise apart.
+
+The cap is now 25, the band stays [0, 30], and a re-run of F09 gives **21.0 (20, 18, 25)** —
+worst run exactly at the cap, 5 points of headroom to the ceiling, roughly 2-3x this axis's
+run-to-run sd. Widening the band instead would have been the weaker fix: it loosens the
+check without removing the collision, which would return the moment anyone retuned the cap.
+
+**This changes the fingerprint, so the full sweep above is now one rubric edit stale.** The
+effect is confined to F09's D1 (the cap only fires on designs that contradict their own
+Stage 1 findings), so the slope, R² and per-axis leans are still broadly representative —
+but the next full sweep supersedes them, and the daily monitor will report
+`fingerprintChanged: true` until one runs.
+
 ### Known, and deliberately not chased
 
 - **Slope is 0.799 against a pre-anchor 0.835.** Compression did not improve. The anchors

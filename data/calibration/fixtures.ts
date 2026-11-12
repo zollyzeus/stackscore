@@ -1120,6 +1120,19 @@ interleaving bug.`,
     hardAssertions: [
       {
         axis: "D1",
+        // BAND CEILING MUST STAY STRICTLY ABOVE THE D1 COHERENCE CAP IN data/rubric.json.
+        //
+        // The cap is an instruction ("capped at N"); this band is the check. A judge obeying
+        // the instruction perfectly lands AT N, because F09's Stage 1 questions are genuinely
+        // good and the cap is the only thing holding the score down. So when ceiling == cap,
+        // perfect compliance and assertion failure are one point of noise apart: on
+        // 2026-11-12 the cap was 30, the band was [0,30], and production returned exactly 30.
+        // That would have paged someone for drift that was not drift.
+        //
+        // Cap is now 25 and the ceiling stays 30, leaving 5 points of headroom -- roughly
+        // 2-3x the observed run-to-run sd on this axis (1-2 points). Widening the band
+        // instead would have been the weaker fix: it loosens the check without removing the
+        // collision, and the collision would return the moment anyone retuned the cap.
         band: [0, 30],
         why:
           "The COHERENCE CHECK clause requires lowering D1 when the Stage 2 design ignores the " +
