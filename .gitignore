@@ -27,3 +27,7 @@ playwright/.cache/
 # misc
 *.log
 .DS_Store
+
+/panel-pack/
+/panel-results/
+panel-grader-*.json
