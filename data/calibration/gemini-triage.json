@@ -1,0 +1,94 @@
+{
+  "model": "gemini-3.8-flash",
+  "date": "2026-11-12T19:19:34.935Z",
+  "results": [
+    {
+      "fixture": "F01",
+      "axis": "K2",
+      "authoredBand": [
+        70,
+        92
+      ],
+      "claudeMean": 50.666666666666664,
+      "geminiScore": 82,
+      "verdict": "VALIDATES BAND"
+    },
+    {
+      "fixture": "F01",
+      "axis": "K4",
+      "authoredBand": [
+        55,
+        85
+      ],
+      "claudeMean": 41.333333333333336,
+      "geminiScore": 55,
+      "verdict": "in band (mild)"
+    },
+    {
+      "fixture": "F01",
+      "axis": "K5",
+      "authoredBand": [
+        40,
+        70
+      ],
+      "claudeMean": 35.666666666666664,
+      "geminiScore": 38,
+      "verdict": "VALIDATES CLAUDE"
+    },
+    {
+      "fixture": "F02",
+      "axis": "K2",
+      "authoredBand": [
+        55,
+        82
+      ],
+      "claudeMean": 32.666666666666664,
+      "geminiScore": 60,
+      "verdict": "in band (mild)"
+    },
+    {
+      "fixture": "F05",
+      "axis": "K2",
+      "authoredBand": [
+        70,
+        95
+      ],
+      "claudeMean": 67.33333333333333,
+      "geminiScore": 72,
+      "verdict": "in band (mild)"
+    },
+    {
+      "fixture": "F05",
+      "axis": "K5",
+      "authoredBand": [
+        70,
+        95
+      ],
+      "claudeMean": 68.66666666666667,
+      "geminiScore": 70,
+      "verdict": "VALIDATES CLAUDE"
+    },
+    {
+      "fixture": "F09",
+      "axis": "K2",
+      "authoredBand": [
+        60,
+        90
+      ],
+      "claudeMean": 56.666666666666664,
+      "geminiScore": 65,
+      "verdict": "in band (mild)"
+    },
+    {
+      "fixture": "F10",
+      "axis": "K2",
+      "authoredBand": [
+        68,
+        92
+      ],
+      "claudeMean": 65.33333333333333,
+      "geminiScore": 90,
+      "verdict": "in band (mild)"
+    }
+  ]
+}
