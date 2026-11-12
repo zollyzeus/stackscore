@@ -627,6 +627,57 @@ because `middleware.ts` imports it to verify the cookie and middleware runs on t
 runtime, which cannot load `firebase-admin`. A dynamic import was **not** enough: webpack
 bundles it anyway, so the dependency has to be absent, not deferred.
 
+### D15. Three copies of the submission mapping, all wrong — **[FIXED 2026-11-12]**
+
+Found by the first real end-to-end run of the scoring path. The judge reported "No code was
+submitted" for a transcript that contained code, because the transcript stage is `build` and
+the reader asked for `implement`.
+
+That particular instance was a bug in the throwaway test script, but the same mistake was
+sitting in three files written the same day, where it was a live production defect:
+
+| File | What it would have done |
+|---|---|
+| `app/api/tasks/rejudge/route.ts` | Re-judged a `partial` score with **no code**, so every K axis reads as unassessable and the "fixed" score is *worse* than the provisional one it replaced |
+| `app/api/tasks/drain-pending/route.ts` | Same, for anything queued during a scoring hold |
+| `app/api/review/submission/route.ts` | Showed the human reviewer an empty code stage, so they would correctly conclude the candidate submitted nothing |
+
+Two of the three also dropped the revised code a candidate writes after the twist, which is
+some of the strongest adaptability evidence in the submission.
+
+**Nothing failed loudly.** The judge scores an empty submission perfectly happily and simply
+reports that no code was submitted — the same shape as D8 and D11: a wrong answer delivered
+with full confidence, where an error would have been recoverable.
+
+Fixed with a single `lib/submissionInput.ts` rather than three patched copies. This is C1's
+"parallel implementations drift" in miniature, created and corrected on the same day, which
+is a reasonable argument for taking C1 seriously post-submission. Seven unit tests pin the
+stage names, the twist-code composition and the no-code placeholder.
+
+### D16. Dead score links: noindex yes, 404 no — **[PARTIALLY FIXED 2026-11-12]**
+
+`/score/<bogus>` rendered the "not found" page with **HTTP 200** — a soft-404. It now calls
+`notFound()`, which renders the page properly and makes Next emit
+`<meta name="robots" content="noindex">`, so a dead shared link cannot be indexed. Score
+links are public and get passed around, so that was the part that mattered.
+
+**The status is still 200 and in Next 14 it cannot be anything else.** App Router streams
+dynamically-rendered pages, so the status line is flushed before the component resolves;
+`notFound()` can still choose the body but not the status. Verified rather than assumed:
+removing the segment's `loading.tsx` left it at 200, removing `not-found.tsx` left it at
+200, and an unmatched route like `/totally/bogus` still 404s correctly — so it is the
+streaming boundary, not a missing not-found boundary. `loading.tsx` was restored once that
+hypothesis was disproved.
+
+What is still wrong: a programmatic client branching on `res.ok` reads a missing score card
+as a present one. Nothing in this repo does that today. The real fix is to move the slow
+peer-statistics work (`getAllScores(500)`, for the percentile block) into a `<Suspense>`
+child so the shell resolves before streaming starts; recorded in `page.tsx`.
+
+The tests assert what is actually guaranteed — right body, no score furniture, `noindex` —
+rather than a status the framework will not produce. Asserting the 404 would have been
+asserting a wish.
+
 ## E. DevOps / rollout
 
 ### E1. Build was not reproducible — **[DONE]**
@@ -808,10 +859,15 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
 
 1. ~~D11 — judge-failure fallback presenting as a real score~~ — **done 2026-11-12.**
 2. ~~D12 — the two anchor regressions~~ — **done 2026-11-12**, sweep gate green.
-3. ~~Token-usage instrumentation~~ — **done 2026-11-12 (B4).** `JudgeUsage` is persisted on
-   every score record and logged under `JUDGE_USAGE`. The first question to ask of it: does
-   `cacheCreationTokens` dominate `cacheReadTokens`? If so the ephemeral prompt cache is
-   costing a 1.25x write premium it never recovers, and `cache_control` should come off.
+3. ~~Token-usage instrumentation~~ — **done 2026-11-12 (B4), and it answered its own first
+   question on the first real call:** `cacheCreationTokens: 5692, cacheReadTokens: 0`. The
+   ephemeral (5-minute) prompt cache was written and never read, costing a 1.25x write
+   premium it never recovers — about **$0.0057 per call, ~$5.70 per thousand assessments**.
+   **Deliberately NOT acted on yet.** That is one sample, and the mechanism can flip in the
+   direction that favours keeping it: two assessments finishing within five minutes with the
+   same role *would* hit the cache. Acting on n=1 is the same error this document warns
+   against for K1's lean and for the fitted offsets. Collect a handful more calls — the
+   logging is already there — then decide.
 4. **Create `TASK_RUNNER_SECRET` and wire the schedulers** — until then A3's re-judge queue
    and B5's monitor are inert (they fail closed, so this is safe, not broken). Three scripts,
    in order: `setup-task-secrets.sh`, `deploy-rest.sh`, `setup-schedulers.sh`.
