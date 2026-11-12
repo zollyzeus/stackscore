@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { judgeSubmission } from "../../../../lib/judge";
 import { computeScoreCard } from "../../../../lib/scoring";
-import { db } from "../../../../lib/firestore";
+import { db, getTranscript } from "../../../../lib/firestore";
+import { buildJudgeInput } from "../../../../lib/submissionInput";
 import {
   listPendingRejudges, markRejudgeDone, markRejudgeAttemptFailed,
 } from "../../../../lib/rejudgeQueue";
@@ -44,20 +45,12 @@ export async function POST(req: NextRequest) {
         continue;
       }
       const s = snap.data() ?? {};
-      const transcript = (s.transcript ?? {}) as Record<string, Array<Record<string, unknown>>>;
-      const extract = (stage: string, field: string): string => {
-        const entries = transcript[stage] ?? [];
-        const hit = entries.find((e) => typeof e[field] === "string");
-        return (hit?.[field] as string) ?? "";
-      };
-
+      // Read through the same builder /api/evaluate uses. A re-judge that extracted the
+      // submission differently would score the same work differently, which is the exact
+      // failure this worker exists to repair.
+      const transcript = await getTranscript(task.sessionId);
       const judged = await judgeSubmission({
-        brief: (s.brief as string) ?? "",
-        clarifyingTranscript: extract("clarify", "transcript") || extract("clarify", "text"),
-        designProposal: extract("propose", "text") || extract("propose", "design"),
-        code: extract("implement", "code"),
-        twistResponse: extract("adapt", "text"),
-        debugResponse: extract("debug", "code") || extract("debug", "text"),
+        ...buildJudgeInput((s.brief as string) ?? "", transcript),
         role: s.role as string | undefined,
       });
 

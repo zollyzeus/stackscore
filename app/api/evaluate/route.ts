@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { judgeSubmission, generateSummaryAndTips } from "../../../lib/judge";
 import { computeScoreCard } from "../../../lib/scoring";
 import { getTranscript, getSession, saveScore, updateScoreFields, getAllScores } from "../../../lib/firestore";
-import { extractFromTranscript } from "../../../lib/transcriptExtract";
+import { buildJudgeInput } from "../../../lib/submissionInput";
 import { similarity } from "../../../lib/similarity";
 import { notifyPanelist, gradeLabel } from "../../../lib/notify";
 import { createReviewTask, isAuthoritativeStatus, type JudgeStatus } from "../../../lib/reviewQueue";
@@ -50,20 +50,10 @@ export async function POST(req: NextRequest) {
       getTranscript(sessionId),
     ]);
 
-    const extract = (stage: string, field: string) => extractFromTranscript(transcript, stage, field);
-
-    const twistText = extract("adapt", "text");
-    const adaptCode = extract("adapt", "code");
-    const submissionInput = {
-      brief: session.brief,
-      clarifyingTranscript: extract("clarify", "text"),
-      designProposal: extract("propose", "text"),
-      code: extract("build", "code") || "(no build code submitted — candidate may have used pseudo-code or skipped for time)",
-      twistResponse: adaptCode.trim()
-        ? `${twistText}\n\n[Revised code after twist]\n${adaptCode}`
-        : twistText,
-      debugResponse: extract("debug", "code"),
-    };
+    // One definition of the submission, shared with the re-judge worker, the hold drain and
+    // the reviewer's endpoint. Three private copies of this mapping existed and all three
+    // were wrong -- see lib/submissionInput.ts.
+    const submissionInput = buildJudgeInput(session.brief, transcript);
 
     // Scoring hold (B5). Checked before any model call: the candidate's work is already
     // complete and saved, so a hold parks the judging, never the submission. Nothing the

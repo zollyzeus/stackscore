@@ -154,3 +154,32 @@ test.describe("Calibration monitor and scoring hold (B5)", () => {
     expect(res.status()).toBe(401);
   });
 });
+
+test.describe("Score card not-found handling", () => {
+  test("an unknown slug renders the not-found page, not a score", async ({ request }) => {
+    const res = await request.get(`${BASE}/score/definitely-not-a-real-slug`);
+    const body = await res.text();
+    expect(body).toMatch(/score card not found/i);
+    // The thing that must never happen: a bogus slug rendering score furniture.
+    expect(body).not.toContain("sc-score-num");
+  });
+
+  test("a dead score link is marked noindex so it cannot be indexed", async ({ request }) => {
+    // This is the guarantee that actually matters for a public, shareable URL, and it is
+    // the one Next gives us. The response is still HTTP 200: App Router streams
+    // dynamically-rendered pages, so the status line is flushed before the page resolves
+    // and notFound() can pick the body but not the status. Asserting 404 here would be
+    // asserting something the framework does not do -- see the comment in page.tsx for the
+    // refactor that would fix it properly.
+    const res = await request.get(`${BASE}/score/definitely-not-a-real-slug`);
+    expect(await res.text()).toContain('name="robots" content="noindex"');
+  });
+
+  test("the literal string 'undefined' is handled too", async ({ request }) => {
+    // A client that forgets to read the slug field produces exactly this URL.
+    const res = await request.get(`${BASE}/score/undefined`);
+    const body = await res.text();
+    expect(body).toMatch(/score card not found/i);
+    expect(body).not.toContain("sc-score-num");
+  });
+});

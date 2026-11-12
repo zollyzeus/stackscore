@@ -13,6 +13,7 @@ import { estimateCostUsd } from "../lib/judge";
 import { isAuthoritativeStatus, JUDGE_STATUS_BADGE } from "../lib/reviewQueue";
 import { DEFAULT_SETTINGS } from "../lib/settings";
 import { calibrationFingerprint, fingerprintOf } from "../lib/calibrationMonitor";
+import { buildJudgeInput, extractStages, STAGE_FIELDS, NO_CODE_PLACEHOLDER } from "../lib/submissionInput";
 
 const SECRET = "test-secret-at-least-32-characters-long!!";
 
@@ -497,5 +498,68 @@ test.describe("calibration fingerprint", () => {
   test("is identical for identical inputs", () => {
     const r = { scale: { note: "a" }, levels: [{ id: "d" }] };
     expect(fingerprintOf(r, "m", "high")).toBe(fingerprintOf(r, "m", "high"));
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/submissionInput.ts — one definition of "what was submitted"
+// ─────────────────────────────────────────────────────────────────────────────
+test.describe("submission extraction", () => {
+  // A transcript shaped exactly as the stage APIs write it.
+  const transcript = {
+    clarify: [{ text: "Q: scale?\nA: 2000 rps" }],
+    propose: [{ text: "Token bucket in Redis" }],
+    build: [{ code: "export function checkLimit() {}" }],
+    adapt: [{ text: "Add a global bucket" }, { code: "const g = ..." }],
+    debug: [{ code: "ts is never written back" }],
+  } as Record<string, unknown>;
+
+  test("code comes from the `build` stage, not `implement`", () => {
+    // The bug this pins: three separate files read stage "implement", which does not
+    // exist. Nothing failed loudly -- the judge scores an empty submission perfectly
+    // happily and simply reports that no code was submitted.
+    expect(STAGE_FIELDS.code.stage).toBe("build");
+    expect(extractStages(transcript).code).toContain("checkLimit");
+  });
+
+  test("every stage is extracted, none silently empty", () => {
+    const s = extractStages(transcript);
+    for (const [k, v] of Object.entries(s)) {
+      expect(v.trim(), `${k} must not be empty for a complete transcript`).not.toBe("");
+    }
+  });
+
+  test("revised code after the twist is included, not dropped", () => {
+    // A candidate who re-implements after the twist has shown adaptability the prose alone
+    // does not. Two of the three bad copies dropped this entirely.
+    const s = extractStages(transcript);
+    expect(s.twist).toContain("Add a global bucket");
+    expect(s.twist).toContain("Revised code after twist");
+    expect(s.twist).toContain("const g =");
+  });
+
+  test("absent code becomes the placeholder, not an empty string", () => {
+    // The judge prompt says code is optional and to score K axes on evident intent, so it
+    // has to be TOLD the code is missing rather than handed nothing.
+    const input = buildJudgeInput("brief", { ...transcript, build: [] });
+    expect(input.code).toBe(NO_CODE_PLACEHOLDER);
+  });
+
+  test("present code is passed through untouched", () => {
+    expect(buildJudgeInput("brief", transcript).code).toContain("checkLimit");
+  });
+
+  test("the judge input carries the brief and every stage", () => {
+    const i = buildJudgeInput("the brief text", transcript);
+    expect(i.brief).toBe("the brief text");
+    expect(i.clarifyingTranscript).toContain("2000 rps");
+    expect(i.designProposal).toContain("Token bucket");
+    expect(i.debugResponse).toContain("written back");
+  });
+
+  test("an empty transcript yields empty stages rather than throwing", () => {
+    const i = buildJudgeInput("b", {});
+    expect(i.clarifyingTranscript).toBe("");
+    expect(i.code).toBe(NO_CODE_PLACEHOLDER);
   });
 });

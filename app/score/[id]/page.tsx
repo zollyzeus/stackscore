@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { getScoreBySlug, getAllScores, isJudgedScore } from "../../../lib/firestore";
 import { rubricDefinition } from "../../../lib/scoring";
 import type { AxisScores } from "../../../lib/scoring";
@@ -126,18 +127,25 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
   ]);
   const isLoggedIn = !!(panSession || candSession);
 
-  if (!doc) {
-    return (
-      <main style={{ maxWidth: 560, margin: "6rem auto", padding: "0 1.5rem", textAlign: "center" }}>
-        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔍</div>
-        <h1 style={{ marginBottom: ".5rem" }}>Score card not found</h1>
-        <p style={{ color: "var(--text-muted)" }}>This link may be incorrect or the assessment hasn&apos;t been evaluated yet.</p>
-        <a href="/" style={{ display: "inline-block", marginTop: "1.5rem", background: "var(--accent)", color: "#fff", padding: ".6rem 1.4rem", borderRadius: 8, fontWeight: 600, textDecoration: "none" }}>
-          Try an assessment →
-        </a>
-      </main>
-    );
-  }
+  // notFound() rather than returning the markup inline: it renders not-found.tsx and, more
+  // usefully, makes Next emit <meta name="robots" content="noindex"> so a dead score link
+  // cannot be indexed.
+  //
+  // It does NOT make the response a 404, and in Next 14 it cannot. App Router streams
+  // dynamically-rendered pages, so the 200 status line is flushed before this component
+  // resolves; notFound() can still choose the body but the status is already committed.
+  // Verified: removing the segment's loading.tsx and removing not-found.tsx both leave it
+  // at 200, while an unmatched route like /totally/bogus still 404s correctly. So this is
+  // the streaming boundary, not a missing not-found boundary.
+  //
+  // Consequences, honestly: crawlers are covered by the noindex, humans see the right page,
+  // and the one thing still wrong is a programmatic client branching on res.ok, which would
+  // read a missing score card as a present one. Nothing in this repo does that today.
+  //
+  // The real fix is to stop the page streaming before the lookup resolves: move the slow
+  // peer-statistics work (getAllScores(500), for the percentile block) into a <Suspense>
+  // child so the shell resolves immediately. Worth doing when the page is next touched.
+  if (!doc) notFound();
 
   const axisScores = doc.axisScores as AxisScores;
   const feedback = doc.feedback as Record<string, string>;

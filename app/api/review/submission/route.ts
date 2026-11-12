@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireReviewer } from "../../../../lib/requireReviewer";
 import { getReviewTask } from "../../../../lib/reviewQueue";
-import { db } from "../../../../lib/firestore";
+import { db, getTranscript } from "../../../../lib/firestore";
+import { extractStages } from "../../../../lib/submissionInput";
 
 export const dynamic = "force-dynamic";
 
@@ -38,12 +39,11 @@ export async function GET(req: NextRequest) {
   if (!snap.exists) return NextResponse.json({ error: "not_found" }, { status: 404 });
   const s = snap.data() ?? {};
 
-  const transcript = (s.transcript ?? {}) as Record<string, Array<Record<string, unknown>>>;
-  const extract = (stage: string, field: string): string => {
-    const entries = transcript[stage] ?? [];
-    const hit = entries.find((e) => typeof e[field] === "string");
-    return (hit?.[field] as string) ?? "";
-  };
+  // The reviewer must see exactly what the judge would have seen, minus the scores. Reading
+  // the transcript through a private mapping is how they ended up seeing an empty code stage
+  // for a submission that had code -- see lib/submissionInput.ts.
+  const transcript = await getTranscript(sessionId);
+  const stages = extractStages(transcript);
 
   return NextResponse.json({
     sessionId,
@@ -52,13 +52,7 @@ export async function GET(req: NextRequest) {
     rowLabel: s.rowLabel ?? null,
     columnLabel: s.columnLabel ?? null,
     candidateName: s.candidateName ?? null,
-    stages: {
-      clarifying: extract("clarify", "transcript") || extract("clarify", "text"),
-      design: extract("propose", "text") || extract("propose", "design"),
-      code: extract("implement", "code"),
-      twist: extract("adapt", "text"),
-      debug: extract("debug", "code") || extract("debug", "text"),
-    },
+    stages,
     task: { state: task.state, assignedTo: task.assignedTo ?? null },
   });
 }
