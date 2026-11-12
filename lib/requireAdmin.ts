@@ -2,26 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminToken } from "./adminAuth";
 import { db } from "./firestore";
 
-function getClientIp(req: NextRequest): string | null {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
-  return req.ip ?? null;
-}
-
-export function checkIpAllowlist(req: NextRequest): NextResponse | null {
-  const allowlist = process.env.ADMIN_IP_ALLOWLIST;
-  if (!allowlist) return NextResponse.json({ error: "forbidden" }, { status: 403 }); // fail closed
-  const clientIp = getClientIp(req);
-  if (!clientIp) return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  const allowed = allowlist.split(",").map(ip => ip.trim());
-  if (!allowed.includes(clientIp)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  return null;
-}
-
+/**
+ * Admin authorisation. The IP allowlist that used to run before these checks was removed
+ * in A1; see middleware.ts for why. Everything that protected admin now runs here, so this
+ * function is the control -- not a second line behind a network one.
+ */
 export async function requireAdmin(req: NextRequest): Promise<NextResponse | null> {
-  const ipDeny = checkIpAllowlist(req);
-  if (ipDeny) return ipDeny;
-
   const cookie = req.cookies.get("ss_admin");
   if (!cookie?.value) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   try {
@@ -36,7 +22,6 @@ export async function requireAdmin(req: NextRequest): Promise<NextResponse | nul
 }
 
 export async function getAdminEmail(req: NextRequest): Promise<string | null> {
-  if (checkIpAllowlist(req)) return null;
   const cookie = req.cookies.get("ss_admin");
   if (!cookie?.value) return null;
   try {

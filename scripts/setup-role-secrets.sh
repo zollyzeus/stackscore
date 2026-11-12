@@ -59,7 +59,6 @@ cat <<'EOF'
 
 Done. Next:
   gcloud builds submit --config=cloudbuild.yaml \
-    --substitutions=_ADMIN_IP_ALLOWLIST=<your-ip> .
 
 Then confirm the app is using the dedicated keys:
   curl -s https://stackscore.anandrajendran.dev/api/health \

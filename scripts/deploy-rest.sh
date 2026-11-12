@@ -30,21 +30,6 @@ trap 'rm -rf "$SCRATCH"' EXIT
 
 TOK="$(gcloud auth print-access-token)"
 
-# cloudbuild.yaml now refuses to deploy with an empty admin allowlist, because an empty one
-# silently 403s the whole admin UI while the deploy reports success. Resolve it here so this
-# path cannot reintroduce that: explicit env wins, otherwise detect this machine's public IP,
-# and ADMIN_IP_ALLOWLIST=none is the deliberate opt-out.
-if [ -z "${ADMIN_IP_ALLOWLIST:-}" ]; then
-  ADMIN_IP_ALLOWLIST="$(curl -s --max-time 10 https://ifconfig.me || true)"
-  if [ -z "$ADMIN_IP_ALLOWLIST" ]; then
-    echo "Could not detect a public IP. Set it explicitly:" >&2
-    echo "  ADMIN_IP_ALLOWLIST=1.2.3.4 bash scripts/deploy-rest.sh" >&2
-    echo "  ADMIN_IP_ALLOWLIST=none    bash scripts/deploy-rest.sh   # admin off on purpose" >&2
-    exit 1
-  fi
-  echo "==> detected public IP for admin allowlist: $ADMIN_IP_ALLOWLIST"
-fi
-
 echo "==> packaging source"
 # --exclude-from with .gcloudignore reproduces what gcloud uploads. Patterns there are
 # plain names/globs, which tar's --exclude understands directly.
@@ -71,15 +56,15 @@ echo "==> building request from cloudbuild.yaml"
 # Cloud Build's REST API takes the same fields as the YAML, so the config is converted
 # rather than retyped -- the YAML stays the single source of truth for the deploy.
 # Substitution defaults live in the YAML and are passed through as-is.
-python3 -I - "$SCRATCH/build.json" "$BUCKET" "$OBJECT" "$ADMIN_IP_ALLOWLIST" <<'PY'
+python3 -I - "$SCRATCH/build.json" "$BUCKET" "$OBJECT" <<'PY'
 import json, sys, yaml
 
 # Unpack explicitly rather than by slice width: this line silently took the wrong number
 # of arguments once already, and the failure surfaced only after the source tarball had
 # been built and uploaded.
-if len(sys.argv) != 5:
-    sys.exit(f"deploy-rest.sh: expected 4 arguments, got {len(sys.argv) - 1}")
-out_path, bucket, obj, admin_ips = sys.argv[1:5]
+if len(sys.argv) != 4:
+    sys.exit(f"deploy-rest.sh: expected 3 arguments, got {len(sys.argv) - 1}")
+out_path, bucket, obj = sys.argv[1:4]
 with open("cloudbuild.yaml") as f:
     cfg = yaml.safe_load(f)
 
@@ -93,7 +78,6 @@ for key in ("images", "options", "timeout", "substitutions", "availableSecrets",
 
 # $PROJECT_ID / $BUILD_ID etc. are resolved by Cloud Build itself, so nothing is
 # interpolated here. Only _-prefixed user substitutions can be overridden.
-build.setdefault("substitutions", {})["_ADMIN_IP_ALLOWLIST"] = admin_ips
 with open(out_path, "w") as f:
     json.dump(build, f)
 

@@ -18,7 +18,7 @@ export async function GET() {
     "FIREBASE_PRIVATE_KEY",
     "PANELIST_SECRET",
   ];
-  const optional = ["CANDIDATE_SECRET", "ADMIN_SECRET", "CREDENTIAL_SECRET", "ADMIN_EMAILS", "ADMIN_IP_ALLOWLIST", "RESEND_API_KEY", "GOOGLE_CLIENT_ID"];
+  const optional = ["CANDIDATE_SECRET", "ADMIN_SECRET", "CREDENTIAL_SECRET", "ADMIN_EMAILS", "RESEND_API_KEY", "GOOGLE_CLIENT_ID"];
 
   const missing = required.filter((k) => !process.env[k]);
   const configured = Object.fromEntries(

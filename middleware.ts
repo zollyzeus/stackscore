@@ -12,29 +12,25 @@ const PROTECTED_API = [
 const COOKIE = "ss_panel";
 const ADMIN_COOKIE = "ss_admin";
 
-function getClientIp(req: NextRequest): string | null {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
-  return req.ip ?? null;
-}
-
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Admin routes: IP allowlist first, then the dedicated admin session cookie.
+  // Admin routes are gated by the admin session cookie alone.
+  //
+  // The IP allowlist that used to sit in front of this was removed deliberately (A1). It
+  // was a second factor, and dropping it is a real reduction in defence depth -- so the
+  // identity checks behind it have to carry the full weight. They do: an admin session is
+  // only ever minted for an address in the admin registry (OTP and Google both check
+  // isAdmin()), requireAdmin() re-checks that registry on every API request so revoking
+  // access takes effect immediately rather than at token expiry, and admin sessions last
+  // 12h against the panelist 7d.
+  //
+  // What was actually wrong with the allowlist: it pinned access to one residential IP, so
+  // it failed closed and invisibly every time that address changed -- the app served
+  // normally and admin simply vanished, which happened on 2026-11-12. A control that
+  // reliably locks out the legitimate operator and is trivially bypassed by anyone who can
+  // reach the origin from an allowed network is not buying the depth it appears to.
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-    const allowlist = process.env.ADMIN_IP_ALLOWLIST;
-    const clientIp = getClientIp(req);
-    const ipAllowed = allowlist && clientIp
-      ? allowlist.split(",").map(ip => ip.trim()).includes(clientIp)
-      : false;
-    if (!ipAllowed) {
-      if (pathname.startsWith("/api/admin")) {
-        return NextResponse.json({ error: "forbidden" }, { status: 403 });
-      }
-      return new NextResponse("Access restricted", { status: 403, headers: { "Content-Type": "text/plain" } });
-    }
-
     const adminToken = req.cookies.get(ADMIN_COOKIE)?.value;
     const adminSession = adminToken ? await verifyAdminToken(adminToken).catch(() => null) : null;
     if (!adminSession) {

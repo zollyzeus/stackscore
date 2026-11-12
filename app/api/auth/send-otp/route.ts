@@ -3,7 +3,7 @@ import { generateOTP, storeOTP, type OTPType } from "../../../../lib/otp";
 import { sendOTPEmail } from "../../../../lib/resend";
 import { db } from "../../../../lib/firestore";
 import { FieldValue } from "firebase-admin/firestore";
-import { isAdmin, checkIpAllowlist } from "../../../../lib/requireAdmin";
+import { isAdmin } from "../../../../lib/requireAdmin";
 import { isPanelistEmail } from "../../../../lib/panelistRegistry";
 
 // Max 3 OTPs per email per 15 minutes
@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "type must be panelist, candidate, or admin" }, { status: 400 });
   }
   if (type === "admin") {
-    // Admin sign-in is never self-serve: IP-gated, and the email must already be on the admin registry.
-    const ipDeny = checkIpAllowlist(req);
-    if (ipDeny) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    // Admin sign-in is never self-serve: the email must already be on the admin registry.
+    // Since A1 removed the IP allowlist, this is the gate -- an unregistered address can
+    // request a code for any other role, but never for admin.
     if (!(await isAdmin(email))) {
       return NextResponse.json({ error: "access_denied", message: "This email is not registered as an admin." }, { status: 403 });
     }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken, type PanelistSession } from "./auth";
 import { verifyAdminToken } from "./adminAuth";
-import { isAdmin, checkIpAllowlist } from "./requireAdmin";
+import { isAdmin } from "./requireAdmin";
 import { isPanelistEmail } from "./panelistRegistry";
 
 /**
@@ -22,17 +22,16 @@ export async function getPanelistSession(req: NextRequest): Promise<PanelistSess
   return session;
 }
 
-/** Allows either an active panelist session, or an active admin session (IP-checked). */
+/** Allows either an active panelist session, or an active admin session. */
 export async function requirePanelistOrAdmin(req: NextRequest): Promise<NextResponse | null> {
   if (await getPanelistSession(req)) return null;
 
   const adminCookie = req.cookies.get("ss_admin")?.value;
   if (adminCookie) {
-    const ipDeny = checkIpAllowlist(req);
-    if (!ipDeny) {
-      const session = await verifyAdminToken(adminCookie);
-      if (session?.email && (await isAdmin(session.email))) return null;
-    }
+    // Registry re-check on every request, not just at login, so revoking an admin takes
+    // effect immediately rather than when their 12h token happens to expire.
+    const session = await verifyAdminToken(adminCookie);
+    if (session?.email && (await isAdmin(session.email))) return null;
   }
   return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 }

@@ -100,27 +100,6 @@ steps:
         set -e
         VERSION=$$(cat /workspace/version.txt)
 
-        # Fail loudly rather than silently locking admin out. middleware.ts denies EVERY
-        # request to /admin and /api/admin with 403 when ADMIN_IP_ALLOWLIST is empty. That
-        # fails closed, so it is safe, but it is invisible: the deploy reports success, the
-        # app serves normally, and the admin UI is simply gone until someone notices. This
-        # happened on 2026-11-12 when a deploy used the substitution defaults. A deploy that
-        # forgets the flag should stop here, not succeed into a broken state.
-        if [ -z "$_ADMIN_IP_ALLOWLIST" ]; then
-          echo "ERROR: _ADMIN_IP_ALLOWLIST is empty; /admin would return 403 for everyone."
-          echo "Pass it explicitly, e.g.:"
-          echo "  gcloud builds submit --config=cloudbuild.yaml \\"
-          echo "    --substitutions=_ADMIN_IP_ALLOWLIST=\$(curl -s ifconfig.me) ."
-          echo "To deploy with admin intentionally disabled, pass _ADMIN_IP_ALLOWLIST=none."
-          exit 1
-        fi
-        # The explicit opt-out, so "no admin access" is a stated decision and not an oversight.
-        if [ "$_ADMIN_IP_ALLOWLIST" = "none" ]; then
-          echo "NOTE: admin access intentionally disabled for this deploy."
-          ADMIN_IPS=""
-        else
-          ADMIN_IPS="$_ADMIN_IP_ALLOWLIST"
-        fi
 
         # Base secrets, always required.
         SECRETS="GEMINI_API_KEY=GEMINI_API_KEY:latest"
@@ -161,7 +140,7 @@ steps:
           --no-traffic \
           --tag=v$$VERSION \
           --set-secrets="$$SECRETS" \
-          --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=us-central1,VERTEX_MODEL=gemini-2.5-flash,FIREBASE_PROJECT_ID=$PROJECT_ID,FIREBASE_CLIENT_EMAIL=stackscore-server@$PROJECT_ID.iam.gserviceaccount.com,NEXT_PUBLIC_BASE_URL=https://stackscore.anandrajendran.dev,BUILD_VERSION=$$VERSION,CREDENTIAL_KEY_ID=ss-mvp-1,PANELIST_EMAILS=$_PANELIST_EMAILS,ADMIN_EMAILS=$_ADMIN_EMAILS,ADMIN_IP_ALLOWLIST=$$ADMIN_IPS
+          --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=us-central1,VERTEX_MODEL=gemini-2.5-flash,FIREBASE_PROJECT_ID=$PROJECT_ID,FIREBASE_CLIENT_EMAIL=stackscore-server@$PROJECT_ID.iam.gserviceaccount.com,NEXT_PUBLIC_BASE_URL=https://stackscore.anandrajendran.dev,BUILD_VERSION=$$VERSION,CREDENTIAL_KEY_ID=ss-mvp-1,PANELIST_EMAILS=$_PANELIST_EMAILS,ADMIN_EMAILS=$_ADMIN_EMAILS
 
         # The traffic list formatter returns a bracketed, quoted list, so strip the
         # punctuation -- a quote left in the URL makes curl fail with no HTTP code at all,
@@ -200,11 +179,9 @@ images:
 
 # Role registries and the admin IP allowlist are deploy-time configuration, not source.
 # Override per-invocation with --substitutions, e.g.
-#   gcloud builds submit --substitutions=_ADMIN_IP_ALLOWLIST=1.2.3.4
 substitutions:
   _PANELIST_EMAILS: 'zollyzeus@gmail.com'
   _ADMIN_EMAILS: 'stackscoreofficial@gmail.com'
-  _ADMIN_IP_ALLOWLIST: ''
 
 options:
   logging: CLOUD_LOGGING_ONLY

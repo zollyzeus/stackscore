@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionToken, sessionCookieOptions, clearCookieOptions } from "../../../../../lib/auth";
 import { createCandidateToken, candidateCookieOptions, clearCandidateCookieOptions } from "../../../../../lib/candidateAuth";
-import { clearAdminCookieOptions } from "../../../../../lib/adminAuth";
+import { createAdminToken, adminCookieOptions, clearAdminCookieOptions } from "../../../../../lib/adminAuth";
+import { isAdmin } from "../../../../../lib/requireAdmin";
 import { isPanelistEmail } from "../../../../../lib/panelistRegistry";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
@@ -57,20 +58,37 @@ export async function GET(req: NextRequest) {
     }
 
     let { type, next } = decoded;
-    if (!["panelist", "candidate"].includes(type)) type = "candidate";
+    if (!["panelist", "candidate", "admin"].includes(type)) type = "candidate";
 
     // Sanitise open-redirect: next must be a relative path
     if (!next.startsWith("/") || next.includes("://")) {
-      next = type === "panelist" ? "/dashboard" : "/me";
+      next = type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : "/me";
     }
 
     if (type === "panelist" && !(await isPanelistEmail(info.email))) {
       return NextResponse.redirect(`${BASE_URL}/login?error=not_authorised`);
     }
+    // Admin via Google is gated by the same registry as admin via OTP. With the IP
+    // allowlist gone (A1) this check is the only thing standing between a valid Google
+    // account and the admin console, so it runs before any cookie is minted -- and it
+    // must stay in step with the equivalent check in verify-otp.
+    if (type === "admin" && !(await isAdmin(info.email))) {
+      return NextResponse.redirect(`${BASE_URL}/login?error=not_authorised`);
+    }
 
     const redirect = NextResponse.redirect(`${BASE_URL}${next}`);
     redirect.cookies.set("oauth_nonce", "", { maxAge: 0, path: "/" }); // clear nonce
-    // Google sign-in only ever yields a panelist or candidate session — never admin (IP-gated, OTP-only).
+    if (type === "admin") {
+      const token = await createAdminToken(info.email, info.name ?? info.email.split("@")[0]);
+      const opts = adminCookieOptions(token);
+      redirect.cookies.set(opts.name, opts.value, opts);
+      // One role per browser: drop the other two.
+      const pClear = clearCookieOptions();
+      redirect.cookies.set(pClear);
+      const cClear = clearCandidateCookieOptions();
+      redirect.cookies.set(cClear.name, cClear.value, cClear);
+      return redirect;
+    }
     const adminClear = clearAdminCookieOptions();
     redirect.cookies.set(adminClear.name, adminClear.value, adminClear);
     if (type === "panelist") {

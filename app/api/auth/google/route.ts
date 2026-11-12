@@ -3,14 +3,15 @@ import { randomBytes } from "crypto";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
-/** GET /api/auth/google?type=panelist|candidate&next=/path — initiates OAuth flow */
+/** GET /api/auth/google?type=panelist|candidate|admin&next=/path — initiates OAuth flow */
 export async function GET(req: NextRequest) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) {
     return NextResponse.json({ error: "Google OAuth not configured (GOOGLE_CLIENT_ID missing)" }, { status: 503 });
   }
   const type = req.nextUrl.searchParams.get("type") ?? "candidate";
-  const next = req.nextUrl.searchParams.get("next") ?? (type === "panelist" ? "/dashboard" : "/me");
+  const next = req.nextUrl.searchParams.get("next")
+    ?? (type === "panelist" ? "/dashboard" : type === "admin" ? "/admin" : "/me");
   const nonce = randomBytes(16).toString("hex");
   const state = Buffer.from(JSON.stringify({ type, next, nonce })).toString("base64url");
   const redirectUri = `${BASE_URL}/api/auth/google/callback`;

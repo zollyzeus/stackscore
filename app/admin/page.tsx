@@ -1,4 +1,4 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { verifyAdminToken } from "../../lib/adminAuth";
 import { isAdmin } from "../../lib/requireAdmin";
 import { db, getAllScores } from "../../lib/firestore";
@@ -32,25 +32,10 @@ function Badge({ status }: { status: "active" | "pending" | "approved" | "reject
 }
 
 export default async function AdminPage() {
-  // IP allowlist check
-  const allowlist = process.env.ADMIN_IP_ALLOWLIST;
-  const hdrs = headers();
-  const forwarded = hdrs.get("x-forwarded-for");
-  const clientIp = forwarded ? forwarded.split(",")[0].trim() : null;
-  const ipAllowed = allowlist
-    ? (clientIp ? allowlist.split(",").map(ip => ip.trim()).includes(clientIp) : false)
-    : false;
+  // The IP allowlist that used to guard this page was removed in A1; the admin session
+  // cookie (checked in middleware.ts, minted only for an address on the admin registry)
+  // is the gate. See middleware.ts for why the allowlist was a liability rather than depth.
 
-  if (!ipAllowed) {
-    return (
-      <main style={{ maxWidth: 480, margin: "6rem auto", padding: "0 1.5rem", textAlign: "center" }}>
-        <h1 style={{ fontSize: "1.3rem", fontWeight: 800, marginBottom: ".5rem" }}>Access Restricted</h1>
-        <p style={{ color: "var(--text-muted)", fontSize: ".9rem" }}>
-          This page is only accessible from authorised IP addresses.
-        </p>
-      </main>
-    );
-  }
 
   // Admin auth check — separate from panelist session
   const cookieStore = cookies();

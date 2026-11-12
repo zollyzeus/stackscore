@@ -1,5 +1,5 @@
 /**
- * Admin panel tests — covers IP allowlist, auth guards, and core admin flows.
+ * Admin panel tests — covers auth guards and core admin flows.
  * Tests run against either localhost:3000 (default) or TEST_BASE_URL (prod).
  *
  * To run against prod:
@@ -9,51 +9,59 @@ import { test, expect } from "@playwright/test";
 
 const BASE = process.env.TEST_BASE_URL ?? "http://localhost:3000";
 
-// ── 1. IP allowlist — tests run from non-allowlisted IP ──────────────────────
-test.describe("Admin IP allowlist", () => {
-  test("GET /admin returns 403 from non-allowlisted IP", async ({ request }) => {
+// ── 1. Admin access control (A1: session-only; the IP allowlist was removed) ─
+//
+// These assertions used to be `expect([403, 200]).toContain(status)`, which passes when the
+// endpoint returns the page, and they skipped against prod because the runner's IP was not
+// allow-listed. Both weaknesses came from the allowlist. With it gone the admin surface
+// behaves identically everywhere, so these can state what should actually happen -- and
+// they now run against production, which is where it matters.
+test.describe("Admin access control", () => {
+  test("GET /admin redirects an unauthenticated visitor to login", async ({ request }) => {
+    const res = await request.get(`${BASE}/admin`, { maxRedirects: 0 });
+    expect(res.status()).toBe(307);
+    const location = res.headers()["location"] ?? "";
+    expect(location).toContain("/login");
+    // ?type=admin matters: the login page uses it to show the admin form rather than the
+    // candidate one, so a broken redirect strands the operator on the wrong screen.
+    expect(location).toContain("type=admin");
+  });
+
+  test("GET /admin never serves admin content unauthenticated", async ({ request }) => {
+    // Following the redirect must land on the login page, not the console.
     const res = await request.get(`${BASE}/admin`);
-    // From test runner IP (not 115.99.15.185), should be blocked
-    // In prod this is 403; on localhost ADMIN_IP_ALLOWLIST may not be set → also 403
-    expect([403, 200]).toContain(res.status()); // 200 only if running locally without ADMIN_IP_ALLOWLIST
-    if (res.status() === 403) {
-      const text = await res.text();
-      expect(text).toMatch(/access restricted/i);
-    }
+    expect(res.ok()).toBeTruthy();
+    const body = await res.text();
+    expect(body).not.toMatch(/Pending panelist requests/i);
+    expect(body).toMatch(/sign in/i);
   });
 
-  test("GET /api/admin/analytics returns 403 from non-allowlisted IP", async ({ request }) => {
+  test("GET /api/admin/analytics returns 401 without an admin session", async ({ request }) => {
     const res = await request.get(`${BASE}/api/admin/analytics`);
-    expect([403, 401]).toContain(res.status());
+    expect(res.status()).toBe(401);
   });
 
-  test("POST /api/admin/panelist-requests returns 403 without IP or auth", async ({ request }) => {
+  test("POST /api/admin/panelist-requests returns 401 without an admin session", async ({ request }) => {
     const res = await request.post(`${BASE}/api/admin/panelist-requests`, {
       data: { email: "test@example.com", action: "approve" },
     });
-    expect([403, 401]).toContain(res.status());
-  });
-});
-
-// ── 2. Admin auth guards ─────────────────────────────────────────────────────
-test.describe("Admin auth guards", () => {
-  test("GET /api/admin/analytics returns 401 without ss_panel cookie", async ({ request }) => {
-    // This test only makes sense when running locally (IP check passes for localhost)
-    if (BASE.includes("stackscore.anandrajendran.dev")) {
-      test.skip(true, "Skipped: test runner IP not in allowlist for prod");
-    }
-    const res = await request.get(`${BASE}/api/admin/analytics`);
-    expect([401, 403]).toContain(res.status());
+    expect(res.status()).toBe(401);
   });
 
-  test("POST /api/admin/admins returns 401 without ss_panel cookie", async ({ request }) => {
-    if (BASE.includes("stackscore.anandrajendran.dev")) {
-      test.skip(true, "Skipped: test runner IP not in allowlist for prod");
-    }
+  test("POST /api/admin/admins cannot be used to self-grant admin", async ({ request }) => {
+    // The highest-value target on the admin surface: anonymous privilege escalation.
     const res = await request.post(`${BASE}/api/admin/admins`, {
       data: { email: "attacker@evil.com" },
     });
-    expect([401, 403]).toContain(res.status());
+    expect(res.status()).toBe(401);
+  });
+
+  test("a forged admin cookie is rejected", async ({ request }) => {
+    // Signature verification, not merely cookie presence.
+    const res = await request.get(`${BASE}/api/admin/analytics`, {
+      headers: { Cookie: "ss_admin=not.a.valid.token" },
+    });
+    expect(res.status()).toBe(401);
   });
 });
 

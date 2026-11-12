@@ -3,7 +3,7 @@ import { verifyOTP, type OTPType } from "../../../../lib/otp";
 import { createSessionToken, sessionCookieOptions, clearCookieOptions } from "../../../../lib/auth";
 import { createCandidateToken, candidateCookieOptions, clearCandidateCookieOptions } from "../../../../lib/candidateAuth";
 import { createAdminToken, adminCookieOptions, clearAdminCookieOptions } from "../../../../lib/adminAuth";
-import { isAdmin, checkIpAllowlist } from "../../../../lib/requireAdmin";
+import { isAdmin } from "../../../../lib/requireAdmin";
 import { isPanelistEmail } from "../../../../lib/panelistRegistry";
 
 // Only one role session may be active per browser at a time — logging in as one
@@ -22,8 +22,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "email, code and type required" }, { status: 400 });
   }
   if (type === "admin") {
-    const ipDeny = checkIpAllowlist(req);
-    if (ipDeny) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    // The registry is the whole gate now that the IP allowlist is gone (A1).
     if (!(await isAdmin(email))) {
       return NextResponse.json({ error: "access_denied" }, { status: 403 });
     }

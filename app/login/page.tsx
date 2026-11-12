@@ -24,6 +24,8 @@ function LoginForm() {
   const urlType = params.get("type") as UserType | null;
   // Admin is never a public toggle option — only reachable via a direct ?type=admin link
   // (e.g. the middleware redirect from /admin), never chosen from the Candidate/Panelist UI.
+  // Both OTP and Google are offered for it (A1); authorisation is the admin registry,
+  // enforced server-side in send-otp, verify-otp and the Google callback alike.
   const isAdminMode = urlType === "admin";
 
   const [type, setType] = useState<UserType>(urlType === "panelist" ? "panelist" : isAdminMode ? "admin" : "candidate");
@@ -123,12 +125,12 @@ function LoginForm() {
     window.location.href = next;
   }
 
-  const googleUrl = `/api/auth/google?type=${type}&next=${encodeURIComponent(type === "panelist" ? "/dashboard" : "/me")}`;
+  const googleUrl = `/api/auth/google?type=${type}&next=${encodeURIComponent(defaultNext)}`;
 
   const copy = {
     candidate: { title: "Candidate sign in", sub: "Track your assessment scores and improvement over time." },
     panelist:  { title: "Panelist sign in",  sub: "Access the hiring dashboard and candidate pipeline." },
-    admin:     { title: "Admin sign in",     sub: "Restricted to the admin registry, from an allow-listed network only." },
+    admin:     { title: "Admin sign in",     sub: "Restricted to addresses on the admin registry." },
   }[type];
 
   return (
@@ -199,12 +201,8 @@ function LoginForm() {
             <button className="lb-btn" onClick={sendOTP} disabled={loading || !email.trim()}>
               {loading ? "Sending…" : "Send sign-in code →"}
             </button>
-            {!isAdminMode && (
-              <>
-                <div className="lb-divider">or</div>
-                <GoogleButton href={googleUrl} />
-              </>
-            )}
+            <div className="lb-divider">or</div>
+            <GoogleButton href={googleUrl} />
           </>
         ) : (
           <form onSubmit={verifyOTP}>

@@ -93,8 +93,19 @@ test.describe("Signup — admin is never self-serve", () => {
   test("admin mode is only reachable via an explicit ?type=admin link", async ({ page }) => {
     await page.goto(`${BASE}/login?type=admin`);
     await expect(page.getByText(/admin sign in/i)).toBeVisible();
-    // No Google button in admin mode — admin is OTP-only and IP-gated.
-    await expect(page.getByText(/continue with google/i)).toHaveCount(0);
+  });
+
+  test("admin mode offers Google, and sends it the admin type", async ({ page }) => {
+    // Changed by A1. Admin used to be OTP-only because a network allowlist was the real
+    // gate; with that gone, authorisation is the admin registry, which is enforced
+    // identically for OTP and Google. The type must reach the OAuth initiator or the
+    // callback would mint a candidate session for someone who asked for admin.
+    await page.goto(`${BASE}/login?type=admin`);
+    const google = page.getByRole("link", { name: /continue with google/i });
+    await expect(google).toBeVisible();
+    const href = await google.getAttribute("href");
+    expect(href).toContain("type=admin");
+    expect(href).toContain(encodeURIComponent("/admin"));
   });
 });
 
