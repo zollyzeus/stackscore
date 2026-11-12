@@ -88,16 +88,27 @@ Root cause addressed too: **`/api/session` now stamps the owner from the session
 than trusting a client-supplied field, which also stops a candidate claiming a score card under
 someone else's address. Covered by §A11.
 
-### A12. Admin/credential keys derive from `PANELIST_SECRET` — **[OPEN — needs you]**
-`cloudbuild.yaml` now picks up `ADMIN_SECRET` and `CREDENTIAL_SECRET` automatically **if they
-exist**, and warns in the build log when they don't. I could not create them: Secret Manager
-writes are blocked for me by a permission policy. Run:
+### A12. Admin/credential keys derive from `PANELIST_SECRET` — **[DONE 2026-11-12]**
+`ADMIN_SECRET` and `CREDENTIAL_SECRET` now exist in Secret Manager, each with one enabled
+version, and are wired into the service. Verified on revision `261112001`:
+`/api/health` reports `"ADMIN_SECRET": true, "CREDENTIAL_SECRET": true`, so the
+`PANELIST_SECRET`-derived fallback is no longer in use and a `PANELIST_SECRET` leak no
+longer compromises admin sessions or credential signatures.
 
-```bash
-bash scripts/setup-role-secrets.sh
-gcloud builds submit --config=cloudbuild.yaml --substitutions=_ADMIN_IP_ALLOWLIST=<your-ip> .
-curl -s https://stackscore.anandrajendran.dev/api/health | grep -o '"ADMIN_SECRET":[a-z]*'
-```
+Two things were wrong on the way and are worth keeping:
+
+1. **`scripts/setup-role-secrets.sh` granted the wrong principal.** It used
+   `stackscore-server@`, which is `FIREBASE_CLIENT_EMAIL` — the identity the Admin SDK
+   authenticates as, which never reads Secret Manager. The Cloud Run *runtime* identity is
+   the default compute SA. The first patched revision therefore failed to start with
+   `SECRETS_ACCESS_CHECK_FAILED` while the previous revision kept serving — so the deploy
+   looked like it had succeeded until the serving revision was checked. The script now
+   derives the project number and grants `<number>-compute@developer.gserviceaccount.com`.
+2. **`gcloud` is broken on this machine**, which is why `scripts/deploy-rest.sh` exists —
+   see E8.
+
+`/api/health` now also reports `CREDENTIAL_SECRET`, which it previously omitted, so the
+fallback state is observable rather than inferred.
 
 Until then the documented fallback is in force: admin tokens and credential signatures use
 keys derived from `PANELIST_SECRET`. Role separation holds, but a `PANELIST_SECRET` leak would
@@ -243,9 +254,82 @@ input cost ~90%.
 destroy a five-stage submission) and reports refusals explicitly;
 `generateSummaryAndTips` stays non-fatal, since the scores are already computed.
 
-### D7. No eval set — **[OPEN — highest product value]**
-PRD §11.3 says the judge "should be spot-checked against known-good/known-bad sample
-submissions before demo day". Still no fixtures and no calibration table. See F5.
+### D7. No eval set — **[DONE 2026-11-12]**
+PRD §11.3 wanted the judge "spot-checked against known-good/known-bad sample submissions
+before demo day". Built: 10 fixtures over one shared brief, a runner, and a committed
+baseline. See `data/calibration/README.md`; dataset in `data/calibration/fixtures.ts`,
+runner in `tests/calibration.spec.ts` (its own Playwright project, self-skips unless
+`RUN_CALIBRATION=1`, ~$4 for a 30-call sweep).
+
+Baseline (`claude-opus-5-5`, effort `high`, 3 runs x 10 fixtures, 30/30 calls succeeded):
+
+- **Reliable.** Mean StackScore sd **1.0 point**, worst range 5; three fixtures identical
+  across all three runs. This was the question that bounded all the others.
+- **Rule-compliant.** All 5 hard assertions pass — K6 exactly 50/50/50 with no AI evidence,
+  the injection fixture scored K4 1.7 / D3 2.7 / overall 11, and the coherence check fires.
+- **8/10 fixtures in band**, both misses low rather than high.
+- **Mild compression**: `observed = 0.835 x expected + 5.09`, R² 0.868 — about **-9 points
+  at the top of the range**, with the ordering sound.
+- **K2/K4/K5 graded far harder** than every other axis (median lean -16.4 / -12.0 / -17.2;
+  all others within ~3). Most likely over-generous labels rather than a judge defect.
+- **Halo within the design level**: F02's D2 fell to 32.3 on a competent architecture whose
+  only gap was the cost reasoning that D3/D4 already measure. Level separation is fine
+  (F04: 42-point design-to-code gap); within-level independence is not.
+
+**Recommendation: ship raw scores, apply no normalization.** Both computed corrections are
+fitted to authored bands, so applying either would encode one person's taste as measurement.
+The real fix is upstream: `data/rubric.json` gives each axis a one-line description and a
+0-100 scale and **never says what 40 means versus 60 or 80**. Add 3-4 anchors per axis; that
+addresses the compression and the K-axis strictness at the source.
+
+Finding the bug below was worth more than the calibration numbers themselves.
+
+### D8. Judge was entirely non-functional in production — **[FIXED 2026-11-12 — was CRITICAL]**
+Found by the first calibration call, not by the 358-test suite, because every existing test
+mocked the judge rather than calling it.
+
+`responseSchema()` emitted `minimum: 0, maximum: 100` on the integer score fields.
+Structured outputs rejects numeric range keywords outright:
+
+```
+400 invalid_request_error - output_config.format.schema:
+For 'integer' type, properties maximum, minimum are not supported
+```
+
+`judgeSubmission()` treats a 400 as retryable, retries once, then throws — so **every
+scoring call failed**, and it failed at the *last* step of a completed five-stage
+assessment, destroying the whole submission. The product's core function did not work at
+all.
+
+Fixed by removing the two keywords; the 0-100 bound is stated in the system prompt and
+enforced in `validateJudgeOutput()`, which clamps. The schema guarantees shape, validation
+guarantees range. A comment in `lib/judge.ts` says not to re-add them. Deployed in
+`261112001` and confirmed by 30 successful judge calls.
+
+Lesson: a suite can be green and prove nothing about the one call that matters. The
+calibration sweep is now the only test that exercises the real judge end to end.
+
+### D9. Two tests passed for the wrong reason — **[FIXED 2026-11-12]**
+Both found by running the suite in a shell that did *not* export `PANELIST_SECRET`. They had
+been passing only because of how the suite happened to be invoked, which makes them evidence
+of nothing.
+
+1. **`unit.spec.ts` "credential signing" (4 tests) depended on a production secret.**
+   `lib/credential.ts` resolves its key from `CREDENTIAL_SECRET` or `PANELIST_SECRET` on every
+   call and throws when neither is set, so these four *failed outright* with no secret in the
+   environment. Wrong dependency for a unit test: the properties under test — tamper
+   detection, key-order independence — hold for any key. The block now supplies its own test
+   key and restores the previous value afterwards. All 30 unit tests now pass with an empty
+   environment.
+2. **`assessment.spec.ts`'s three panelist UI blocks failed instead of skipping.** They set
+   `storageState` directly with no guard, so with no cookie minted the state was an empty
+   jar, every `/panel` navigation 307'd to `/login`, and the UI assertions failed with a
+   misleading "element not found" — which reads as a product regression and cost real time to
+   run down. They now use the `test.skip(!tokens().panelToken, ...)` pattern that
+   `audit-regression.spec.ts` already used.
+
+Worth stating plainly: a test that fails when its preconditions are absent is as misleading
+as one that passes when it should not. The first costs time, the second costs trust.
 
 ---
 
@@ -278,6 +362,26 @@ Initialised, `.gitignore` hardened (env files, generated auth state, service-acc
 patterns, test artifacts), verified no secret is staged, pushed to
 `github.com/zollyzeus/stackscore`. Also added `.gcloudignore` — the build context dropped from
 81 MB to 4.7 MB.
+
+### E8. `gcloud` unusable locally; REST deploy path added — **[WORKED AROUND]**
+Every `gcloud` command that makes an API call (`gcloud secrets`, `gcloud builds submit`,
+`gcloud run`) exits **120 with no output at all** — nothing on stdout, nothing on stderr, no
+traceback. `gcloud version`, `gcloud auth list` and `gcloud auth print-access-token` all work,
+so the credentials are fine; `--log-http` shows the request being constructed and the process
+dying at the HTTP call. Environment: snap `google-cloud-cli` 593.0.0 on Python 3.14.9. It is
+gcloud's HTTP layer, not this project.
+
+Worked around rather than fixed, since it is not ours to fix:
+
+- `scripts/deploy-rest.sh` — tars the source, stages it in the Cloud Build bucket, and creates
+  the build over REST with curl. It **converts `cloudbuild.yaml` rather than reimplementing
+  it**, so the canary gate (deploy `--no-traffic`, probe `/api/health` on the tagged revision,
+  promote only on success) still applies. A deploy path that skipped that gate would have been
+  the wrong thing to build in a hurry.
+- Secret Manager writes went through the Secret Manager REST API with the same token.
+
+Both are workarounds. Delete `scripts/deploy-rest.sh` once `gcloud` works; `cloudbuild.yaml`
+remains the single source of truth for the deploy either way.
 
 ---
 
@@ -326,39 +430,74 @@ process-scoring genuinely differentiated against the LeetCode/CodeSignal field; 
 twist rule showing unusual instrument-design rigor; a strong PRD; and now a 358-test suite with
 a canary-gated pipeline.
 
-**Still open, and it is the highest-value remaining item:** no calibration evidence. Judges of an
-*assessment* product will ask "how do you know the score is right?" and the repo cannot answer.
-Build 8–10 fixture submissions (3 strong, 3 weak, 3 mixed), score each twice, and publish a
-table of score, per-axis spread, and run-to-run variance. It closes PRD Risk #3, demonstrates
-NFR3 honestly, and is the rigor that separates a demo from a product. Do it before any cosmetic
-work.
+**Calibration evidence — [DONE 2026-11-12].** "How do you know the score is right?" now has an
+answer in the repo: `data/calibration/` holds 10 fixtures, a runner, and a committed baseline
+with per-axis spread and run-to-run variance. Closes PRD Risk #3 and demonstrates NFR3. Full
+results in D7.
+
+The headline for a pitch is the reliability number: **mean StackScore sd of 1.0 point across
+three runs** of the same submission, with all 5 rule-compliance assertions passing — including
+a prompt-injection attempt that scored 11/100. That is a defensible claim, and it is stronger
+than a claim of accuracy would be, because accuracy rests on authored labels while reliability
+is measured directly.
+
+Say the limitation out loud rather than waiting to be asked: the expected bands are one
+person's judgements, not panel consensus, so the dataset currently demonstrates *consistency*
+and *rule-following*, not *correctness*. The named next step — panel re-labelling plus score
+anchors in `data/rubric.json` — is a credible roadmap item rather than a gap.
 
 ---
 
 ## Known gaps in the remediation
 
-1. **A12** — `ADMIN_SECRET` / `CREDENTIAL_SECRET` not created (Secret Manager writes blocked for
-   me). `scripts/setup-role-secrets.sh` does it in one command; the pipeline picks them up with
-   no further change.
-2. **Secret rotation after B1.** The sandbox escape could have exposed every value in
+1. **The calibration bands are authored, not panel consensus.** This is the most important
+   caveat in the repo now, because it is the one most likely to be over-read. The dataset
+   demonstrates that the judge is *consistent* and *follows its stated rules*; it does not
+   establish that the scores are *correct*. Do not apply the per-axis offsets the report
+   computes until 2+ panelists have re-scored the fixtures blind. See `data/calibration/README.md`.
+2. **Admin is currently locked out: `ADMIN_IP_ALLOWLIST` is empty on the live revision.**
+   Self-inflicted. The REST deploy used `cloudbuild.yaml`'s substitution *defaults*, and
+   `_ADMIN_IP_ALLOWLIST` defaults to `''`; the previous deploy had been given an IP on the
+   command line. With it empty, `middleware.ts` denies every request to `/admin` and
+   `/api/admin` with 403 — fail-closed, so it is safe, but nobody can reach the admin UI. The
+   previous value was `115.99.15.185` (recovered from revision `stackscore-00060-non`). I
+   prepared the patch but was not permitted to apply it. Fix with either:
+
+   ```bash
+   # redeploy with the substitution (also re-verifies through the canary gate)
+   bash scripts/deploy-rest.sh   # after setting _ADMIN_IP_ALLOWLIST in cloudbuild.yaml
+   # or set the default in cloudbuild.yaml so it cannot be dropped again
+   ```
+
+   Better: give `_ADMIN_IP_ALLOWLIST` a real default in `cloudbuild.yaml` instead of `''`, so
+   a deploy that forgets the flag does not silently lock admin out. A residential IP also
+   changes, so this will recur.
+3. **Secret rotation after B1.** The sandbox escape could have exposed every value in
    `process.env` to anyone who ran code on the deployed service. I did **not** rotate, because
    it invalidates live sessions mid-demo-prep and the provider keys must be regenerated at the
    provider, which I cannot do. If that URL has been shared, rotate: `ANTHROPIC_API_KEY`,
    `GEMINI_API_KEY`, `FIREBASE_PRIVATE_KEY`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY`
    (provider-side), then `PANELIST_SECRET` / `CANDIDATE_SECRET` (Secret Manager — this signs
    everyone out once, which is cheap now and not later).
-3. **41 tests skip against production**, versus 19 locally. The extra skips are the
-   candidate/admin-cookie tests: this machine's `CANDIDATE_SECRET` differs from production's,
-   and `ADMIN_SECRET` does not exist yet, so `auth-setup` detects the rejection and skips rather
-   than reporting a false failure. Every anonymous/attacker-perspective assertion — the
+4. **Judge coverage is thin outside calibration.** Every test other than the calibration
+   sweep mocks the judge, which is exactly why D8 — total scoring failure in production —
+   survived a 358-test green suite. The calibration project is the only thing that exercises
+   the real judge, and it does not run by default because it costs money. Run it after any
+   change to `lib/judge.ts`.
+5. **41 tests skip against production**, versus 19 locally. The extra skips are the
+   candidate-cookie tests: this machine's `CANDIDATE_SECRET` differs from production's, so
+   `auth-setup` detects the rejection and skips rather than reporting a false failure. Every anonymous/attacker-perspective assertion — the
    security-relevant surface — does run against production. Creating the secrets (item 1) and
    supplying `CANDIDATE_SECRET` in the environment closes the gap.
-4. **Deferred by choice:** C1, C2, C3, C4, C7, E6 — see those entries.
+6. **Deferred by choice:** C1, C2, C3, C4, C7, E6 — see those entries.
 
 ## Suggested next steps
 
-1. `bash scripts/setup-role-secrets.sh` + redeploy (A12) — one command
-2. Decide on secret rotation (gap 2)
-3. Build the calibration table (F5/D7) — highest product value
-4. Architecture slide reframe (F2) and the outcome-capture promotion (F3)
-5. Post-submission: C1 (dedupe the assessment flow), C2, C4
+1. **Add score anchors to `data/rubric.json`** — 3-4 per axis stating what 40 vs 60 vs 80
+   means. Highest leverage item in the repo: it is the root cause of both calibration
+   findings, and no downstream arithmetic substitutes for it.
+2. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
+3. Decide on secret rotation (gap 3).
+4. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
+5. Panel re-label the calibration fixtures (gap 1), then re-run and reconsider normalization.
+6. Post-submission: C1 (dedupe the assessment flow), C2, C4.

@@ -16,9 +16,23 @@
 set -euo pipefail
 
 PROJECT_ID="${PROJECT_ID:-beaming-crowbar-513808-i4}"
-SA="stackscore-server@${PROJECT_ID}.iam.gserviceaccount.com"
 
-echo "Project: $PROJECT_ID"
+# The principal that must be able to READ these secrets is the Cloud Run *runtime* service
+# account -- the identity the revision runs as. The service does not set
+# template.serviceAccount, so that is the project's default compute SA.
+#
+# It is NOT stackscore-server@: that is FIREBASE_CLIENT_EMAIL, the identity the Admin SDK
+# authenticates as using FIREBASE_PRIVATE_KEY. It never reads Secret Manager. Granting it
+# instead of the runtime SA produces a revision that fails to start with
+# SECRETS_ACCESS_CHECK_FAILED, while the previous revision keeps serving -- so the deploy
+# looks like it succeeded until you check which revision has traffic.
+#
+# Derived rather than hardcoded so this is not wrong again in another project.
+PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
+SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
+
+echo "Project: $PROJECT_ID ($PROJECT_NUMBER)"
+echo "Runtime service account: $SA"
 
 for name in ADMIN_SECRET CREDENTIAL_SECRET; do
   if gcloud secrets describe "$name" --project="$PROJECT_ID" &>/dev/null; then
@@ -48,8 +62,14 @@ Done. Next:
     --substitutions=_ADMIN_IP_ALLOWLIST=<your-ip> .
 
 Then confirm the app is using the dedicated keys:
-  curl -s https://stackscore.anandrajendran.dev/api/health | grep -o '"ADMIN_SECRET":[a-z]*'
-  # expect "ADMIN_SECRET":true
+  curl -s https://stackscore.anandrajendran.dev/api/health \
+    | grep -o '"\(ADMIN\|CREDENTIAL\)_SECRET":[a-z]*'
+  # expect both true
+
+A revision that cannot read a secret does NOT take traffic, so also confirm the new
+revision is the one serving -- otherwise health is reporting the old revision:
+  gcloud run services describe stackscore --region=us-central1 \
+    --format='value(status.traffic)'
 
 Setting ADMIN_SECRET invalidates existing admin sessions (they were signed with the
 PANELIST_SECRET-derived key), so sign in to /admin again afterwards.

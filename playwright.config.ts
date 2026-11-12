@@ -35,13 +35,25 @@ export default defineConfig({
     // panelist cookie would invalidate every "refuses anonymous" assertion.
     {
       name: "chromium",
-      testIgnore: /unit\.spec\.ts|sandbox\.spec\.ts/,
+      testIgnore: /unit\.spec\.ts|sandbox\.spec\.ts|calibration\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    // Judge calibration. Its own project because it calls the real Anthropic API, costs
+    // money per run, and takes minutes per judge call -- it must never be swept up by a
+    // normal `npx playwright test`. The spec also self-skips unless RUN_CALIBRATION=1, so
+    // the project existing is not enough to bill anything.
+    {
+      name: "calibration",
+      testMatch: /calibration\.spec\.ts/,
+      // One judge call at effort high can take minutes; the sweep sets its own timeout.
+      timeout: 90 * 60_000,
+      retries: 0,
       use: { ...devices["Desktop Chrome"] },
     },
     // Authenticated panelist — dashboard / panel / assessment flows only.
     {
       name: "chromium-auth",
-      testIgnore: /unit\.spec\.ts|sandbox\.spec\.ts|audit-regression\.spec\.ts|session-lifecycle\.spec\.ts|security\.spec\.ts|admin\.spec\.ts/,
+      testIgnore: /unit\.spec\.ts|sandbox\.spec\.ts|calibration\.spec\.ts|audit-regression\.spec\.ts|session-lifecycle\.spec\.ts|security\.spec\.ts|admin\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], storageState: AUTH_STATE },
     },
     // Authenticated candidate — needed by the sandbox suite.

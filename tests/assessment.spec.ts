@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tokens } from "./helpers";
 
 // ── mock fixtures ─────────────────────────────────────────────────────────────
 
@@ -325,6 +326,14 @@ test.describe("B2C — direct user, random problem selection", () => {
 
 test.describe("B2B — panelist selects problem cell, candidate receives session", () => {
   test.use({ storageState: "tests/.auth-state.json" });
+  // Skip rather than fail when no panelist cookie was minted. Without this the stored state
+  // is an empty cookie jar, every /panel navigation 307s to /login, and the UI assertions
+  // fail with a misleading "element not found" that reads as a product regression -- which
+  // is exactly how it was read when the suite was run without PANELIST_SECRET exported.
+  // Matches the `test.skip(!t.panelToken, ...)` pattern used in audit-regression.spec.ts.
+  test.beforeEach(() => {
+    test.skip(!tokens().panelToken, "no panelist token minted; panel UI tests need one");
+  });
 
   test("panel page loads with the 5×5 matrix picker", async ({ page }) => {
     await page.goto("/panel");
@@ -499,6 +508,14 @@ test.describe("Landing page", () => {
 
 test.describe("Dashboard page — HR panelist view", () => {
   test.use({ storageState: "tests/.auth-state.json" });
+  // Skip rather than fail when no panelist cookie was minted. Without this the stored state
+  // is an empty cookie jar, every /panel navigation 307s to /login, and the UI assertions
+  // fail with a misleading "element not found" that reads as a product regression -- which
+  // is exactly how it was read when the suite was run without PANELIST_SECRET exported.
+  // Matches the `test.skip(!t.panelToken, ...)` pattern used in audit-regression.spec.ts.
+  test.beforeEach(() => {
+    test.skip(!tokens().panelToken, "no panelist token minted; panel UI tests need one");
+  });
 
   test("dashboard page loads without crashing", async ({ page }) => {
     await page.goto("/dashboard");
@@ -763,6 +780,14 @@ test.describe("Error handling — API failures", () => {
 
 test.describe("Panel — enhanced UI", () => {
   test.use({ storageState: "tests/.auth-state.json" });
+  // Skip rather than fail when no panelist cookie was minted. Without this the stored state
+  // is an empty cookie jar, every /panel navigation 307s to /login, and the UI assertions
+  // fail with a misleading "element not found" that reads as a product regression -- which
+  // is exactly how it was read when the suite was run without PANELIST_SECRET exported.
+  // Matches the `test.skip(!t.panelToken, ...)` pattern used in audit-regression.spec.ts.
+  test.beforeEach(() => {
+    test.skip(!tokens().panelToken, "no panelist token minted; panel UI tests need one");
+  });
 
   test("panel has expiry selector with default 48h", async ({ page }) => {
     await page.goto("/panel");

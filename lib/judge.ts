@@ -65,12 +65,25 @@ function validateJudgeOutput(parsed: unknown): {
   return { axisScores, feedback: asStrings(feedback), evidence: asStrings(evidence) };
 }
 
-/** JSON schema for structured outputs — the model cannot return a different shape. */
+/**
+ * JSON schema for structured outputs — the model cannot return a different shape.
+ *
+ * NOTE: no `minimum`/`maximum` on the integer score fields. Structured outputs rejects
+ * numeric range keywords outright:
+ *   400 invalid_request_error - "output_config.format.schema: For 'integer' type,
+ *   properties maximum, minimum are not supported"
+ * Because judgeSubmission() treats a 400 as a retryable failure and then throws, having
+ * them here made EVERY scoring call fail — the judge was entirely non-functional, and the
+ * five-stage submission was lost at the final step. The range is not lost by removing
+ * them: the 0-100 bound is stated in the system prompt and, more importantly, enforced in
+ * validateJudgeOutput(), which clamps. The schema guarantees the shape; validation
+ * guarantees the range. Do not re-add these keywords.
+ */
 function responseSchema() {
   const scoreProps: Record<string, unknown> = {};
   const textProps: Record<string, unknown> = {};
   for (const id of AXIS_IDS) {
-    scoreProps[id] = { type: "integer", minimum: 0, maximum: 100 };
+    scoreProps[id] = { type: "integer", description: "Score from 0 to 100 inclusive." };
     textProps[id] = { type: "string" };
   }
   const obj = (props: Record<string, unknown>) => ({

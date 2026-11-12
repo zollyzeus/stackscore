@@ -81,6 +81,21 @@ test.describe("token sign/verify", () => {
 // lib/credential.ts  (F4)
 // ─────────────────────────────────────────────────────────────────────────────
 test.describe("credential signing", () => {
+  // lib/credential.ts resolves its key from the environment on every call, so these tests
+  // used to fail outright when neither CREDENTIAL_SECRET nor PANELIST_SECRET was exported --
+  // they passed only when the runner's shell happened to carry a production secret. That is
+  // the wrong dependency for a unit test of the signing algebra: the properties under test
+  // (tamper detection, key-order independence) hold for ANY key, so the test supplies its
+  // own. It also means these four no longer silently depend on how the suite was invoked.
+  const PREV = process.env.CREDENTIAL_SECRET;
+  test.beforeAll(() => {
+    process.env.CREDENTIAL_SECRET = "unit-test-credential-secret-not-a-real-key";
+  });
+  test.afterAll(() => {
+    if (PREV === undefined) delete process.env.CREDENTIAL_SECRET;
+    else process.env.CREDENTIAL_SECRET = PREV;
+  });
+
   const claims = {
     slug: "abc123",
     stackScore: 72,
