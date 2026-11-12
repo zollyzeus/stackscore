@@ -21,18 +21,43 @@ steps:
     args:
       - '-c'
       - |
+        set -eu
         TODAY=$$(date -u +%y%m%d)
-        EXISTING=$$(gcloud container images list-tags gcr.io/$PROJECT_ID/stackscore \
-          --format="get(tags)" --filter="tags~^$$TODAY" 2>/dev/null \
-          | tr ',' '\n' | grep "^$$TODAY" | sort | tail -1)
+
+        # Errors are NOT swallowed here. On 2026-11-12 this step emitted version 261112000
+        # while the build it replaced was 261112001 -- a newer build carrying a LOWER version
+        # string. A 000 suffix is unreachable from either branch below, so SEQ had evaluated
+        # to empty and printf rendered it as zero; '2>/dev/null' meant nothing said why, and
+        # the build reported success. Version strings are how a human picks a rollback
+        # target, so a version this scheme cannot compute must stop the deploy, not label it.
+        if ! RAW=$$(gcloud container images list-tags gcr.io/$PROJECT_ID/stackscore \
+              --format="get(tags)" --filter="tags~^$$TODAY"); then
+          echo "ERROR: could not list existing image tags; refusing to guess a version." >&2
+          exit 1
+        fi
+        EXISTING=$$(printf '%s\n' "$$RAW" | tr ',' '\n' | grep "^$$TODAY" | sort -n | tail -1 || true)
+
         if [ -z "$$EXISTING" ]; then
           SEQ=1
         else
-          SEQ=$$(( 10#$${EXISTING#$$TODAY} + 1 ))
+          SUFFIX=$${EXISTING#$$TODAY}
+          # Reject anything that is not exactly three digits rather than feeding it to
+          # arithmetic expansion, where a stray character yields an empty SEQ, not an error.
+          case "$$SUFFIX" in
+            [0-9][0-9][0-9]) ;;
+            *) echo "ERROR: unparseable existing tag '$$EXISTING' (suffix '$$SUFFIX')." >&2; exit 1 ;;
+          esac
+          SEQ=$$(( 10#$$SUFFIX + 1 ))
         fi
+
+        if [ -z "$${SEQ:-}" ] || [ "$$SEQ" -lt 1 ] || [ "$$SEQ" -gt 999 ]; then
+          echo "ERROR: computed sequence '$${SEQ:-<empty>}' is out of range 1-999." >&2
+          exit 1
+        fi
+
         VERSION="$${TODAY}$$(printf '%03d' $$SEQ)"
         echo "$$VERSION" > /workspace/version.txt
-        echo "Build version: $$VERSION"
+        echo "Build version: $$VERSION (previous today: $${EXISTING:-none})"
 
   # ── 2. Build the image with both the versioned tag and :latest ─────────────
   - name: 'gcr.io/cloud-builders/docker'

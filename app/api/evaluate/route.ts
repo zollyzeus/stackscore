@@ -70,10 +70,11 @@ export async function POST(req: NextRequest) {
     // aggregates this score has to be able to tell a judged card from a substituted one.
     let judgeFallback = false;
     let judgeFallbackReason: string | undefined;
+    let judgeUsage: import("../../../lib/judge").JudgeUsage | undefined;
 
     const sessionAny = session as unknown as Record<string, unknown>;
     try {
-      ({ axisScores, feedback, evidence, thinkingLog } = await judgeSubmission({
+      ({ axisScores, feedback, evidence, thinkingLog, usage: judgeUsage } = await judgeSubmission({
         ...submissionInput,
         role: sessionAny.role as string | undefined,
       }));
@@ -144,7 +145,17 @@ export async function POST(req: NextRequest) {
       ...(thinkingLog ? { thinkingLog } : {}),
       ...(Object.keys(evidence).length > 0 ? { evidence } : {}),
       ...(judgeFallback ? { judgeFallback: true, judgeFallbackReason } : {}),
+      ...(judgeUsage ? { judgeUsage } : {}),
     });
+
+    // Also logged, so cost is visible in Cloud Run logs during an incident without a
+    // Firestore round-trip. The stored copy is the one that survives log rotation.
+    if (judgeUsage) {
+      console.log(
+        "[evaluate] JUDGE_USAGE",
+        JSON.stringify({ sessionId, ...judgeUsage }),
+      );
+    }
 
     // Webhook on completion (non-fatal, background)
     const webhookUrl = process.env.WEBHOOK_URL;

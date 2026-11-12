@@ -107,6 +107,10 @@ export async function saveScore(
     // got a plausible ~20 StackScore instead of an error. Anything that reads a score has
     // to be able to ask whether a judge produced it.
     judgeFallback?: boolean; judgeFallbackReason?: string;
+    // Per-call token accounting (AUDIT_TODO B4). Stored on the record, not just logged,
+    // because the question it answers -- what scoring costs at 10x/100x volume -- is asked
+    // retrospectively, and by then the logs have rotated.
+    judgeUsage?: import("./judge").JudgeUsage;
   }
 ) {
   const data = Object.fromEntries(
@@ -164,7 +168,7 @@ const SCORE_LIST_FIELDS = [
   "sessionId", "publicSlug", "stackScore", "levelScores", "axisScores",
   "role", "candidateName", "candidateEmail", "decision", "hiredAt",
   "notes", "createdAt", "rowLabel", "columnLabel", "fastSubmit",
-  "tabSwitchCount", "summary", "judgeFallback",
+  "tabSwitchCount", "summary", "judgeFallback", "judgeUsage",
 ];
 
 export async function getAllScores(limit = 100): Promise<Record<string, unknown>[]> {

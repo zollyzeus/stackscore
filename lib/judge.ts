@@ -6,6 +6,56 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const MODEL = "claude-opus-5-5";
 
+/**
+ * Per-call token accounting for one judge invocation.
+ *
+ * Persisted on every score record (AUDIT_TODO B4) rather than only logged, because the
+ * question this answers -- what does scoring cost at 10x and 100x the current volume --
+ * is asked retrospectively, and a log line that has rotated away cannot answer it.
+ *
+ * `cacheReadTokens` vs `cacheCreationTokens` is the load-bearing pair. The system prompt is
+ * marked `cache_control: ephemeral` (a 5-minute TTL) but judge calls fire when candidates
+ * finish assessments -- sporadic, uncorrelated events -- and systemPrompt(role) splits into
+ * three variants by level. If creation dominates reads, every call pays the 1.25x write
+ * premium and never collects the 0.05x read discount, which is worse than not caching at
+ * all. That is a measurement, not a guess, and this is the field that settles it.
+ */
+export interface JudgeUsage {
+  inputTokens: number;
+  outputTokens: number;
+  cacheCreationTokens: number;
+  cacheReadTokens: number;
+  /** Wall-clock ms for the call that produced the result, including any retry. */
+  durationMs: number;
+  /** Attempt number that succeeded: 1 normally, 2 when the first call was retried. */
+  attempts: number;
+  model: string;
+  /** USD, derived from PRICING below. Stored so a later price change cannot rewrite history. */
+  estimatedCostUsd: number;
+}
+
+/**
+ * USD per million tokens for the judge model. Hardcoded deliberately: the stored cost must
+ * reflect what the call cost *when it ran*, so pulling live prices would silently restate
+ * past records. Update alongside MODEL, and leave existing records alone.
+ */
+const PRICING = {
+  "claude-opus-5-5": { input: 4, output: 20, cacheWrite: 5, cacheRead: 0.2 },
+} as const;
+
+export function estimateCostUsd(model: string, u: Omit<JudgeUsage, "estimatedCostUsd" | "durationMs" | "attempts" | "model">): number {
+  const p = PRICING[model as keyof typeof PRICING];
+  if (!p) return 0; // Unknown model: record zero rather than invent a number.
+  const usd =
+    (u.inputTokens * p.input +
+      u.outputTokens * p.output +
+      u.cacheCreationTokens * p.cacheWrite +
+      u.cacheReadTokens * p.cacheRead) / 1_000_000;
+  // Six decimals: a single call is ~$0.1, and rounding to cents would floor most of the
+  // signal to zero at the per-call level where the comparison actually happens.
+  return Math.round(usd * 1e6) / 1e6;
+}
+
 /** All axis ids defined by the rubric (D1–D5, K1–K6 at time of writing). */
 const AXIS_IDS: AxisId[] = rubric.levels.flatMap((l) => l.axes.map((a) => a.id as AxisId));
 
@@ -160,7 +210,7 @@ export async function judgeSubmission(input: {
   twistResponse: string;
   debugResponse: string;
   role?: string;
-}): Promise<{ axisScores: AxisScores; feedback: Record<AxisId, string>; evidence: Record<AxisId, string>; thinkingLog?: string }> {
+}): Promise<{ axisScores: AxisScores; feedback: Record<AxisId, string>; evidence: Record<AxisId, string>; thinkingLog?: string; usage?: JudgeUsage }> {
   const userContent = `Evaluate the following submission.
 
 <problem_brief>
@@ -191,6 +241,9 @@ ${sanitiseCandidateText(input.debugResponse)}
   // assessment. Structured outputs make this rare, but the cost of losing a submission
   // is far higher than the cost of a second call.
   let lastErr: unknown;
+  // Timed across the whole loop, so a retried call reports the latency a candidate actually
+  // waited rather than the latency of the attempt that happened to succeed.
+  const startedAt = Date.now();
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const stream = await client.messages.stream({
@@ -229,7 +282,22 @@ ${sanitiseCandidateText(input.debugResponse)}
       // Structured outputs return bare JSON; tolerate stray fences defensively.
       const json = raw.replace(/^```(?:json)?\s*/m, "").replace(/\s*```$/m, "").trim();
       const validated = validateJudgeOutput(JSON.parse(json));
-      return { ...validated, thinkingLog };
+
+      const u = msg.usage;
+      const counts = {
+        inputTokens: u?.input_tokens ?? 0,
+        outputTokens: u?.output_tokens ?? 0,
+        cacheCreationTokens: u?.cache_creation_input_tokens ?? 0,
+        cacheReadTokens: u?.cache_read_input_tokens ?? 0,
+      };
+      const usage: JudgeUsage = {
+        ...counts,
+        durationMs: Date.now() - startedAt,
+        attempts: attempt + 1,
+        model: MODEL,
+        estimatedCostUsd: estimateCostUsd(MODEL, counts),
+      };
+      return { ...validated, thinkingLog, usage };
     } catch (err) {
       lastErr = err;
     }

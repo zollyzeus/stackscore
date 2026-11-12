@@ -9,6 +9,7 @@ import { computeScoreCard, type AxisScores, type AxisId } from "../lib/scoring";
 import { runJavaScript } from "../lib/sandbox";
 import rubric from "../data/rubric.json";
 import { isJudgedScore } from "../lib/firestore";
+import { estimateCostUsd } from "../lib/judge";
 
 const SECRET = "test-secret-at-least-32-characters-long!!";
 
@@ -348,5 +349,52 @@ test.describe("judge fallback quarantine", () => {
     const avgJudged = judged.reduce((a, s) => a + s.stackScore, 0) / judged.length;
     expect(Math.round(avgAll)).toBe(45);
     expect(Math.round(avgJudged)).toBe(70);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/judge.ts — token accounting (AUDIT_TODO B4)
+// ─────────────────────────────────────────────────────────────────────────────
+test.describe("judge cost accounting", () => {
+  const z = { inputTokens: 0, outputTokens: 0, cacheCreationTokens: 0, cacheReadTokens: 0 };
+
+  test("prices each token class at its own rate", () => {
+    // 1M of each class, priced 4 / 20 / 5 / 0.2 USD per million.
+    const usd = estimateCostUsd("claude-opus-5-5", {
+      inputTokens: 1_000_000, outputTokens: 1_000_000,
+      cacheCreationTokens: 1_000_000, cacheReadTokens: 1_000_000,
+    });
+    expect(usd).toBeCloseTo(4 + 20 + 5 + 0.2, 6);
+  });
+
+  test("output dominates a realistic judge call", () => {
+    // Roughly one real call: cached 3.9k system prefix, ~4k submission, ~5k output.
+    const usd = estimateCostUsd("claude-opus-5-5", {
+      ...z, inputTokens: 4_000, outputTokens: 5_000, cacheReadTokens: 3_900,
+    });
+    const outputShare = (5_000 * 20) / 1_000_000 / usd;
+    expect(outputShare).toBeGreaterThan(0.8);
+  });
+
+  test("a cache that is always written and never read costs MORE than no cache", () => {
+    // The measurement B4 exists to settle. Writing the prefix every call bills at 1.25x
+    // base and collects no discount, so the 'optimisation' is a 25% surcharge on that
+    // portion. If production shows creation >> reads, the cache_control should come off.
+    const alwaysWrites = estimateCostUsd("claude-opus-5-5", { ...z, cacheCreationTokens: 3_900 });
+    const noCache = estimateCostUsd("claude-opus-5-5", { ...z, inputTokens: 3_900 });
+    const alwaysReads = estimateCostUsd("claude-opus-5-5", { ...z, cacheReadTokens: 3_900 });
+    expect(alwaysWrites).toBeGreaterThan(noCache);
+    expect(alwaysReads).toBeLessThan(noCache);
+  });
+
+  test("an unknown model records zero rather than inventing a price", () => {
+    expect(estimateCostUsd("some-future-model", { ...z, outputTokens: 5_000 })).toBe(0);
+  });
+
+  test("per-call cost keeps enough precision to compare calls", () => {
+    // Rounding to cents would floor a single call's cost to 0.00 and destroy the signal.
+    const usd = estimateCostUsd("claude-opus-5-5", { ...z, cacheReadTokens: 3_900 });
+    expect(usd).toBeGreaterThan(0);
+    expect(usd).toBeLessThan(0.01);
   });
 });
