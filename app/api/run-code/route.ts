@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
   if (!["build", "adapt", "debug"].includes(stage)) {
     return NextResponse.json({ error: "Invalid stage" }, { status: 400 });
   }
+  if (typeof code !== "string" || code.length > 50_000) {
+    return NextResponse.json({ error: "code too large" }, { status: 400 });
+  }
 
   const result = runJavaScript(code);
 

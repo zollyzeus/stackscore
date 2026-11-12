@@ -52,6 +52,8 @@ JOBS=$(cat <<'EOF'
 calibration-monitor|0 6 * * *|/api/tasks/calibration-monitor|Daily judge rule-compliance probe (B5)
 rejudge-partials|*/15 * * * *|/api/tasks/rejudge|Re-judge scores the calibrated judge failed (A3)
 drain-pending-scoring|*/10 * * * *|/api/tasks/drain-pending|Score submissions queued during a hold (B5)
+fill-scenario-bank|0 */2 * * *|/api/tasks/fill-scenario-bank|Refill pre-generated scenario bank to target pool size every 2 hours
+reclaim-bank-packs|*/30 * * * *|/api/tasks/reclaim-bank-packs|Return orphaned __pending__ scenario bank packs to available pool
 EOF
 )
 

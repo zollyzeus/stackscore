@@ -13,6 +13,9 @@ export async function POST(req: NextRequest) {
     if (!question?.trim()) {
       return NextResponse.json({ reply: "Could you elaborate on that?" });
     }
+    if (typeof question !== "string" || question.length > 4000) {
+      return NextResponse.json({ error: "question too large" }, { status: 400 });
+    }
 
     // Route design proposal and adapt response to their own transcript stages
     // so the judge can read them from the correct stage fields.

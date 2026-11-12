@@ -1,7 +1,7 @@
-# StackScore Demo — Voiceover Script v2
+# StackScore Demo — Voiceover Script v3
 
 **Accent:** Male, Indian English (confident, measured pace)
-**Total target duration:** ~2 minutes
+**Total target duration:** ~2:30 minutes
 **TTS tools:** ElevenLabs / Murf.ai / Play.ht — use "Arjun" or "Rajan" voice preset
 
 ---
@@ -15,20 +15,23 @@
 
 ---
 
-## Scene 2 — The Seven Axes (0:12 – 0:22)
+## Scene 2 — The Eleven Axes (0:12 – 0:22)
 
-> "Every submission is evaluated across seven rubric axes —
-> communication, correctness and edge cases, system design, security,
-> testing and observability, adaptability to change, and debugging skill —
+> "Every submission is evaluated across eleven independent rubric axes —
+> five design axes covering requirement framing, architecture, tradeoff reasoning,
+> constraint satisfaction, and adaptability,
+> plus six code axes covering implementation quality, correctness, security,
+> testing, and AI collaboration —
 > producing a single, calibrated StackScore from zero to one hundred."
 
 ---
 
-## Scene 3 — Score Card Preview (0:22 – 0:30)
+## Scene 3 — Score Card Preview (0:22 – 0:32)
 
 > "The result is a StackScore with design and code sub-scores,
-> a radar chart mapping every axis,
-> and per-axis judge feedback — not just a number, but a development roadmap."
+> a radar chart mapping all eleven axes,
+> and per-axis judge feedback with evidence quotes —
+> not just a number, but a development roadmap with a full audit trail."
 
 ---
 
@@ -84,10 +87,10 @@
 
 ## Scene 10 — Score Card (1:16 – 1:26)
 
-> "After submission, Claude Opus 5.5 with extended reasoning
-> judges the full submission against the seven-axis rubric
-> and generates a verifiable score card.
-> Per-axis feedback tells candidates exactly where they excelled and where to improve."
+> "After submission, Claude Opus 5.5 with extended thinking
+> judges the full submission against the eleven-axis rubric —
+> each axis scored independently to prevent halo bias —
+> and generates a verifiable score card with per-axis feedback and evidence quotes."
 
 ---
 
@@ -109,26 +112,36 @@
 
 ---
 
-## Scene 13 — Dashboard and Panel (1:42 – 1:52)
+## Scene 13 — Dashboard, Panel, and Reviewer (1:42 – 1:55)
 
 > "Hiring teams get a live dashboard — shortlist, hold, or reject candidates, export to CSV.
-> Panelists create custom assessments with their own brief,
-> assigned to a specific candidate with an expiry window.
-> Human reviewers see only the submission and rubric — never the AI scores —
-> eliminating anchoring bias from the review process."
+> Panelists create custom assessments assigned to a specific candidate with an expiry window.
+> When the AI judge can't reach a confident verdict, a human reviewer task is created automatically.
+> The reviewer sees only the submission and rubric anchor bands — never the AI scores —
+> so every human review is free of anchoring bias."
 
 ---
 
-## Scene 14 — Compare, History, Reliability (1:52 – 2:02)
+## Scene 14 — Scenario Bank and Resilience (1:55 – 2:08)
+
+> "And StackScore never goes down during an interview window.
+> A pre-generated scenario bank — refilled every two hours by Cloud Scheduler —
+> provides instant fallback when Gemini is unavailable.
+> Generation flows through Gemini 3.8 Flash, then Claude Haiku 5.5, then the bank,
+> then a static template — four tiers of resilience, zero candidate-facing downtime."
+
+---
+
+## Scene 15 — Compare and History (2:08 – 2:16)
 
 > "Side-by-side radar comparison makes hiring decisions defensible.
 > Candidates track their own trajectory across multiple attempts.
-> And if Gemini is ever unavailable, a pre-generated scenario bank
-> ensures the assessment always starts — zero candidate-facing downtime."
+> Every score is immutable, shareable, and auditable —
+> a permanent engineering record that travels with the candidate."
 
 ---
 
-## Scene 15 — Closing on Landing (2:02 – 2:12)
+## Scene 16 — Closing on Landing (2:16 – 2:26)
 
 > "StackScore is the full picture of an engineer — in one number.
 > Not what they memorised.
@@ -146,4 +159,5 @@
 - Add lower-thirds: scene label + current stage name
 - Highlight the provenance badge and benchmarks page — these are the key MOAT differentiators
 - Export: 1920×1080, MP4 H.264, max 100 MB for Hack2skill upload
-- Target total runtime: 2:00–2:15
+- Target total runtime: 2:20–2:30
+- New scenes to capture: scenario bank admin view (/admin → scenario-bank stats), reviewer /review/[id] page (blur out scores), provenance badge close-up

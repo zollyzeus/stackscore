@@ -60,7 +60,7 @@ test.describe("Demo recording", () => {
     await pause(STEP_PAUSE);
 
     // ── SCENE 2: Scroll to axes ──────────────────────────────────────────
-    // VO: "Every submission is judged across eleven axes — five design thinking axes and six code quality axes — producing a single holistic StackScore."
+    // VO: "Every submission is independently scored across eleven rubric axes — five design thinking axes and six code quality axes — producing a single holistic StackScore."
     await smoothScroll(page, 600);
     await pause(STEP_PAUSE);
     await smoothScroll(page, 1200);
