@@ -444,6 +444,84 @@ once in the preamble must be restated in the anchors of every axis it constrains
 regressed only because its anchors happen to align with the coherence requirement rather
 than cut across it.
 
+### D13. Degraded-judge pipeline and blind human review — **[DONE 2026-11-12]**
+
+Replaces D11's mechanical fallback with a three-stage flow, tracked by `judgeStatus`:
+
+| status | meaning | shown as |
+|---|---|---|
+| `judged` | the calibrated judge scored it | normal |
+| `partial` | calibrated pass failed; an **uncalibrated** judge pass produced these | "Partially judged, subject to change" + re-judge queued |
+| `pending_review` | both passes failed | "On hold for human verification", no numbers at all |
+| `reviewed` | a human scored it against the same rubric | "Human reviewed", authoritative again |
+
+The uncalibrated pass is a genuinely *different* attempt, not a retry: the likeliest causes
+of a calibrated failure are the prompt's size and the structured-output schema it drives, so
+re-running the identical prompt mostly reproduces the identical failure. And model judgement,
+even uncalibrated, beats placeholder arithmetic.
+
+The re-judge queue is Firestore-backed rather than an in-process retry. Judge failures are
+rarely instantaneous-transient — a 400, an outage, an exhausted quota all outlast a request —
+and a durable task survives the process, retries with backoff, and leaves a **countable
+record of how often the judge fails**, which is the signal D8 needed and a silent in-process
+retry would have hidden. After `MAX_REJUDGE_ATTEMPTS` it escalates to human review rather
+than burning calls forever.
+
+**The bias boundary is enforced server-side**, in `/api/review/submission`: it returns the
+brief and the candidate's five stages and withholds `axisScores`, `stackScore`,
+`levelScores`, `feedback`, `evidence`, `thinkingLog`, `summary`, `tips` and `judgeUsage`. A
+page that received the scores and declined to render them would already have lost — the data
+would be in the HTML, in the network tab, and one careless refactor from being shown.
+
+The review form shows the rubric **including the anchor bands**, which is what D10's anchors
+are for: a 0-100 scale that means the same thing to a human as to the judge. Every axis must
+be scored before submission; a partially-filled form is rejected rather than defaulting the
+missing axes to zero, which would read as a deliberate "worth nothing" judgement nobody made.
+
+Held cards suppress the headline number, the level rollups **and the radar**. Eleven zeroed
+axes draw a collapsed shape that reads as "scored terribly" rather than "not scored", and the
+picture carries further than the banner above it.
+
+### D14. Calibration monitor and scoring hold — **[DONE 2026-11-12]**
+
+Two questions, two mechanisms:
+
+1. **"Has the thing being calibrated changed?"** — a fingerprint over `data/rubric.json` plus
+   the judge's model and effort. Free and instant. The rubric is in the hash because its
+   anchors are rendered into the system prompt: editing an anchor *is* editing the judge
+   (D10). Without this the repo keeps citing committed sweep numbers for a judge that no
+   longer exists.
+2. **"Is the judge still obeying its own rules?"** — a live probe of only the hard-assertion
+   fixtures, once each: 3 calls, ~$0.40, against the full sweep's 30 calls and ~$4. Those
+   follow from explicit instructions in the judge's own prompt, so a failure is a bug rather
+   than drift. Band compliance, slope and R² are **not** checked here — they need the full
+   sweep's statistical power.
+
+A probe that cannot reach the judge is recorded as an **outage, not a calibration failure**.
+Conflating them would pause scoring over a network blip.
+
+The hold is controlled from the **admin console**, not an env var: it has to be switchable
+during an incident, and an env var means a redeploy — the slowest possible way to react, and
+it needs someone at a terminal rather than at the admin page.
+
+Two separate switches, deliberately: *"let the monitor pause scoring automatically"*
+(default **off**) and *"pause scoring now"*. Collapsing them would hide the dangerous case —
+an operator could not tell whether they were stopping the pipeline now or arming an
+automation to stop it later, unattended. A manual hold is recorded as non-automatic so a
+passing probe cannot silently override an operator's decision.
+
+**While held, candidates still complete and submit.** That is non-negotiable: nobody loses an
+hour of five-stage work to an operational decision. Submissions queue in `pendingScoring` and
+are drained by a worker that refuses to run while the hold is active, since draining into a
+paused pipeline produces exactly the results the pause existed to prevent.
+
+Firestore being unreachable returns "not held" rather than failing closed — an infrastructure
+blip must not stop the product scoring.
+
+**Not yet live:** every worker endpoint fails closed without `TASK_RUNNER_SECRET`, which does
+not exist yet (the create was classifier-denied). Run `scripts/setup-task-secrets.sh`, then
+`scripts/deploy-rest.sh`, then `scripts/setup-schedulers.sh`, in that order.
+
 ### D11. Judge failure silently produced a fake score — **[FIXED 2026-11-12 — was the highest-severity open item]**
 
 Found 2026-11-12 while assessing deployment readiness. Not a regression; it has always
@@ -509,6 +587,45 @@ one that stops the silent-bad-data failure; offering a retry is the better produ
 and a larger change to the assessment flow.
 
 ---
+
+### A16. Admin IP allowlist removed; admin signs in via OTP or Google — **[DONE 2026-11-12]**
+
+The allowlist pinned admin access to one residential IP. It failed closed and *invisibly*
+every time that address changed: the app served normally and the admin console simply
+vanished, which happened on 2026-11-12 and cost a redeploy. A control that reliably locks
+out the legitimate operator, while doing nothing against anyone who can reach the origin
+from an allowed network, is not buying the depth it appears to.
+
+**This is a real reduction in defence depth — two factors to one — so the identity checks
+behind it now carry the full weight:**
+
+- an admin session is only minted for an address on the admin registry, checked identically
+  in `send-otp`, `verify-otp` and the Google callback;
+- `requireAdmin()` and `requirePanelistOrAdmin()` re-check the registry on **every** request,
+  so revoking an admin takes effect immediately rather than at token expiry;
+- admin sessions remain 12h against the panelist 7d.
+
+Google sign-in can now mint an admin session, gated by the same registry.
+
+The admin tests improved as a side effect, and the improvement is the tell that the
+allowlist was load-bearing in the wrong way. They had been written as
+`expect([403, 200]).toContain(status)` — which passes when the endpoint *serves the page* —
+and skipped against production because the runner's IP was not allow-listed. Both
+weaknesses came from the allowlist. They now assert 307 to `/login?type=admin`, 401 on every
+admin API, rejection of forged cookies, and no anonymous self-grant via `POST
+/api/admin/admins`, and they run against prod.
+
+### A17. Reviewer role (fourth identity) — **[DONE 2026-11-12]**
+
+`ss_reviewer` cookie, a `reviewers` registry an admin manages, OTP and Google both gated by
+it. Deliberately **not** a flag on panelists: a panelist can already see AI scores across the
+dashboard, and a review is only worth having if it was produced without them. Separating the
+identity makes that structural rather than a promise about a UI.
+
+`lib/reviewerAuth.ts` is split three ways — auth / `reviewerRegistry` / `requireReviewer` —
+because `middleware.ts` imports it to verify the cookie and middleware runs on the Edge
+runtime, which cannot load `firebase-admin`. A dynamic import was **not** enough: webpack
+bundles it anyway, so the dependency has to be absent, not deferred.
 
 ## E. DevOps / rollout
 
@@ -659,23 +776,9 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
    demonstrates that the judge is *consistent* and *follows its stated rules*; it does not
    establish that the scores are *correct*. Do not apply the per-axis offsets the report
    computes until 2+ panelists have re-scored the fixtures blind. See `data/calibration/README.md`.
-2. **Admin is currently locked out: `ADMIN_IP_ALLOWLIST` is empty on the live revision.**
-   Self-inflicted. The REST deploy used `cloudbuild.yaml`'s substitution *defaults*, and
-   `_ADMIN_IP_ALLOWLIST` defaults to `''`; the previous deploy had been given an IP on the
-   command line. With it empty, `middleware.ts` denies every request to `/admin` and
-   `/api/admin` with 403 — fail-closed, so it is safe, but nobody can reach the admin UI. The
-   previous value was `115.99.15.185` (recovered from revision `stackscore-00060-non`). I
-   prepared the patch but was not permitted to apply it. Fix with either:
-
-   ```bash
-   # redeploy with the substitution (also re-verifies through the canary gate)
-   bash scripts/deploy-rest.sh   # after setting _ADMIN_IP_ALLOWLIST in cloudbuild.yaml
-   # or set the default in cloudbuild.yaml so it cannot be dropped again
-   ```
-
-   Better: give `_ADMIN_IP_ALLOWLIST` a real default in `cloudbuild.yaml` instead of `''`, so
-   a deploy that forgets the flag does not silently lock admin out. A residential IP also
-   changes, so this will recur.
+2. ~~Admin locked out by an empty `ADMIN_IP_ALLOWLIST`~~ — **resolved 2026-11-12 by
+   removing the allowlist entirely (A1).** Admin now signs in via OTP or Google, gated by
+   the admin registry. See A16.
 3. **Secret rotation after B1.** The sandbox escape could have exposed every value in
    `process.env` to anyone who ran code on the deployed service. I did **not** rotate, because
    it invalidates live sessions mid-demo-prep and the provider keys must be regenerated at the
@@ -705,12 +808,19 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
 
 1. ~~D11 — judge-failure fallback presenting as a real score~~ — **done 2026-11-12.**
 2. ~~D12 — the two anchor regressions~~ — **done 2026-11-12**, sweep gate green.
-3. **Add token-usage instrumentation.** `msg.usage` is never read, so no one can say what a
-   judge call costs, whether the prompt cache is ever hit, or whether cost moved when the
-   anchors added ~2.5k tokens to the system prompt. Log `input_tokens`,
-   `cache_creation_input_tokens`, `cache_read_input_tokens` and `output_tokens` per call.
-4. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
-5. Decide on secret rotation (gap 3).
-6. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
-7. Panel re-label the calibration fixtures (gap 1), then re-run and reconsider normalization.
-8. Post-submission: C1 (dedupe the assessment flow), C2, C4.
+3. ~~Token-usage instrumentation~~ — **done 2026-11-12 (B4).** `JudgeUsage` is persisted on
+   every score record and logged under `JUDGE_USAGE`. The first question to ask of it: does
+   `cacheCreationTokens` dominate `cacheReadTokens`? If so the ephemeral prompt cache is
+   costing a 1.25x write premium it never recovers, and `cache_control` should come off.
+4. **Create `TASK_RUNNER_SECRET` and wire the schedulers** — until then A3's re-judge queue
+   and B5's monitor are inert (they fail closed, so this is safe, not broken). Three scripts,
+   in order: `setup-task-secrets.sh`, `deploy-rest.sh`, `setup-schedulers.sh`.
+5. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
+6. Panel re-label the calibration fixtures (gap 1), then re-run and reconsider normalization.
+7. Post-submission: C1 (dedupe the assessment flow), C2, C4.
+
+Secret rotation after B1 was **declined on 2026-11-12**: nothing has been rolled out to
+end users, and the B1 sandbox tests verify that candidate code cannot reach `process.env`,
+`fetch` or any host-bridging global. That reasoning covers the current sandbox; it does not
+cover the window before B1 was fixed, which is acceptable only because the URL was never
+shared.
