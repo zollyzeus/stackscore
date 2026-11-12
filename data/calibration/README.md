@@ -337,6 +337,31 @@ follows the proposal", which is trivially true when there is almost no code. F07
 near-empty fixture) scored K1 52. Fixed by making insufficient material score low rather
 than middle: F07's K1 is now 32.3.
 
+### Current evidence (2026-11-13, after the D1 cap change)
+
+`post-anchor-report.md` and `post-anchor-runs.json` were regenerated against the current
+rubric, so the fingerprint matches and the numbers below are **not** stale. Everything moved
+slightly in the right direction relative to the 2026-11-12 sweep:
+
+| Measure | 2026-11-12 | **2026-11-13** | |
+|---|---|---|---|
+| Rule compliance | 5/5 | **5/5** | gate green |
+| Fixtures in band | 8/10 | **8/10** | both misses low and small |
+| Mean StackScore sd | 1.2 | **1.1** | worst range 4 → 3 |
+| Slope | 0.799 | **0.814** | less compressed |
+| R² | 0.848 | **0.879** | ordering tighter |
+| Error at expected 15 | +5.5 | **+4.8** | |
+| Error at expected 85 | −8.5 | **−8.2** | |
+| F09/D1 (cap check) | 30 (at the ceiling) | **22.3** (22, 22, 23) | 8 points of headroom |
+| F02 halo gap (D2 vs D3/D4) | 34.7 | **38.7** | still flagged, still improving |
+
+Nothing was tuned to produce this; the only change since the previous sweep was lowering the
+D1 coherence cap, which affects one axis on one fixture. The rest is run-to-run movement, and
+that it moved uniformly slightly better is worth no more than that.
+
+**Recommended offsets are now `D3 +5` and `K5 +14`. Neither is applied**, for the reason
+that has not changed: they are fitted to bands one person authored. See `PANEL.md`.
+
 ### Amendment 2026-11-12: the D1 coherence cap was lowered 30 → 25
 
 The numbers above were measured with the cap at 30, which is also the ceiling of F09's D1
@@ -350,11 +375,11 @@ worst run exactly at the cap, 5 points of headroom to the ceiling, roughly 2-3x 
 run-to-run sd. Widening the band instead would have been the weaker fix: it loosens the
 check without removing the collision, which would return the moment anyone retuned the cap.
 
-**This changes the fingerprint, so the full sweep above is now one rubric edit stale.** The
-effect is confined to F09's D1 (the cap only fires on designs that contradict their own
-Stage 1 findings), so the slope, R² and per-axis leans are still broadly representative —
-but the next full sweep supersedes them, and the daily monitor will report
-`fingerprintChanged: true` until one runs.
+This changed the fingerprint and made the then-current sweep stale. **That has since been
+resolved**: the full sweep was re-run on 2026-11-13 against the current rubric and the
+committed report reflects it — see "Current evidence" above. F09/D1 settled at 22.3
+(22, 22, 23), eight points clear of the assertion ceiling, which is the headroom the cap
+change was for.
 
 ### Known, and deliberately not chased
 
