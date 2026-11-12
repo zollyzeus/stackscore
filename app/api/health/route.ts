@@ -18,7 +18,16 @@ export async function GET() {
     "FIREBASE_PRIVATE_KEY",
     "PANELIST_SECRET",
   ];
-  const optional = ["CANDIDATE_SECRET", "ADMIN_SECRET", "CREDENTIAL_SECRET", "ADMIN_EMAILS", "RESEND_API_KEY", "GOOGLE_CLIENT_ID"];
+  // TASK_RUNNER_SECRET and REVIEWER_SECRET are listed so their absence is *observable*
+  // rather than inferred. Both fail safe when missing -- the scheduled workers reject every
+  // request, and reviewer tokens fall back to a namespaced derivation of PANELIST_SECRET --
+  // and a safe failure that nothing reports is exactly how the admin lockout and the
+  // non-functional judge each went unnoticed. "false" here means the re-judge queue and the
+  // calibration monitor are inert.
+  const optional = [
+    "CANDIDATE_SECRET", "ADMIN_SECRET", "CREDENTIAL_SECRET", "ADMIN_EMAILS",
+    "RESEND_API_KEY", "GOOGLE_CLIENT_ID", "TASK_RUNNER_SECRET", "REVIEWER_SECRET",
+  ];
 
   const missing = required.filter((k) => !process.env[k]);
   const configured = Object.fromEntries(

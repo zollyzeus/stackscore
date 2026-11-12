@@ -26,16 +26,21 @@ steps:
 
         # Errors are NOT swallowed here. On 2026-11-12 this step emitted version 261112000
         # while the build it replaced was 261112001 -- a newer build carrying a LOWER version
-        # string. A 000 suffix is unreachable from either branch below, so SEQ had evaluated
-        # to empty and printf rendered it as zero; '2>/dev/null' meant nothing said why, and
-        # the build reported success. Version strings are how a human picks a rollback
-        # target, so a version this scheme cannot compute must stop the deploy, not label it.
+        # string, which breaks the one thing a version tag is for: picking a rollback target.
+        #
+        # Root cause: gcloud's get() list formatter joins multiple values with a SEMICOLON,
+        # not a comma. An image carrying both its version tag and :latest comes back as the
+        # single field "261112002;latest", the old `tr ',' '\n'` left it intact, the suffix
+        # became "002;latest", arithmetic expansion failed, SEQ was empty, and printf '%03d'
+        # rendered empty as 000. With `2>/dev/null` nothing said why and the build reported
+        # success. Split on both separators, and refuse to guess when anything still looks
+        # wrong -- a version this scheme cannot compute must stop the deploy, not label it.
         if ! RAW=$$(gcloud container images list-tags gcr.io/$PROJECT_ID/stackscore \
               --format="get(tags)" --filter="tags~^$$TODAY"); then
           echo "ERROR: could not list existing image tags; refusing to guess a version." >&2
           exit 1
         fi
-        EXISTING=$$(printf '%s\n' "$$RAW" | tr ',' '\n' | grep "^$$TODAY" | sort -n | tail -1 || true)
+        EXISTING=$$(printf '%s\n' "$$RAW" | tr ',;' '\n\n' | grep "^$$TODAY" | sort -n | tail -1 || true)
 
         if [ -z "$$EXISTING" ]; then
           SEQ=1
