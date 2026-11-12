@@ -300,9 +300,16 @@ For 'integer' type, properties maximum, minimum are not supported
 ```
 
 `judgeSubmission()` treats a 400 as retryable, retries once, then throws — so **every
-scoring call failed**, and it failed at the *last* step of a completed five-stage
-assessment, destroying the whole submission. The product's core function did not work at
-all.
+scoring call failed**, at the *last* step of a completed five-stage assessment. The
+product's core function did not work at all.
+
+**Correction (2026-11-12, found while answering "is it deployable"):** this entry first
+recorded the consequence as "destroying the whole submission". That is wrong, and the truth
+is worse. `app/api/evaluate/route.ts` catches the throw and substitutes mechanical fallback
+scores (20 for each axis with content, 0 for each without, K6 = 50). So during the outage
+candidates did not get an error — they got a **plausible-looking StackScore around 20** that
+was persisted, shown on the public score page, emailed to the panelist and posted to the
+webhook, with nothing anywhere marking it as not-a-real-score. See D11.
 
 Fixed by removing the two keywords; the 0-100 bound is stated in the system prompt and
 enforced in `validateJudgeOutput()`, which clamps. The schema guarantees shape, validation
@@ -380,6 +387,48 @@ cannot tell which they got. The honest fix is a null/not-assessed state distinct
 0-100 scale, which is a schema and UI change across `AxisScores`, the score page and the
 weighted sum — out of scope for an anchors change, and it would alter how the StackScore is
 computed for every submission with no AI evidence. Flagged rather than smuggled in.
+
+### D11. Judge failure silently produces a fake score — **[OPEN — highest-severity open item]**
+
+Found 2026-11-12 while assessing deployment readiness. Not a regression; it has always
+behaved this way, and it is what made D8 survive in production instead of paging someone.
+
+`app/api/evaluate/route.ts:76` catches any `judgeSubmission` throw and substitutes
+mechanical scores — 20 per axis that has content, 0 per axis that does not, K6 = 50 — with
+generic per-axis feedback ("Code was submitted."). That scorecard is then treated exactly
+like a real one: `computeScoreCard` runs on it, `saveScore` persists it, the public
+`/score/{slug}` page renders it, the panelist notification email quotes the number, and the
+`assessment.completed` webhook posts it downstream. **Nothing in the stored document records
+that the judge never ran** — `saveScore`'s `meta` has no such field, so the fallback is
+unrecoverable after the fact, including for the scores already written during the D8 outage.
+
+Why this is the worst open item rather than a rough edge:
+
+- A candidate is told they scored ~20 on a real assessment. For a hiring product that is a
+  false negative delivered with full confidence, and it is invisible to everyone involved.
+- It defeats the monitoring that exists. `/api/health` reports the service healthy because
+  the service *is* healthy; the judge is a downstream dependency whose failure is swallowed.
+  The only trace is a `console.error` line in Cloud Run logs with no alert on it.
+- It converts an outage into bad data. An error is recoverable — the candidate retries. A
+  persisted fake score is not, and it propagates to the webhook consumer immediately.
+
+The fallback itself is defensible: losing a completed five-stage submission is genuinely
+bad, which is the reasoning in D6. The defect is that the fallback is **indistinguishable
+from a real result**. Minimum fix, roughly in order of value per unit of work:
+
+1. Persist `judgeFallback: true` (plus the error reason) through `saveScore`, and add the
+   field to the `scores` schema and the panel's allowed-field list in `lib/firestore.ts:149`.
+2. Mark it on `/score/[id]` and in the panelist email — a scorecard the judge did not
+   produce must not present as one.
+3. Exclude fallback scores from the dashboard, `/benchmarks` and `/compare` aggregates, or
+   they silently drag every cohort statistic toward 20.
+4. Alert on it: a counter or a log-based metric on the `[evaluate] judge failed` line. This
+   is the piece that would have caught D8 on the first real submission.
+5. Reconsider whether the candidate should instead be offered a retry, which keeps the
+   submission and avoids inventing a number at all.
+
+Until at least (1) and (2) ship, the honest statement is that the product can report a score
+it did not measure. That is a different claim from the one the calibration dataset supports.
 
 ---
 
@@ -544,17 +593,29 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
    `auth-setup` detects the rejection and skips rather than reporting a false failure. Every anonymous/attacker-perspective assertion — the
    security-relevant surface — does run against production. Creating the secrets (item 1) and
    supplying `CANDIDATE_SECRET` in the environment closes the gap.
-6. **Deferred by choice:** C1, C2, C3, C4, C7, E6 — see those entries.
+6. **A judge failure is reported as a real score.** See D11 — the highest-severity open
+   item in this document, and the one that should gate the next candidate-facing deploy.
+7. **No token-usage instrumentation.** `msg.usage` is never read anywhere, so the per-call
+   cost, the prompt-cache hit rate and the effect of D10's +2.5k system-prompt tokens are
+   all unmeasured. Every cost figure in this document is an estimate, including that one.
+8. **Deferred by choice:** C1, C2, C3, C4, C7, E6 — see those entries.
 
 ## Suggested next steps
 
-1. **Re-run the calibration sweep against the new anchors** (~$4, `RUN_CALIBRATION=1`).
+1. **D11 — stop the judge-failure fallback from presenting as a real score.** Highest
+   severity open item; it is the reason D8 ran in production unnoticed. At minimum persist
+   and display a `judgeFallback` flag before the next candidate-facing deploy.
+2. **Add token-usage instrumentation.** `msg.usage` is never read, so no one can say what a
+   judge call costs, whether the prompt cache is ever hit, or whether cost moved when the
+   anchors added ~2.5k tokens to the system prompt. Log `input_tokens`,
+   `cache_creation_input_tokens`, `cache_read_input_tokens` and `output_tokens` per call.
+3. **Re-run the calibration sweep against the new anchors** (~$4, `RUN_CALIBRATION=1`).
    The anchors (D10) are the intervention for every calibration finding and nothing has
    measured them. Until that runs, the repo claims a fix it has not demonstrated — and the
    specific risk is *overshoot*, the anchors pushing weak submissions up as hard as they
    were pushing strong ones down.
-2. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
-3. Decide on secret rotation (gap 3).
-4. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
-5. Panel re-label the calibration fixtures (gap 1), then re-run and reconsider normalization.
-6. Post-submission: C1 (dedupe the assessment flow), C2, C4.
+4. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
+5. Decide on secret rotation (gap 3).
+6. Architecture slide reframe (F2) and the outcome-capture promotion (F3).
+7. Panel re-label the calibration fixtures (gap 1), then re-run and reconsider normalization.
+8. Post-submission: C1 (dedupe the assessment flow), C2, C4.
