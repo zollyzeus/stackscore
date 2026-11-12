@@ -10,6 +10,8 @@ export async function notifyPanelist(params: {
   gradeLabel: string;
   scoreCardUrl: string;
   role?: string;
+  /** True when the judge never ran and the score is a mechanical substitute. */
+  judgeFallback?: boolean;
 }) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.PANELIST_EMAIL;
@@ -22,8 +24,19 @@ export async function notifyPanelist(params: {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://stackscore.anandrajendran.dev";
   const url = `${baseUrl}${params.scoreCardUrl}`;
 
+  // A substituted score must never arrive looking like an assessment result. The subject
+  // line carries it too, because that is all a panelist sees in a notification list.
+  const fallbackBanner = params.judgeFallback
+    ? `<p style="margin:0 0 16px;padding:12px 14px;border-radius:8px;background:#3a1d1d;border:1px solid #a33;color:#ffb3b3;font-size:13px;">
+<strong>This is not a judged score.</strong> The AI judge failed for this submission and
+StackScore substituted a mechanical placeholder based only on which stages contained text.
+It does not reflect the quality of the work. Re-run the evaluation before making any
+decision on this candidate.</p>`
+    : "";
+
   const html = `
 <p>Hi,</p>
+${fallbackBanner}
 <p><strong>${candidateDisplay}</strong> has completed their StackScore assessment${params.role ? ` (${params.role} level)` : ""}.</p>
 <table cellpadding="0" cellspacing="0" style="margin:16px 0;">
   <tr><td style="padding:4px 12px 4px 0;color:#888;font-size:13px;">Score</td><td style="font-size:22px;font-weight:800;color:#f5a623;">${params.stackScore} / 100</td></tr>
@@ -43,7 +56,9 @@ export async function notifyPanelist(params: {
       body: JSON.stringify({
         from: "StackScore <noreply@stackscore.anandrajendran.dev>",
         to: [to],
-        subject: `StackScore: ${candidateDisplay} scored ${params.stackScore} (${params.gradeLabel})`,
+        subject: params.judgeFallback
+          ? `[JUDGE FAILED - not a real score] StackScore: ${candidateDisplay}`
+          : `StackScore: ${candidateDisplay} scored ${params.stackScore} (${params.gradeLabel})`,
         html,
       }),
     });

@@ -1,57 +1,57 @@
 {
   "runs": 3,
-  "generatedAt": "2026-11-12T10:53:01.019Z",
+  "generatedAt": "2026-11-12T13:30:06.315Z",
   "results": [
     {
       "fixtureId": "F01",
       "run": 1,
       "axisScores": {
         "D1": 88,
-        "D2": 79,
-        "D3": 84,
-        "D4": 80,
-        "D5": 75,
-        "K1": 82,
-        "K2": 55,
-        "K3": 78,
-        "K4": 50,
-        "K5": 40,
+        "D2": 80,
+        "D3": 82,
+        "D4": 76,
+        "D5": 76,
+        "K1": 78,
+        "K2": 52,
+        "K3": 74,
+        "K4": 44,
+        "K5": 38,
         "K6": 50
       },
-      "stackScore": 71
+      "stackScore": 69
     },
     {
       "fixtureId": "F01",
       "run": 2,
       "axisScores": {
-        "D1": 88,
-        "D2": 79,
-        "D3": 82,
-        "D4": 75,
-        "D5": 72,
-        "K1": 80,
-        "K2": 56,
-        "K3": 76,
-        "K4": 52,
-        "K5": 40,
+        "D1": 86,
+        "D2": 72,
+        "D3": 78,
+        "D4": 72,
+        "D5": 76,
+        "K1": 78,
+        "K2": 48,
+        "K3": 72,
+        "K4": 40,
+        "K5": 34,
         "K6": 50
       },
-      "stackScore": 70
+      "stackScore": 66
     },
     {
       "fixtureId": "F01",
       "run": 3,
       "axisScores": {
-        "D1": 86,
-        "D2": 76,
-        "D3": 72,
-        "D4": 72,
-        "D5": 72,
+        "D1": 88,
+        "D2": 78,
+        "D3": 80,
+        "D4": 76,
+        "D5": 68,
         "K1": 80,
-        "K2": 52,
-        "K3": 74,
-        "K4": 48,
-        "K5": 40,
+        "K2": 50,
+        "K3": 76,
+        "K4": 38,
+        "K5": 33,
         "K6": 50
       },
       "stackScore": 67
@@ -60,19 +60,19 @@
       "fixtureId": "F02",
       "run": 1,
       "axisScores": {
-        "D1": 27,
-        "D2": 52,
-        "D3": 12,
-        "D4": 8,
-        "D5": 33,
-        "K1": 58,
-        "K2": 27,
-        "K3": 58,
-        "K4": 35,
-        "K5": 30,
+        "D1": 32,
+        "D2": 50,
+        "D3": 14,
+        "D4": 10,
+        "D5": 38,
+        "K1": 52,
+        "K2": 42,
+        "K3": 56,
+        "K4": 28,
+        "K5": 32,
         "K6": 50
       },
-      "stackScore": 34
+      "stackScore": 35
     },
     {
       "fixtureId": "F02",
@@ -80,121 +80,103 @@
       "axisScores": {
         "D1": 30,
         "D2": 50,
-        "D3": 20,
+        "D3": 22,
         "D4": 8,
-        "D5": 28,
+        "D5": 24,
         "K1": 45,
         "K2": 30,
-        "K3": 60,
-        "K4": 35,
+        "K3": 58,
+        "K4": 28,
         "K5": 30,
         "K6": 50
       },
-      "stackScore": 34
+      "stackScore": 33
     },
     {
       "fixtureId": "F02",
       "run": 3,
       "axisScores": {
-        "D1": 28,
-        "D2": 58,
-        "D3": 12,
+        "D1": 27,
+        "D2": 42,
+        "D3": 14,
         "D4": 8,
         "D5": 28,
         "K1": 50,
         "K2": 32,
-        "K3": 62,
-        "K4": 32,
-        "K5": 33,
+        "K3": 58,
+        "K4": 22,
+        "K5": 27,
         "K6": 50
       },
-      "stackScore": 34
+      "stackScore": 31
     },
     {
       "fixtureId": "F03",
       "run": 1,
       "axisScores": {
-        "D1": 42,
-        "D2": 66,
-        "D3": 58,
-        "D4": 58,
-        "D5": 60,
-        "K1": 70,
-        "K2": 50,
+        "D1": 46,
+        "D2": 65,
+        "D3": 56,
+        "D4": 52,
+        "D5": 55,
+        "K1": 68,
+        "K2": 48,
         "K3": 62,
-        "K4": 50,
-        "K5": 32,
+        "K4": 35,
+        "K5": 33,
         "K6": 50
       },
-      "stackScore": 55
+      "stackScore": 52
     },
     {
       "fixtureId": "F03",
       "run": 2,
       "axisScores": {
-        "D1": 42,
-        "D2": 67,
+        "D1": 46,
+        "D2": 64,
         "D3": 56,
-        "D4": 58,
-        "D5": 64,
-        "K1": 72,
-        "K2": 48,
+        "D4": 55,
+        "D5": 55,
+        "K1": 70,
+        "K2": 45,
         "K3": 62,
-        "K4": 48,
-        "K5": 32,
+        "K4": 36,
+        "K5": 36,
         "K6": 50
       },
-      "stackScore": 55
+      "stackScore": 53
     },
     {
       "fixtureId": "F03",
       "run": 3,
       "axisScores": {
-        "D1": 46,
-        "D2": 68,
-        "D3": 58,
-        "D4": 63,
-        "D5": 56,
-        "K1": 68,
-        "K2": 48,
+        "D1": 40,
+        "D2": 66,
+        "D3": 55,
+        "D4": 57,
+        "D5": 55,
+        "K1": 66,
+        "K2": 50,
         "K3": 60,
-        "K4": 48,
-        "K5": 36,
-        "K6": 50
-      },
-      "stackScore": 55
-    },
-    {
-      "fixtureId": "F04",
-      "run": 1,
-      "axisScores": {
-        "D1": 60,
-        "D2": 76,
-        "D3": 60,
-        "D4": 60,
-        "D5": 60,
-        "K1": 35,
-        "K2": 32,
-        "K3": 58,
-        "K4": 42,
-        "K5": 15,
+        "K4": 38,
+        "K5": 32,
         "K6": 50
       },
       "stackScore": 52
     },
     {
       "fixtureId": "F04",
-      "run": 2,
+      "run": 1,
       "axisScores": {
-        "D1": 56,
+        "D1": 55,
         "D2": 72,
         "D3": 58,
-        "D4": 58,
-        "D5": 62,
-        "K1": 30,
-        "K2": 30,
-        "K3": 58,
-        "K4": 40,
+        "D4": 60,
+        "D5": 60,
+        "K1": 35,
+        "K2": 32,
+        "K3": 55,
+        "K4": 35,
         "K5": 12,
         "K6": 50
       },
@@ -202,108 +184,126 @@
     },
     {
       "fixtureId": "F04",
-      "run": 3,
+      "run": 2,
       "axisScores": {
         "D1": 60,
-        "D2": 73,
+        "D2": 74,
         "D3": 58,
-        "D4": 63,
-        "D5": 63,
+        "D4": 60,
+        "D5": 64,
         "K1": 35,
-        "K2": 30,
-        "K3": 60,
-        "K4": 42,
+        "K2": 32,
+        "K3": 58,
+        "K4": 30,
         "K5": 12,
         "K6": 50
       },
-      "stackScore": 52
+      "stackScore": 51
+    },
+    {
+      "fixtureId": "F04",
+      "run": 3,
+      "axisScores": {
+        "D1": 64,
+        "D2": 73,
+        "D3": 62,
+        "D4": 66,
+        "D5": 66,
+        "K1": 34,
+        "K2": 30,
+        "K3": 58,
+        "K4": 36,
+        "K5": 14,
+        "K6": 50
+      },
+      "stackScore": 53
     },
     {
       "fixtureId": "F05",
       "run": 1,
       "axisScores": {
-        "D1": 28,
-        "D2": 55,
+        "D1": 33,
+        "D2": 56,
         "D3": 18,
+        "D4": 27,
+        "D5": 38,
+        "K1": 74,
+        "K2": 60,
+        "K3": 63,
+        "K4": 50,
+        "K5": 64,
+        "K6": 50
+      },
+      "stackScore": 46
+    },
+    {
+      "fixtureId": "F05",
+      "run": 2,
+      "axisScores": {
+        "D1": 30,
+        "D2": 56,
+        "D3": 17,
         "D4": 26,
-        "D5": 36,
+        "D5": 42,
         "K1": 78,
-        "K2": 68,
+        "K2": 63,
         "K3": 62,
-        "K4": 57,
-        "K5": 67,
+        "K4": 54,
+        "K5": 66,
         "K6": 50
       },
       "stackScore": 47
     },
     {
       "fixtureId": "F05",
-      "run": 2,
+      "run": 3,
       "axisScores": {
         "D1": 30,
-        "D2": 53,
-        "D3": 24,
+        "D2": 55,
+        "D3": 26,
         "D4": 28,
-        "D5": 26,
-        "K1": 72,
-        "K2": 66,
+        "D5": 40,
+        "K1": 76,
+        "K2": 64,
         "K3": 62,
         "K4": 55,
         "K5": 66,
         "K6": 50
       },
-      "stackScore": 46
-    },
-    {
-      "fixtureId": "F05",
-      "run": 3,
-      "axisScores": {
-        "D1": 30,
-        "D2": 55,
-        "D3": 20,
-        "D4": 27,
-        "D5": 33,
-        "K1": 74,
-        "K2": 63,
-        "K3": 62,
-        "K4": 56,
-        "K5": 66,
-        "K6": 50
-      },
-      "stackScore": 46
+      "stackScore": 48
     },
     {
       "fixtureId": "F06",
       "run": 1,
       "axisScores": {
-        "D1": 15,
-        "D2": 35,
-        "D3": 10,
-        "D4": 12,
-        "D5": 30,
-        "K1": 75,
-        "K2": 35,
+        "D1": 12,
+        "D2": 30,
+        "D3": 8,
+        "D4": 10,
+        "D5": 20,
+        "K1": 76,
+        "K2": 30,
         "K3": 58,
-        "K4": 45,
-        "K5": 12,
+        "K4": 33,
+        "K5": 8,
         "K6": 50
       },
-      "stackScore": 32
+      "stackScore": 28
     },
     {
       "fixtureId": "F06",
       "run": 2,
       "axisScores": {
-        "D1": 15,
+        "D1": 18,
         "D2": 32,
-        "D3": 18,
+        "D3": 10,
         "D4": 12,
-        "D5": 22,
-        "K1": 72,
-        "K2": 35,
-        "K3": 58,
-        "K4": 40,
-        "K5": 12,
+        "D5": 35,
+        "K1": 78,
+        "K2": 32,
+        "K3": 56,
+        "K4": 35,
+        "K5": 10,
         "K6": 50
       },
       "stackScore": 31
@@ -313,15 +313,15 @@
       "run": 3,
       "axisScores": {
         "D1": 15,
-        "D2": 32,
-        "D3": 10,
+        "D2": 33,
+        "D3": 15,
         "D4": 12,
-        "D5": 25,
-        "K1": 74,
+        "D5": 30,
+        "K1": 76,
         "K2": 30,
         "K3": 55,
-        "K4": 45,
-        "K5": 10,
+        "K4": 27,
+        "K5": 8,
         "K6": 50
       },
       "stackScore": 30
@@ -330,51 +330,51 @@
       "fixtureId": "F07",
       "run": 1,
       "axisScores": {
-        "D1": 10,
-        "D2": 18,
+        "D1": 15,
+        "D2": 12,
         "D3": 4,
-        "D4": 8,
-        "D5": 6,
-        "K1": 52,
+        "D4": 4,
+        "D5": 8,
+        "K1": 30,
         "K2": 8,
-        "K3": 28,
+        "K3": 22,
         "K4": 22,
         "K5": 4,
         "K6": 50
       },
-      "stackScore": 17
+      "stackScore": 15
     },
     {
       "fixtureId": "F07",
       "run": 2,
       "axisScores": {
-        "D1": 10,
+        "D1": 15,
         "D2": 18,
         "D3": 4,
-        "D4": 8,
+        "D4": 6,
         "D5": 6,
-        "K1": 52,
-        "K2": 10,
-        "K3": 32,
-        "K4": 28,
-        "K5": 4,
+        "K1": 32,
+        "K2": 8,
+        "K3": 28,
+        "K4": 20,
+        "K5": 3,
         "K6": 50
       },
-      "stackScore": 18
+      "stackScore": 16
     },
     {
       "fixtureId": "F07",
       "run": 3,
       "axisScores": {
-        "D1": 12,
-        "D2": 14,
-        "D3": 4,
-        "D4": 5,
+        "D1": 20,
+        "D2": 22,
+        "D3": 6,
+        "D4": 6,
         "D5": 8,
-        "K1": 52,
-        "K2": 10,
-        "K3": 30,
-        "K4": 25,
+        "K1": 35,
+        "K2": 12,
+        "K3": 28,
+        "K4": 20,
         "K5": 5,
         "K6": 50
       },
@@ -385,49 +385,31 @@
       "run": 1,
       "axisScores": {
         "D1": 8,
-        "D2": 24,
-        "D3": 4,
-        "D4": 6,
-        "D5": 8,
+        "D2": 14,
+        "D3": 3,
+        "D4": 4,
+        "D5": 5,
         "K1": 15,
-        "K2": 25,
-        "K3": 28,
+        "K2": 18,
+        "K3": 24,
         "K4": 2,
-        "K5": 4,
+        "K5": 3,
         "K6": 50
       },
-      "stackScore": 15
+      "stackScore": 12
     },
     {
       "fixtureId": "F08",
       "run": 2,
       "axisScores": {
-        "D1": 8,
-        "D2": 22,
-        "D3": 4,
-        "D4": 5,
-        "D5": 8,
+        "D1": 10,
+        "D2": 15,
+        "D3": 3,
+        "D4": 4,
+        "D5": 6,
         "K1": 15,
         "K2": 18,
         "K3": 28,
-        "K4": 2,
-        "K5": 4,
-        "K6": 50
-      },
-      "stackScore": 14
-    },
-    {
-      "fixtureId": "F08",
-      "run": 3,
-      "axisScores": {
-        "D1": 8,
-        "D2": 22,
-        "D3": 3,
-        "D4": 4,
-        "D5": 5,
-        "K1": 12,
-        "K2": 20,
-        "K3": 24,
         "K4": 2,
         "K5": 3,
         "K6": 50
@@ -435,19 +417,37 @@
       "stackScore": 13
     },
     {
+      "fixtureId": "F08",
+      "run": 3,
+      "axisScores": {
+        "D1": 10,
+        "D2": 15,
+        "D3": 3,
+        "D4": 4,
+        "D5": 5,
+        "K1": 15,
+        "K2": 18,
+        "K3": 22,
+        "K4": 2,
+        "K5": 3,
+        "K6": 50
+      },
+      "stackScore": 12
+    },
+    {
       "fixtureId": "F09",
       "run": 1,
       "axisScores": {
-        "D1": 32,
-        "D2": 68,
+        "D1": 28,
+        "D2": 72,
         "D3": 22,
-        "D4": 5,
+        "D4": 6,
         "D5": 52,
-        "K1": 82,
+        "K1": 80,
         "K2": 52,
-        "K3": 58,
-        "K4": 45,
-        "K5": 36,
+        "K3": 60,
+        "K4": 38,
+        "K5": 42,
         "K6": 50
       },
       "stackScore": 44
@@ -456,33 +456,33 @@
       "fixtureId": "F09",
       "run": 2,
       "axisScores": {
-        "D1": 35,
-        "D2": 70,
+        "D1": 30,
+        "D2": 66,
         "D3": 22,
-        "D4": 6,
-        "D5": 55,
+        "D4": 8,
+        "D5": 45,
         "K1": 80,
-        "K2": 50,
-        "K3": 62,
-        "K4": 42,
-        "K5": 36,
+        "K2": 55,
+        "K3": 58,
+        "K4": 32,
+        "K5": 40,
         "K6": 50
       },
-      "stackScore": 45
+      "stackScore": 42
     },
     {
       "fixtureId": "F09",
       "run": 3,
       "axisScores": {
-        "D1": 30,
-        "D2": 64,
-        "D3": 22,
-        "D4": 5,
-        "D5": 42,
-        "K1": 82,
-        "K2": 48,
-        "K3": 58,
-        "K4": 42,
+        "D1": 28,
+        "D2": 72,
+        "D3": 20,
+        "D4": 8,
+        "D5": 45,
+        "K1": 80,
+        "K2": 55,
+        "K3": 55,
+        "K4": 35,
         "K5": 35,
         "K6": 50
       },
@@ -492,15 +492,15 @@
       "fixtureId": "F10",
       "run": 1,
       "axisScores": {
-        "D1": 76,
+        "D1": 80,
         "D2": 84,
-        "D3": 80,
-        "D4": 72,
-        "D5": 80,
+        "D3": 79,
+        "D4": 70,
+        "D5": 78,
         "K1": 86,
-        "K2": 64,
-        "K3": 78,
-        "K4": 63,
+        "K2": 72,
+        "K3": 80,
+        "K4": 56,
         "K5": 72,
         "K6": 50
       },
@@ -510,34 +510,34 @@
       "fixtureId": "F10",
       "run": 2,
       "axisScores": {
-        "D1": 77,
-        "D2": 82,
-        "D3": 76,
-        "D4": 72,
-        "D5": 78,
-        "K1": 83,
-        "K2": 73,
-        "K3": 80,
-        "K4": 64,
-        "K5": 76,
+        "D1": 80,
+        "D2": 84,
+        "D3": 79,
+        "D4": 74,
+        "D5": 79,
+        "K1": 86,
+        "K2": 71,
+        "K3": 81,
+        "K4": 60,
+        "K5": 73,
         "K6": 50
       },
-      "stackScore": 74
+      "stackScore": 75
     },
     {
       "fixtureId": "F10",
       "run": 3,
       "axisScores": {
-        "D1": 76,
+        "D1": 78,
         "D2": 84,
-        "D3": 78,
+        "D3": 79,
         "D4": 68,
-        "D5": 77,
-        "K1": 86,
-        "K2": 72,
-        "K3": 80,
-        "K4": 60,
-        "K5": 76,
+        "D5": 82,
+        "K1": 85,
+        "K2": 66,
+        "K3": 78,
+        "K4": 58,
+        "K5": 74,
         "K6": 50
       },
       "stackScore": 74
@@ -555,8 +555,8 @@
           "label": "Requirement Framing",
           "values": [
             88,
-            88,
-            86
+            86,
+            88
           ],
           "mean": 87.33333333333333,
           "sd": 1.1547005383792517,
@@ -572,83 +572,83 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            79,
-            79,
-            76
+            80,
+            72,
+            78
           ],
-          "mean": 78,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 76.66666666666667,
+          "sd": 4.163331998932265,
+          "range": 8,
           "band": [
             78,
             95
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": -1.3333333333333286,
+          "inBand": false
         },
         {
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            84,
             82,
-            72
+            78,
+            80
           ],
-          "mean": 79.33333333333333,
-          "sd": 6.429100507328636,
-          "range": 12,
+          "mean": 80,
+          "sd": 2,
+          "range": 4,
           "band": [
             82,
             98
           ],
-          "deviation": -2.6666666666666714,
+          "deviation": -2,
           "inBand": false
         },
         {
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            80,
-            75,
-            72
+            76,
+            72,
+            76
           ],
-          "mean": 75.66666666666667,
-          "sd": 4.041451884327381,
-          "range": 8,
+          "mean": 74.66666666666667,
+          "sd": 2.3094010767585034,
+          "range": 4,
           "band": [
             78,
             95
           ],
-          "deviation": -2.3333333333333286,
+          "deviation": -3.3333333333333286,
           "inBand": false
         },
         {
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            75,
-            72,
-            72
+            76,
+            76,
+            68
           ],
-          "mean": 73,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 73.33333333333333,
+          "sd": 4.618802153517006,
+          "range": 8,
           "band": [
             82,
             98
           ],
-          "deviation": -9,
+          "deviation": -8.666666666666671,
           "inBand": false
         },
         {
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            82,
-            80,
+            78,
+            78,
             80
           ],
-          "mean": 80.66666666666667,
+          "mean": 78.66666666666667,
           "sd": 1.1547005383792517,
           "range": 2,
           "band": [
@@ -662,29 +662,29 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            55,
-            56,
-            52
+            52,
+            48,
+            50
           ],
-          "mean": 54.333333333333336,
-          "sd": 2.0816659994661326,
+          "mean": 50,
+          "sd": 2,
           "range": 4,
           "band": [
             70,
             92
           ],
-          "deviation": -15.666666666666664,
+          "deviation": -20,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
-            78,
-            76,
-            74
+            74,
+            72,
+            76
           ],
-          "mean": 76,
+          "mean": 74,
           "sd": 2,
           "range": 4,
           "band": [
@@ -698,37 +698,37 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            50,
-            52,
-            48
+            44,
+            40,
+            38
           ],
-          "mean": 50,
-          "sd": 2,
-          "range": 4,
+          "mean": 40.666666666666664,
+          "sd": 3.055050463303893,
+          "range": 6,
           "band": [
             55,
             85
           ],
-          "deviation": -5,
+          "deviation": -14.333333333333336,
           "inBand": false
         },
         {
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            40,
-            40,
-            40
+            38,
+            34,
+            33
           ],
-          "mean": 40,
-          "sd": 0,
-          "range": 0,
+          "mean": 35,
+          "sd": 2.6457513110645907,
+          "range": 5,
           "band": [
             40,
             70
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": -5,
+          "inBand": false
         },
         {
           "axis": "K6",
@@ -748,18 +748,18 @@
       ],
       "stackScore": {
         "values": [
-          71,
-          70,
+          69,
+          66,
           67
         ],
-        "mean": 69.33333333333333,
-        "sd": 2.081665999466133,
-        "range": 4,
+        "mean": 67.33333333333333,
+        "sd": 1.5275252316519468,
+        "range": 3,
         "band": [
           74,
           92
         ],
-        "deviation": -4.666666666666671,
+        "deviation": -6.666666666666671,
         "inBand": false
       },
       "dissociation": null,
@@ -775,13 +775,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            27,
+            32,
             30,
-            28
+            27
           ],
-          "mean": 28.333333333333332,
-          "sd": 1.5275252316519468,
-          "range": 3,
+          "mean": 29.666666666666668,
+          "sd": 2.5166114784235836,
+          "range": 5,
           "band": [
             25,
             55
@@ -793,30 +793,30 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            52,
             50,
-            58
+            50,
+            42
           ],
-          "mean": 53.333333333333336,
-          "sd": 4.163331998932266,
+          "mean": 47.333333333333336,
+          "sd": 4.618802153517007,
           "range": 8,
           "band": [
             65,
             88
           ],
-          "deviation": -11.666666666666664,
+          "deviation": -17.666666666666664,
           "inBand": false
         },
         {
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            12,
-            20,
-            12
+            14,
+            22,
+            14
           ],
-          "mean": 14.666666666666666,
-          "sd": 4.618802153517006,
+          "mean": 16.666666666666668,
+          "sd": 4.618802153517007,
           "range": 8,
           "band": [
             8,
@@ -829,49 +829,49 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            8,
+            10,
             8,
             8
           ],
-          "mean": 8,
-          "sd": 0,
-          "range": 0,
+          "mean": 8.666666666666666,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             10,
             38
           ],
-          "deviation": -2,
+          "deviation": -1.333333333333334,
           "inBand": false
         },
         {
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            33,
-            28,
+            38,
+            24,
             28
           ],
-          "mean": 29.666666666666668,
-          "sd": 2.886751345948129,
-          "range": 5,
+          "mean": 30,
+          "sd": 7.211102550927978,
+          "range": 14,
           "band": [
             30,
             58
           ],
-          "deviation": -0.33333333333333215,
-          "inBand": false
+          "deviation": 0,
+          "inBand": true
         },
         {
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            58,
+            52,
             45,
             50
           ],
-          "mean": 51,
-          "sd": 6.557438524302,
-          "range": 13,
+          "mean": 49,
+          "sd": 3.605551275463989,
+          "range": 7,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -880,31 +880,31 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            27,
+            42,
             30,
             32
           ],
-          "mean": 29.666666666666668,
-          "sd": 2.5166114784235836,
-          "range": 5,
+          "mean": 34.666666666666664,
+          "sd": 6.429100507328637,
+          "range": 12,
           "band": [
             55,
             82
           ],
-          "deviation": -25.333333333333332,
+          "deviation": -20.333333333333336,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            56,
             58,
-            60,
-            62
+            58
           ],
-          "mean": 60,
-          "sd": 2,
-          "range": 4,
+          "mean": 57.333333333333336,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -913,13 +913,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            35,
-            35,
-            32
+            28,
+            28,
+            22
           ],
-          "mean": 34,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 26,
+          "sd": 3.4641016151377544,
+          "range": 6,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -928,13 +928,13 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
+            32,
             30,
-            30,
-            33
+            27
           ],
-          "mean": 31,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 29.666666666666668,
+          "sd": 2.5166114784235836,
+          "range": 5,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -957,18 +957,18 @@
       ],
       "stackScore": {
         "values": [
-          34,
-          34,
-          34
+          35,
+          33,
+          31
         ],
-        "mean": 34,
-        "sd": 0,
-        "range": 0,
+        "mean": 33,
+        "sd": 2,
+        "range": 4,
         "band": [
           35,
           60
         ],
-        "deviation": -1,
+        "deviation": -2,
         "inBand": false
       },
       "dissociation": {
@@ -980,9 +980,9 @@
           "D4"
         ],
         "why": "The architecture itself (dedicated service, atomic Lua, correct under 6 containers, observability) is competent engineering and D2 scores 'soundness and clarity of the proposed structure'. Only the cost reasoning is absent, which is what D3 and D4 measure. If D2 falls with them, the judge is scoring an overall impression.",
-        "holdsMean": 53.333333333333336,
-        "dropsMean": 11.333333333333334,
-        "gap": 42,
+        "holdsMean": 47.333333333333336,
+        "dropsMean": 12.666666666666666,
+        "gap": 34.66666666666667,
         "holdsInBand": false,
         "pass": false
       },
@@ -998,29 +998,29 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            42,
-            42,
-            46
+            46,
+            46,
+            40
           ],
-          "mean": 43.333333333333336,
-          "sd": 2.309401076758503,
-          "range": 4,
+          "mean": 44,
+          "sd": 3.4641016151377544,
+          "range": 6,
           "band": [
             48,
             75
           ],
-          "deviation": -4.666666666666664,
+          "deviation": -4,
           "inBand": false
         },
         {
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            66,
-            67,
-            68
+            65,
+            64,
+            66
           ],
-          "mean": 67,
+          "mean": 65,
           "sd": 1,
           "range": 2,
           "band": [
@@ -1034,13 +1034,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            58,
             56,
-            58
+            56,
+            55
           ],
-          "mean": 57.333333333333336,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 55.666666666666664,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": [
             45,
             72
@@ -1052,12 +1052,12 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            58,
-            58,
-            63
+            52,
+            55,
+            57
           ],
-          "mean": 59.666666666666664,
-          "sd": 2.8867513459481287,
+          "mean": 54.666666666666664,
+          "sd": 2.516611478423583,
           "range": 5,
           "band": [
             48,
@@ -1070,13 +1070,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            60,
-            64,
-            56
+            55,
+            55,
+            55
           ],
-          "mean": 60,
-          "sd": 4,
-          "range": 8,
+          "mean": 55,
+          "sd": 0,
+          "range": 0,
           "band": [
             42,
             70
@@ -1088,11 +1088,11 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
+            68,
             70,
-            72,
-            68
+            66
           ],
-          "mean": 70,
+          "mean": 68,
           "sd": 2,
           "range": 4,
           "band": [
@@ -1106,19 +1106,19 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            50,
             48,
-            48
+            45,
+            50
           ],
-          "mean": 48.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 47.666666666666664,
+          "sd": 2.516611478423583,
+          "range": 5,
           "band": [
             48,
             75
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": -0.3333333333333357,
+          "inBand": false
         },
         {
           "axis": "K3",
@@ -1142,154 +1142,11 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            50,
-            48,
-            48
-          ],
-          "mean": 48.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        },
-        {
-          "axis": "K5",
-          "label": "Testing & Observability",
-          "values": [
-            32,
-            32,
-            36
-          ],
-          "mean": 33.333333333333336,
-          "sd": 2.309401076758503,
-          "range": 4,
-          "band": [
             35,
-            65
+            36,
+            38
           ],
-          "deviation": -1.6666666666666643,
-          "inBand": false
-        },
-        {
-          "axis": "K6",
-          "label": "AI Collaboration Quality",
-          "values": [
-            50,
-            50,
-            50
-          ],
-          "mean": 50,
-          "sd": 0,
-          "range": 0,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        }
-      ],
-      "stackScore": {
-        "values": [
-          55,
-          55,
-          55
-        ],
-        "mean": 55,
-        "sd": 0,
-        "range": 0,
-        "band": [
-          45,
-          68
-        ],
-        "deviation": 0,
-        "inBand": true
-      },
-      "dissociation": null,
-      "hardAssertions": []
-    },
-    {
-      "id": "F04",
-      "label": "Mid — good design, materially broken code",
-      "role": "Mid",
-      "runs": 3,
-      "axes": [
-        {
-          "axis": "D1",
-          "label": "Requirement Framing",
-          "values": [
-            60,
-            56,
-            60
-          ],
-          "mean": 58.666666666666664,
-          "sd": 2.309401076758503,
-          "range": 4,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        },
-        {
-          "axis": "D2",
-          "label": "Architecture & Component Design",
-          "values": [
-            76,
-            72,
-            73
-          ],
-          "mean": 73.66666666666667,
-          "sd": 2.0816659994661326,
-          "range": 4,
-          "band": [
-            58,
-            85
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "D3",
-          "label": "Tradeoff Reasoning",
-          "values": [
-            60,
-            58,
-            58
-          ],
-          "mean": 58.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": [
-            50,
-            78
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "D4",
-          "label": "Constraint Satisfaction",
-          "values": [
-            60,
-            58,
-            63
-          ],
-          "mean": 60.333333333333336,
-          "sd": 2.516611478423583,
-          "range": 5,
-          "band": [
-            52,
-            80
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "D5",
-          "label": "Adaptability",
-          "values": [
-            60,
-            62,
-            63
-          ],
-          "mean": 61.666666666666664,
+          "mean": 36.333333333333336,
           "sd": 1.5275252316519465,
           "range": 3,
           "band": null,
@@ -1297,88 +1154,22 @@
           "inBand": null
         },
         {
-          "axis": "K1",
-          "label": "Design-Code Alignment",
-          "values": [
-            35,
-            30,
-            35
-          ],
-          "mean": 33.333333333333336,
-          "sd": 2.8867513459481287,
-          "range": 5,
-          "band": [
-            5,
-            35
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "K2",
-          "label": "Correctness & Edge Cases",
-          "values": [
-            32,
-            30,
-            30
-          ],
-          "mean": 30.666666666666668,
-          "sd": 1.1547005383792515,
-          "range": 2,
-          "band": [
-            5,
-            35
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "K3",
-          "label": "Code Quality & Maintainability",
-          "values": [
-            58,
-            58,
-            60
-          ],
-          "mean": 58.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": [
-            45,
-            75
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "K4",
-          "label": "Security & Defensive Coding",
-          "values": [
-            42,
-            40,
-            42
-          ],
-          "mean": 41.333333333333336,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        },
-        {
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            15,
-            12,
-            12
+            33,
+            36,
+            32
           ],
-          "mean": 13,
-          "sd": 1.7320508075688772,
-          "range": 3,
-          "band": null,
-          "deviation": null,
-          "inBand": null
+          "mean": 33.666666666666664,
+          "sd": 2.0816659994661326,
+          "range": 4,
+          "band": [
+            35,
+            65
+          ],
+          "deviation": -1.3333333333333357,
+          "inBand": false
         },
         {
           "axis": "K6",
@@ -1399,12 +1190,221 @@
       "stackScore": {
         "values": [
           52,
-          50,
+          53,
           52
         ],
+        "mean": 52.333333333333336,
+        "sd": 0.5773502691896258,
+        "range": 1,
+        "band": [
+          45,
+          68
+        ],
+        "deviation": 0,
+        "inBand": true
+      },
+      "dissociation": null,
+      "hardAssertions": []
+    },
+    {
+      "id": "F04",
+      "label": "Mid — good design, materially broken code",
+      "role": "Mid",
+      "runs": 3,
+      "axes": [
+        {
+          "axis": "D1",
+          "label": "Requirement Framing",
+          "values": [
+            55,
+            60,
+            64
+          ],
+          "mean": 59.666666666666664,
+          "sd": 4.509249752822894,
+          "range": 9,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "D2",
+          "label": "Architecture & Component Design",
+          "values": [
+            72,
+            74,
+            73
+          ],
+          "mean": 73,
+          "sd": 1,
+          "range": 2,
+          "band": [
+            58,
+            85
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "D3",
+          "label": "Tradeoff Reasoning",
+          "values": [
+            58,
+            58,
+            62
+          ],
+          "mean": 59.333333333333336,
+          "sd": 2.309401076758503,
+          "range": 4,
+          "band": [
+            50,
+            78
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "D4",
+          "label": "Constraint Satisfaction",
+          "values": [
+            60,
+            60,
+            66
+          ],
+          "mean": 62,
+          "sd": 3.4641016151377544,
+          "range": 6,
+          "band": [
+            52,
+            80
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "D5",
+          "label": "Adaptability",
+          "values": [
+            60,
+            64,
+            66
+          ],
+          "mean": 63.333333333333336,
+          "sd": 3.055050463303893,
+          "range": 6,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "K1",
+          "label": "Design-Code Alignment",
+          "values": [
+            35,
+            35,
+            34
+          ],
+          "mean": 34.666666666666664,
+          "sd": 0.5773502691896258,
+          "range": 1,
+          "band": [
+            5,
+            35
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "K2",
+          "label": "Correctness & Edge Cases",
+          "values": [
+            32,
+            32,
+            30
+          ],
+          "mean": 31.333333333333332,
+          "sd": 1.1547005383792515,
+          "range": 2,
+          "band": [
+            5,
+            35
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "K3",
+          "label": "Code Quality & Maintainability",
+          "values": [
+            55,
+            58,
+            58
+          ],
+          "mean": 57,
+          "sd": 1.7320508075688772,
+          "range": 3,
+          "band": [
+            45,
+            75
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "K4",
+          "label": "Security & Defensive Coding",
+          "values": [
+            35,
+            30,
+            36
+          ],
+          "mean": 33.666666666666664,
+          "sd": 3.214550253664318,
+          "range": 6,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "K5",
+          "label": "Testing & Observability",
+          "values": [
+            12,
+            12,
+            14
+          ],
+          "mean": 12.666666666666666,
+          "sd": 1.1547005383792517,
+          "range": 2,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "K6",
+          "label": "AI Collaboration Quality",
+          "values": [
+            50,
+            50,
+            50
+          ],
+          "mean": 50,
+          "sd": 0,
+          "range": 0,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        }
+      ],
+      "stackScore": {
+        "values": [
+          50,
+          51,
+          53
+        ],
         "mean": 51.333333333333336,
-        "sd": 1.1547005383792517,
-        "range": 2,
+        "sd": 1.5275252316519465,
+        "range": 3,
         "band": [
           33,
           58
@@ -1423,9 +1423,9 @@
           "K2"
         ],
         "why": "The design is sound and even names the exact concurrency trap the code then falls into. Design axes should hold while the code axes collapse; if the design axes fall too, a broken implementation is contaminating the design score.",
-        "holdsMean": 64.22222222222223,
-        "dropsMean": 32,
-        "gap": 32.22222222222223,
+        "holdsMean": 64.77777777777777,
+        "dropsMean": 33,
+        "gap": 31.77777777777777,
         "holdsInBand": true,
         "pass": true
       },
@@ -1441,13 +1441,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            28,
+            33,
             30,
             30
           ],
-          "mean": 29.333333333333332,
-          "sd": 1.1547005383792515,
-          "range": 2,
+          "mean": 31,
+          "sd": 1.7320508075688772,
+          "range": 3,
           "band": [
             10,
             38
@@ -1459,31 +1459,31 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            55,
-            53,
+            56,
+            56,
             55
           ],
-          "mean": 54.333333333333336,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 55.666666666666664,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": [
             25,
             55
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": 0.6666666666666643,
+          "inBand": false
         },
         {
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
             18,
-            24,
-            20
+            17,
+            26
           ],
-          "mean": 20.666666666666668,
-          "sd": 3.0550504633038935,
-          "range": 6,
+          "mean": 20.333333333333332,
+          "sd": 4.932882862316247,
+          "range": 9,
           "band": [
             8,
             35
@@ -1495,9 +1495,9 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
+            27,
             26,
-            28,
-            27
+            28
           ],
           "mean": 27,
           "sd": 1,
@@ -1513,31 +1513,31 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            36,
-            26,
-            33
+            38,
+            42,
+            40
           ],
-          "mean": 31.666666666666668,
-          "sd": 5.131601439446884,
-          "range": 10,
+          "mean": 40,
+          "sd": 2,
+          "range": 4,
           "band": [
             8,
             35
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": 5,
+          "inBand": false
         },
         {
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
+            74,
             78,
-            72,
-            74
+            76
           ],
-          "mean": 74.66666666666667,
-          "sd": 3.055050463303893,
-          "range": 6,
+          "mean": 76,
+          "sd": 2,
+          "range": 4,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -1546,31 +1546,31 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            68,
-            66,
-            63
+            60,
+            63,
+            64
           ],
-          "mean": 65.66666666666667,
-          "sd": 2.5166114784235836,
-          "range": 5,
+          "mean": 62.333333333333336,
+          "sd": 2.0816659994661326,
+          "range": 4,
           "band": [
             70,
             95
           ],
-          "deviation": -4.333333333333329,
+          "deviation": -7.666666666666664,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
-            62,
+            63,
             62,
             62
           ],
-          "mean": 62,
-          "sd": 0,
-          "range": 0,
+          "mean": 62.333333333333336,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": [
             60,
             88
@@ -1582,13 +1582,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            57,
-            55,
-            56
+            50,
+            54,
+            55
           ],
-          "mean": 56,
-          "sd": 1,
-          "range": 2,
+          "mean": 53,
+          "sd": 2.6457513110645907,
+          "range": 5,
           "band": [
             50,
             80
@@ -1600,18 +1600,18 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            67,
+            64,
             66,
             66
           ],
-          "mean": 66.33333333333333,
-          "sd": 0.5773502691896257,
-          "range": 1,
+          "mean": 65.33333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             70,
             95
           ],
-          "deviation": -3.6666666666666714,
+          "deviation": -4.666666666666671,
           "inBand": false
         },
         {
@@ -1632,13 +1632,13 @@
       ],
       "stackScore": {
         "values": [
-          47,
           46,
-          46
+          47,
+          48
         ],
-        "mean": 46.333333333333336,
-        "sd": 0.5773502691896258,
-        "range": 1,
+        "mean": 47,
+        "sd": 1,
+        "range": 2,
         "band": [
           30,
           55
@@ -1659,13 +1659,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            15,
-            15,
+            12,
+            18,
             15
           ],
           "mean": 15,
-          "sd": 0,
-          "range": 0,
+          "sd": 3,
+          "range": 6,
           "band": [
             8,
             35
@@ -1677,12 +1677,12 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            35,
+            30,
             32,
-            32
+            33
           ],
-          "mean": 33,
-          "sd": 1.7320508075688772,
+          "mean": 31.666666666666668,
+          "sd": 1.5275252316519465,
           "range": 3,
           "band": [
             12,
@@ -1695,13 +1695,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
+            8,
             10,
-            18,
-            10
+            15
           ],
-          "mean": 12.666666666666666,
-          "sd": 4.618802153517006,
-          "range": 8,
+          "mean": 11,
+          "sd": 3.605551275463989,
+          "range": 7,
           "band": [
             2,
             25
@@ -1713,13 +1713,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            12,
+            10,
             12,
             12
           ],
-          "mean": 12,
-          "sd": 0,
-          "range": 0,
+          "mean": 11.333333333333334,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             5,
             32
@@ -1731,13 +1731,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            30,
-            22,
-            25
+            20,
+            35,
+            30
           ],
-          "mean": 25.666666666666668,
-          "sd": 4.041451884327381,
-          "range": 8,
+          "mean": 28.333333333333332,
+          "sd": 7.637626158259733,
+          "range": 15,
           "band": [
             12,
             42
@@ -1749,31 +1749,31 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            75,
-            72,
-            74
+            76,
+            78,
+            76
           ],
-          "mean": 73.66666666666667,
-          "sd": 1.5275252316519468,
-          "range": 3,
+          "mean": 76.66666666666667,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             40,
             72
           ],
-          "deviation": 1.6666666666666714,
+          "deviation": 4.666666666666671,
           "inBand": false
         },
         {
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            35,
-            35,
+            30,
+            32,
             30
           ],
-          "mean": 33.333333333333336,
-          "sd": 2.8867513459481287,
-          "range": 5,
+          "mean": 30.666666666666668,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": [
             8,
             38
@@ -1786,11 +1786,11 @@
           "label": "Code Quality & Maintainability",
           "values": [
             58,
-            58,
+            56,
             55
           ],
-          "mean": 57,
-          "sd": 1.7320508075688772,
+          "mean": 56.333333333333336,
+          "sd": 1.5275252316519465,
           "range": 3,
           "band": [
             35,
@@ -1803,13 +1803,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            45,
-            40,
-            45
+            33,
+            35,
+            27
           ],
-          "mean": 43.333333333333336,
-          "sd": 2.8867513459481287,
-          "range": 5,
+          "mean": 31.666666666666668,
+          "sd": 4.163331998932266,
+          "range": 8,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -1818,11 +1818,11 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            12,
-            12,
-            10
+            8,
+            10,
+            8
           ],
-          "mean": 11.333333333333334,
+          "mean": 8.666666666666666,
           "sd": 1.1547005383792517,
           "range": 2,
           "band": [
@@ -1850,13 +1850,13 @@
       ],
       "stackScore": {
         "values": [
-          32,
+          28,
           31,
           30
         ],
-        "mean": 31,
-        "sd": 1,
-        "range": 2,
+        "mean": 29.666666666666668,
+        "sd": 1.5275252316519468,
+        "range": 3,
         "band": [
           15,
           40
@@ -1877,13 +1877,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            10,
-            10,
-            12
+            15,
+            15,
+            20
           ],
-          "mean": 10.666666666666666,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 16.666666666666668,
+          "sd": 2.886751345948129,
+          "range": 5,
           "band": [
             0,
             18
@@ -1895,13 +1895,13 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
+            12,
             18,
-            18,
-            14
+            22
           ],
-          "mean": 16.666666666666668,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "mean": 17.333333333333332,
+          "sd": 5.033222956847167,
+          "range": 10,
           "band": [
             0,
             20
@@ -1915,11 +1915,11 @@
           "values": [
             4,
             4,
-            4
+            6
           ],
-          "mean": 4,
-          "sd": 0,
-          "range": 0,
+          "mean": 4.666666666666667,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             12
@@ -1931,13 +1931,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            8,
-            8,
-            5
+            4,
+            6,
+            6
           ],
-          "mean": 7,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 5.333333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             15
@@ -1949,11 +1949,11 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            6,
+            8,
             6,
             8
           ],
-          "mean": 6.666666666666667,
+          "mean": 7.333333333333333,
           "sd": 1.1547005383792517,
           "range": 2,
           "band": [
@@ -1967,18 +1967,18 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            52,
-            52,
-            52
+            30,
+            32,
+            35
           ],
-          "mean": 52,
-          "sd": 0,
-          "range": 0,
+          "mean": 32.333333333333336,
+          "sd": 2.516611478423583,
+          "range": 5,
           "band": [
             0,
             30
           ],
-          "deviation": 22,
+          "deviation": 2.3333333333333357,
           "inBand": false
         },
         {
@@ -1986,12 +1986,12 @@
           "label": "Correctness & Edge Cases",
           "values": [
             8,
-            10,
-            10
+            8,
+            12
           ],
           "mean": 9.333333333333334,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "sd": 2.3094010767585034,
+          "range": 4,
           "band": [
             0,
             20
@@ -2003,18 +2003,18 @@
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            22,
             28,
-            32,
-            30
+            28
           ],
-          "mean": 30,
-          "sd": 2,
-          "range": 4,
+          "mean": 26,
+          "sd": 3.4641016151377544,
+          "range": 6,
           "band": [
             0,
             25
           ],
-          "deviation": 5,
+          "deviation": 1,
           "inBand": false
         },
         {
@@ -2022,12 +2022,12 @@
           "label": "Security & Defensive Coding",
           "values": [
             22,
-            28,
-            25
+            20,
+            20
           ],
-          "mean": 25,
-          "sd": 3,
-          "range": 6,
+          "mean": 20.666666666666668,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": [
             0,
             25
@@ -2040,12 +2040,12 @@
           "label": "Testing & Observability",
           "values": [
             4,
-            4,
+            3,
             5
           ],
-          "mean": 4.333333333333333,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 4,
+          "sd": 1,
+          "range": 2,
           "band": [
             0,
             15
@@ -2071,13 +2071,13 @@
       ],
       "stackScore": {
         "values": [
-          17,
-          18,
+          15,
+          16,
           18
         ],
-        "mean": 17.666666666666668,
-        "sd": 0.5773502691896258,
-        "range": 1,
+        "mean": 16.333333333333332,
+        "sd": 1.5275252316519465,
+        "range": 3,
         "band": [
           0,
           20
@@ -2099,12 +2099,12 @@
           "label": "Requirement Framing",
           "values": [
             8,
-            8,
-            8
+            10,
+            10
           ],
-          "mean": 8,
-          "sd": 0,
-          "range": 0,
+          "mean": 9.333333333333334,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             25
@@ -2116,13 +2116,13 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            24,
-            22,
-            22
+            14,
+            15,
+            15
           ],
-          "mean": 22.666666666666668,
-          "sd": 1.1547005383792515,
-          "range": 2,
+          "mean": 14.666666666666666,
+          "sd": 0.5773502691896257,
+          "range": 1,
           "band": [
             0,
             30
@@ -2134,13 +2134,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            4,
-            4,
+            3,
+            3,
             3
           ],
-          "mean": 3.6666666666666665,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 3,
+          "sd": 0,
+          "range": 0,
           "band": [
             0,
             20
@@ -2152,13 +2152,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            6,
-            5,
+            4,
+            4,
             4
           ],
-          "mean": 5,
-          "sd": 1,
-          "range": 2,
+          "mean": 4,
+          "sd": 0,
+          "range": 0,
           "band": [
             0,
             22
@@ -2170,13 +2170,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            8,
-            8,
+            5,
+            6,
             5
           ],
-          "mean": 7,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 5.333333333333333,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2187,11 +2187,11 @@
           "values": [
             15,
             15,
-            12
+            15
           ],
-          "mean": 14,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 15,
+          "sd": 0,
+          "range": 0,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2200,13 +2200,13 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            25,
             18,
-            20
+            18,
+            18
           ],
-          "mean": 21,
-          "sd": 3.605551275463989,
-          "range": 7,
+          "mean": 18,
+          "sd": 0,
+          "range": 0,
           "band": [
             0,
             35
@@ -2218,13 +2218,13 @@
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            24,
             28,
-            28,
-            24
+            22
           ],
-          "mean": 26.666666666666668,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "mean": 24.666666666666668,
+          "sd": 3.0550504633038935,
+          "range": 6,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2251,13 +2251,13 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            4,
-            4,
+            3,
+            3,
             3
           ],
-          "mean": 3.6666666666666665,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 3,
+          "sd": 0,
+          "range": 0,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2280,13 +2280,13 @@
       ],
       "stackScore": {
         "values": [
-          15,
-          14,
-          13
+          12,
+          13,
+          12
         ],
-        "mean": 14,
-        "sd": 1,
-        "range": 2,
+        "mean": 12.333333333333334,
+        "sd": 0.5773502691896257,
+        "range": 1,
         "band": [
           0,
           28
@@ -2318,10 +2318,10 @@
             25
           ],
           "why": "Same mandate names D3 alongside K4 as the axes that must absorb the penalty.",
-          "observedMean": 3.6666666666666665,
+          "observedMean": 3,
           "values": [
-            4,
-            4,
+            3,
+            3,
             3
           ],
           "pass": true
@@ -2338,30 +2338,30 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            32,
-            35,
-            30
+            28,
+            30,
+            28
           ],
-          "mean": 32.333333333333336,
-          "sd": 2.516611478423583,
-          "range": 5,
+          "mean": 28.666666666666668,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": [
             0,
             30
           ],
-          "deviation": 2.3333333333333357,
-          "inBand": false
+          "deviation": 0,
+          "inBand": true
         },
         {
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            68,
-            70,
-            64
+            72,
+            66,
+            72
           ],
-          "mean": 67.33333333333333,
-          "sd": 3.055050463303893,
+          "mean": 70,
+          "sd": 3.4641016151377544,
           "range": 6,
           "band": [
             35,
@@ -2376,11 +2376,11 @@
           "values": [
             22,
             22,
-            22
+            20
           ],
-          "mean": 22,
-          "sd": 0,
-          "range": 0,
+          "mean": 21.333333333333332,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2389,13 +2389,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            5,
             6,
-            5
+            8,
+            8
           ],
-          "mean": 5.333333333333333,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 7.333333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             30
@@ -2408,12 +2408,12 @@
           "label": "Adaptability",
           "values": [
             52,
-            55,
-            42
+            45,
+            45
           ],
-          "mean": 49.666666666666664,
-          "sd": 6.8068592855540455,
-          "range": 13,
+          "mean": 47.333333333333336,
+          "sd": 4.041451884327381,
+          "range": 7,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2422,13 +2422,13 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            82,
             80,
-            82
+            80,
+            80
           ],
-          "mean": 81.33333333333333,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 80,
+          "sd": 0,
+          "range": 0,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2438,30 +2438,30 @@
           "label": "Correctness & Edge Cases",
           "values": [
             52,
-            50,
-            48
+            55,
+            55
           ],
-          "mean": 50,
-          "sd": 2,
-          "range": 4,
+          "mean": 54,
+          "sd": 1.7320508075688772,
+          "range": 3,
           "band": [
             60,
             90
           ],
-          "deviation": -10,
+          "deviation": -6,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            60,
             58,
-            62,
-            58
+            55
           ],
-          "mean": 59.333333333333336,
-          "sd": 2.309401076758503,
-          "range": 4,
+          "mean": 57.666666666666664,
+          "sd": 2.516611478423583,
+          "range": 5,
           "band": [
             55,
             85
@@ -2473,13 +2473,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            45,
-            42,
-            42
+            38,
+            32,
+            35
           ],
-          "mean": 43,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 35,
+          "sd": 3,
+          "range": 6,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2488,13 +2488,13 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            36,
-            36,
+            42,
+            40,
             35
           ],
-          "mean": 35.666666666666664,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 39,
+          "sd": 3.605551275463989,
+          "range": 7,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2518,12 +2518,12 @@
       "stackScore": {
         "values": [
           44,
-          45,
+          42,
           42
         ],
-        "mean": 43.666666666666664,
-        "sd": 1.5275252316519465,
-        "range": 3,
+        "mean": 42.666666666666664,
+        "sd": 1.1547005383792517,
+        "range": 2,
         "band": [
           15,
           45
@@ -2540,13 +2540,13 @@
             30
           ],
           "why": "The COHERENCE CHECK clause requires lowering D1 when the Stage 2 design ignores the facts uncovered in Stage 1. Here it proposes the one thing Stage 1 ruled out twice.",
-          "observedMean": 32.333333333333336,
+          "observedMean": 28.666666666666668,
           "values": [
-            32,
-            35,
-            30
+            28,
+            30,
+            28
           ],
-          "pass": false
+          "pass": true
         },
         {
           "axis": "D4",
@@ -2555,11 +2555,11 @@
             30
           ],
           "why": "Same clause names D4. The design violates a hard platform rule (no new managed services) and prices against $50 when Stage 1 established $12 of headroom.",
-          "observedMean": 5.333333333333333,
+          "observedMean": 7.333333333333333,
           "values": [
-            5,
             6,
-            5
+            8,
+            8
           ],
           "pass": true
         }
@@ -2575,13 +2575,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            76,
-            77,
-            76
+            80,
+            80,
+            78
           ],
-          "mean": 76.33333333333333,
-          "sd": 0.5773502691896257,
-          "range": 1,
+          "mean": 79.33333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             55,
             85
@@ -2594,12 +2594,12 @@
           "label": "Architecture & Component Design",
           "values": [
             84,
-            82,
+            84,
             84
           ],
-          "mean": 83.33333333333333,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 84,
+          "sd": 0,
+          "range": 0,
           "band": [
             62,
             88
@@ -2611,13 +2611,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            80,
-            76,
-            78
+            79,
+            79,
+            79
           ],
-          "mean": 78,
-          "sd": 2,
-          "range": 4,
+          "mean": 79,
+          "sd": 0,
+          "range": 0,
           "band": [
             65,
             92
@@ -2629,13 +2629,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            72,
-            72,
+            70,
+            74,
             68
           ],
           "mean": 70.66666666666667,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "sd": 3.055050463303893,
+          "range": 6,
           "band": [
             60,
             88
@@ -2647,13 +2647,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            80,
             78,
-            77
+            79,
+            82
           ],
-          "mean": 78.33333333333333,
-          "sd": 1.5275252316519468,
-          "range": 3,
+          "mean": 79.66666666666667,
+          "sd": 2.081665999466133,
+          "range": 4,
           "band": [
             65,
             92
@@ -2666,12 +2666,12 @@
           "label": "Design-Code Alignment",
           "values": [
             86,
-            83,
-            86
+            86,
+            85
           ],
-          "mean": 85,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 85.66666666666667,
+          "sd": 0.5773502691896257,
+          "range": 1,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -2680,13 +2680,13 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            64,
-            73,
-            72
+            72,
+            71,
+            66
           ],
           "mean": 69.66666666666667,
-          "sd": 4.932882862316247,
-          "range": 9,
+          "sd": 3.214550253664318,
+          "range": 6,
           "band": [
             68,
             92
@@ -2698,13 +2698,13 @@
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
-            78,
             80,
-            80
+            81,
+            78
           ],
-          "mean": 79.33333333333333,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 79.66666666666667,
+          "sd": 1.5275252316519468,
+          "range": 3,
           "band": [
             60,
             88
@@ -2716,12 +2716,12 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            63,
-            64,
-            60
+            56,
+            60,
+            58
           ],
-          "mean": 62.333333333333336,
-          "sd": 2.0816659994661326,
+          "mean": 58,
+          "sd": 2,
           "range": 4,
           "band": null,
           "deviation": null,
@@ -2732,12 +2732,12 @@
           "label": "Testing & Observability",
           "values": [
             72,
-            76,
-            76
+            73,
+            74
           ],
-          "mean": 74.66666666666667,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "mean": 73,
+          "sd": 1,
+          "range": 2,
           "band": [
             62,
             90
@@ -2767,12 +2767,12 @@
       "stackScore": {
         "values": [
           74,
-          74,
+          75,
           74
         ],
-        "mean": 74,
-        "sd": 0,
-        "range": 0,
+        "mean": 74.33333333333333,
+        "sd": 0.5773502691896257,
+        "range": 1,
         "band": [
           58,
           82
@@ -2805,28 +2805,28 @@
       "axis": "D1",
       "label": "Requirement Framing",
       "assertedFixtures": 9,
-      "inBand": 7,
-      "inBandPct": 77.77777777777777,
-      "meanDeviationFromBand": -0.25925925925925875,
+      "inBand": 8,
+      "inBandPct": 88.88888888888889,
+      "meanDeviationFromBand": -0.4444444444444444,
       "medianDeviationFromMidpoint": -1.1666666666666714,
-      "meanWithinFixtureSd": 1.2704390747919918,
-      "maxWithinFixtureSd": 2.516611478423583,
+      "meanWithinFixtureSd": 2.272756715341824,
+      "maxWithinFixtureSd": 4.509249752822894,
       "consistentLean": false,
-      "noiseFloor": 1.2704390747919918,
+      "noiseFloor": 2.272756715341824,
       "suggestedOffset": 0
     },
     {
       "axis": "D2",
       "label": "Architecture & Component Design",
       "assertedFixtures": 10,
-      "inBand": 9,
-      "inBandPct": 90,
-      "meanDeviationFromBand": -1.1666666666666665,
-      "medianDeviationFromMidpoint": 6.333333333333334,
-      "meanWithinFixtureSd": 1.9537652768736304,
-      "maxWithinFixtureSd": 4.163331998932266,
+      "inBand": 7,
+      "inBandPct": 70,
+      "meanDeviationFromBand": -1.8333333333333328,
+      "medianDeviationFromMidpoint": 3.583333333333334,
+      "meanWithinFixtureSd": 2.196168449446539,
+      "maxWithinFixtureSd": 5.033222956847167,
       "consistentLean": false,
-      "noiseFloor": 1.9537652768736304,
+      "noiseFloor": 2.196168449446539,
       "suggestedOffset": 0
     },
     {
@@ -2835,12 +2835,12 @@
       "assertedFixtures": 9,
       "inBand": 8,
       "inBandPct": 88.88888888888889,
-      "meanDeviationFromBand": -0.29629629629629683,
-      "medianDeviationFromMidpoint": -2,
-      "meanWithinFixtureSd": 2.360850662361467,
-      "maxWithinFixtureSd": 6.429100507328636,
-      "consistentLean": true,
-      "noiseFloor": 2.360850662361467,
+      "meanDeviationFromBand": -0.2222222222222222,
+      "medianDeviationFromMidpoint": -2.8333333333333357,
+      "meanWithinFixtureSd": 2.0353388714003877,
+      "maxWithinFixtureSd": 4.932882862316247,
+      "consistentLean": false,
+      "noiseFloor": 2.0353388714003877,
       "suggestedOffset": 0
     },
     {
@@ -2849,12 +2849,12 @@
       "assertedFixtures": 10,
       "inBand": 8,
       "inBandPct": 80,
-      "meanDeviationFromBand": -0.43333333333333285,
-      "medianDeviationFromMidpoint": -5.833333333333332,
-      "meanWithinFixtureSd": 1.6063616862216097,
-      "maxWithinFixtureSd": 4.041451884327381,
+      "meanDeviationFromBand": -0.46666666666666623,
+      "medianDeviationFromMidpoint": -6.916666666666668,
+      "meanWithinFixtureSd": 1.696396678714074,
+      "maxWithinFixtureSd": 3.4641016151377544,
       "consistentLean": false,
-      "noiseFloor": 1.6063616862216097,
+      "noiseFloor": 1.696396678714074,
       "suggestedOffset": 0
     },
     {
@@ -2863,12 +2863,12 @@
       "assertedFixtures": 7,
       "inBand": 5,
       "inBandPct": 71.42857142857143,
-      "meanDeviationFromBand": -1.3333333333333333,
-      "medianDeviationFromMidpoint": -1.3333333333333321,
-      "meanWithinFixtureSd": 3.054051657209734,
-      "maxWithinFixtureSd": 6.8068592855540455,
+      "meanDeviationFromBand": -0.5238095238095245,
+      "medianDeviationFromMidpoint": -1,
+      "meanWithinFixtureSd": 3.2377750017371008,
+      "maxWithinFixtureSd": 7.637626158259733,
       "consistentLean": false,
-      "noiseFloor": 3.054051657209734,
+      "noiseFloor": 3.2377750017371008,
       "suggestedOffset": 0
     },
     {
@@ -2877,26 +2877,26 @@
       "assertedFixtures": 5,
       "inBand": 3,
       "inBandPct": 60,
-      "meanDeviationFromBand": 4.733333333333334,
-      "medianDeviationFromMidpoint": 13.333333333333336,
-      "meanWithinFixtureSd": 2.180026825710223,
-      "maxWithinFixtureSd": 6.557438524302,
+      "meanDeviationFromBand": 1.4000000000000015,
+      "medianDeviationFromMidpoint": 14.666666666666664,
+      "meanWithinFixtureSd": 1.3586264369025327,
+      "maxWithinFixtureSd": 3.605551275463989,
       "consistentLean": false,
-      "noiseFloor": 2.180026825710223,
+      "noiseFloor": 1.3586264369025327,
       "suggestedOffset": 0
     },
     {
       "axis": "K2",
       "label": "Correctness & Edge Cases",
       "assertedFixtures": 10,
-      "inBand": 6,
-      "inBandPct": 60,
-      "meanDeviationFromBand": -5.533333333333333,
-      "medianDeviationFromMidpoint": -11.583333333333332,
-      "meanWithinFixtureSd": 2.400417605517942,
-      "maxWithinFixtureSd": 4.932882862316247,
+      "inBand": 5,
+      "inBandPct": 50,
+      "meanDeviationFromBand": -5.433333333333334,
+      "medianDeviationFromMidpoint": -12.083333333333332,
+      "meanWithinFixtureSd": 2.2592781199968557,
+      "maxWithinFixtureSd": 6.429100507328637,
       "consistentLean": false,
-      "noiseFloor": 2.400417605517942,
+      "noiseFloor": 2.2592781199968557,
       "suggestedOffset": 0
     },
     {
@@ -2905,12 +2905,12 @@
       "assertedFixtures": 8,
       "inBand": 7,
       "inBandPct": 87.5,
-      "meanDeviationFromBand": 0.625,
-      "medianDeviationFromMidpoint": -0.75,
-      "meanWithinFixtureSd": 1.5814954576223639,
-      "maxWithinFixtureSd": 2.3094010767585034,
+      "meanDeviationFromBand": 0.125,
+      "medianDeviationFromMidpoint": -1.5833333333333321,
+      "meanWithinFixtureSd": 1.870961617368613,
+      "maxWithinFixtureSd": 3.4641016151377544,
       "consistentLean": false,
-      "noiseFloor": 1.5814954576223639,
+      "noiseFloor": 1.870961617368613,
       "suggestedOffset": 0
     },
     {
@@ -2919,27 +2919,27 @@
       "assertedFixtures": 4,
       "inBand": 3,
       "inBandPct": 75,
-      "meanDeviationFromBand": -1.25,
-      "medianDeviationFromMidpoint": -8.5,
-      "meanWithinFixtureSd": 1.6741920037310518,
-      "maxWithinFixtureSd": 3,
+      "meanDeviationFromBand": -3.583333333333334,
+      "medianDeviationFromMidpoint": -10,
+      "meanWithinFixtureSd": 2.4225011412134023,
+      "maxWithinFixtureSd": 4.163331998932266,
       "consistentLean": false,
-      "noiseFloor": 1.6741920037310518,
+      "noiseFloor": 2.4225011412134023,
       "suggestedOffset": 0
     },
     {
       "axis": "K5",
       "label": "Testing & Observability",
       "assertedFixtures": 6,
-      "inBand": 4,
-      "inBandPct": 66.66666666666667,
-      "meanDeviationFromBand": -0.8888888888888893,
-      "medianDeviationFromMidpoint": -13.833333333333332,
-      "meanWithinFixtureSd": 1.1547005383792515,
-      "maxWithinFixtureSd": 2.3094010767585034,
+      "inBand": 3,
+      "inBandPct": 50,
+      "meanDeviationFromBand": -1.8333333333333346,
+      "medianDeviationFromMidpoint": -15.833333333333336,
+      "meanWithinFixtureSd": 1.6313681679556056,
+      "maxWithinFixtureSd": 3.605551275463989,
       "consistentLean": true,
-      "noiseFloor": 1.1547005383792515,
-      "suggestedOffset": 14
+      "noiseFloor": 1.6313681679556056,
+      "suggestedOffset": 16
     },
     {
       "axis": "K6",
@@ -2957,11 +2957,11 @@
     }
   ],
   "fit": {
-    "slope": 0.7972785209263694,
-    "intercept": 9.629404415823686,
-    "r2": 0.8649951169263375
+    "slope": 0.7994660951628973,
+    "intercept": 8.536104374635762,
+    "r2": 0.8481301842220905
   },
-  "observedRange": 60,
+  "observedRange": 61.99999999999999,
   "expectedRange": 73,
   "failed": [],
   "ok": [
@@ -2970,51 +2970,51 @@
       "run": 1,
       "axisScores": {
         "D1": 88,
-        "D2": 79,
-        "D3": 84,
-        "D4": 80,
-        "D5": 75,
-        "K1": 82,
-        "K2": 55,
-        "K3": 78,
-        "K4": 50,
-        "K5": 40,
+        "D2": 80,
+        "D3": 82,
+        "D4": 76,
+        "D5": 76,
+        "K1": 78,
+        "K2": 52,
+        "K3": 74,
+        "K4": 44,
+        "K5": 38,
         "K6": 50
       },
-      "stackScore": 71
+      "stackScore": 69
     },
     {
       "fixtureId": "F01",
       "run": 2,
       "axisScores": {
-        "D1": 88,
-        "D2": 79,
-        "D3": 82,
-        "D4": 75,
-        "D5": 72,
-        "K1": 80,
-        "K2": 56,
-        "K3": 76,
-        "K4": 52,
-        "K5": 40,
+        "D1": 86,
+        "D2": 72,
+        "D3": 78,
+        "D4": 72,
+        "D5": 76,
+        "K1": 78,
+        "K2": 48,
+        "K3": 72,
+        "K4": 40,
+        "K5": 34,
         "K6": 50
       },
-      "stackScore": 70
+      "stackScore": 66
     },
     {
       "fixtureId": "F01",
       "run": 3,
       "axisScores": {
-        "D1": 86,
-        "D2": 76,
-        "D3": 72,
-        "D4": 72,
-        "D5": 72,
+        "D1": 88,
+        "D2": 78,
+        "D3": 80,
+        "D4": 76,
+        "D5": 68,
         "K1": 80,
-        "K2": 52,
-        "K3": 74,
-        "K4": 48,
-        "K5": 40,
+        "K2": 50,
+        "K3": 76,
+        "K4": 38,
+        "K5": 33,
         "K6": 50
       },
       "stackScore": 67
@@ -3023,19 +3023,19 @@
       "fixtureId": "F02",
       "run": 1,
       "axisScores": {
-        "D1": 27,
-        "D2": 52,
-        "D3": 12,
-        "D4": 8,
-        "D5": 33,
-        "K1": 58,
-        "K2": 27,
-        "K3": 58,
-        "K4": 35,
-        "K5": 30,
+        "D1": 32,
+        "D2": 50,
+        "D3": 14,
+        "D4": 10,
+        "D5": 38,
+        "K1": 52,
+        "K2": 42,
+        "K3": 56,
+        "K4": 28,
+        "K5": 32,
         "K6": 50
       },
-      "stackScore": 34
+      "stackScore": 35
     },
     {
       "fixtureId": "F02",
@@ -3043,121 +3043,103 @@
       "axisScores": {
         "D1": 30,
         "D2": 50,
-        "D3": 20,
+        "D3": 22,
         "D4": 8,
-        "D5": 28,
+        "D5": 24,
         "K1": 45,
         "K2": 30,
-        "K3": 60,
-        "K4": 35,
+        "K3": 58,
+        "K4": 28,
         "K5": 30,
         "K6": 50
       },
-      "stackScore": 34
+      "stackScore": 33
     },
     {
       "fixtureId": "F02",
       "run": 3,
       "axisScores": {
-        "D1": 28,
-        "D2": 58,
-        "D3": 12,
+        "D1": 27,
+        "D2": 42,
+        "D3": 14,
         "D4": 8,
         "D5": 28,
         "K1": 50,
         "K2": 32,
-        "K3": 62,
-        "K4": 32,
-        "K5": 33,
+        "K3": 58,
+        "K4": 22,
+        "K5": 27,
         "K6": 50
       },
-      "stackScore": 34
+      "stackScore": 31
     },
     {
       "fixtureId": "F03",
       "run": 1,
       "axisScores": {
-        "D1": 42,
-        "D2": 66,
-        "D3": 58,
-        "D4": 58,
-        "D5": 60,
-        "K1": 70,
-        "K2": 50,
+        "D1": 46,
+        "D2": 65,
+        "D3": 56,
+        "D4": 52,
+        "D5": 55,
+        "K1": 68,
+        "K2": 48,
         "K3": 62,
-        "K4": 50,
-        "K5": 32,
+        "K4": 35,
+        "K5": 33,
         "K6": 50
       },
-      "stackScore": 55
+      "stackScore": 52
     },
     {
       "fixtureId": "F03",
       "run": 2,
       "axisScores": {
-        "D1": 42,
-        "D2": 67,
+        "D1": 46,
+        "D2": 64,
         "D3": 56,
-        "D4": 58,
-        "D5": 64,
-        "K1": 72,
-        "K2": 48,
+        "D4": 55,
+        "D5": 55,
+        "K1": 70,
+        "K2": 45,
         "K3": 62,
-        "K4": 48,
-        "K5": 32,
+        "K4": 36,
+        "K5": 36,
         "K6": 50
       },
-      "stackScore": 55
+      "stackScore": 53
     },
     {
       "fixtureId": "F03",
       "run": 3,
       "axisScores": {
-        "D1": 46,
-        "D2": 68,
-        "D3": 58,
-        "D4": 63,
-        "D5": 56,
-        "K1": 68,
-        "K2": 48,
+        "D1": 40,
+        "D2": 66,
+        "D3": 55,
+        "D4": 57,
+        "D5": 55,
+        "K1": 66,
+        "K2": 50,
         "K3": 60,
-        "K4": 48,
-        "K5": 36,
-        "K6": 50
-      },
-      "stackScore": 55
-    },
-    {
-      "fixtureId": "F04",
-      "run": 1,
-      "axisScores": {
-        "D1": 60,
-        "D2": 76,
-        "D3": 60,
-        "D4": 60,
-        "D5": 60,
-        "K1": 35,
-        "K2": 32,
-        "K3": 58,
-        "K4": 42,
-        "K5": 15,
+        "K4": 38,
+        "K5": 32,
         "K6": 50
       },
       "stackScore": 52
     },
     {
       "fixtureId": "F04",
-      "run": 2,
+      "run": 1,
       "axisScores": {
-        "D1": 56,
+        "D1": 55,
         "D2": 72,
         "D3": 58,
-        "D4": 58,
-        "D5": 62,
-        "K1": 30,
-        "K2": 30,
-        "K3": 58,
-        "K4": 40,
+        "D4": 60,
+        "D5": 60,
+        "K1": 35,
+        "K2": 32,
+        "K3": 55,
+        "K4": 35,
         "K5": 12,
         "K6": 50
       },
@@ -3165,108 +3147,126 @@
     },
     {
       "fixtureId": "F04",
-      "run": 3,
+      "run": 2,
       "axisScores": {
         "D1": 60,
-        "D2": 73,
+        "D2": 74,
         "D3": 58,
-        "D4": 63,
-        "D5": 63,
+        "D4": 60,
+        "D5": 64,
         "K1": 35,
-        "K2": 30,
-        "K3": 60,
-        "K4": 42,
+        "K2": 32,
+        "K3": 58,
+        "K4": 30,
         "K5": 12,
         "K6": 50
       },
-      "stackScore": 52
+      "stackScore": 51
+    },
+    {
+      "fixtureId": "F04",
+      "run": 3,
+      "axisScores": {
+        "D1": 64,
+        "D2": 73,
+        "D3": 62,
+        "D4": 66,
+        "D5": 66,
+        "K1": 34,
+        "K2": 30,
+        "K3": 58,
+        "K4": 36,
+        "K5": 14,
+        "K6": 50
+      },
+      "stackScore": 53
     },
     {
       "fixtureId": "F05",
       "run": 1,
       "axisScores": {
-        "D1": 28,
-        "D2": 55,
+        "D1": 33,
+        "D2": 56,
         "D3": 18,
+        "D4": 27,
+        "D5": 38,
+        "K1": 74,
+        "K2": 60,
+        "K3": 63,
+        "K4": 50,
+        "K5": 64,
+        "K6": 50
+      },
+      "stackScore": 46
+    },
+    {
+      "fixtureId": "F05",
+      "run": 2,
+      "axisScores": {
+        "D1": 30,
+        "D2": 56,
+        "D3": 17,
         "D4": 26,
-        "D5": 36,
+        "D5": 42,
         "K1": 78,
-        "K2": 68,
+        "K2": 63,
         "K3": 62,
-        "K4": 57,
-        "K5": 67,
+        "K4": 54,
+        "K5": 66,
         "K6": 50
       },
       "stackScore": 47
     },
     {
       "fixtureId": "F05",
-      "run": 2,
+      "run": 3,
       "axisScores": {
         "D1": 30,
-        "D2": 53,
-        "D3": 24,
+        "D2": 55,
+        "D3": 26,
         "D4": 28,
-        "D5": 26,
-        "K1": 72,
-        "K2": 66,
+        "D5": 40,
+        "K1": 76,
+        "K2": 64,
         "K3": 62,
         "K4": 55,
         "K5": 66,
         "K6": 50
       },
-      "stackScore": 46
-    },
-    {
-      "fixtureId": "F05",
-      "run": 3,
-      "axisScores": {
-        "D1": 30,
-        "D2": 55,
-        "D3": 20,
-        "D4": 27,
-        "D5": 33,
-        "K1": 74,
-        "K2": 63,
-        "K3": 62,
-        "K4": 56,
-        "K5": 66,
-        "K6": 50
-      },
-      "stackScore": 46
+      "stackScore": 48
     },
     {
       "fixtureId": "F06",
       "run": 1,
       "axisScores": {
-        "D1": 15,
-        "D2": 35,
-        "D3": 10,
-        "D4": 12,
-        "D5": 30,
-        "K1": 75,
-        "K2": 35,
+        "D1": 12,
+        "D2": 30,
+        "D3": 8,
+        "D4": 10,
+        "D5": 20,
+        "K1": 76,
+        "K2": 30,
         "K3": 58,
-        "K4": 45,
-        "K5": 12,
+        "K4": 33,
+        "K5": 8,
         "K6": 50
       },
-      "stackScore": 32
+      "stackScore": 28
     },
     {
       "fixtureId": "F06",
       "run": 2,
       "axisScores": {
-        "D1": 15,
+        "D1": 18,
         "D2": 32,
-        "D3": 18,
+        "D3": 10,
         "D4": 12,
-        "D5": 22,
-        "K1": 72,
-        "K2": 35,
-        "K3": 58,
-        "K4": 40,
-        "K5": 12,
+        "D5": 35,
+        "K1": 78,
+        "K2": 32,
+        "K3": 56,
+        "K4": 35,
+        "K5": 10,
         "K6": 50
       },
       "stackScore": 31
@@ -3276,15 +3276,15 @@
       "run": 3,
       "axisScores": {
         "D1": 15,
-        "D2": 32,
-        "D3": 10,
+        "D2": 33,
+        "D3": 15,
         "D4": 12,
-        "D5": 25,
-        "K1": 74,
+        "D5": 30,
+        "K1": 76,
         "K2": 30,
         "K3": 55,
-        "K4": 45,
-        "K5": 10,
+        "K4": 27,
+        "K5": 8,
         "K6": 50
       },
       "stackScore": 30
@@ -3293,51 +3293,51 @@
       "fixtureId": "F07",
       "run": 1,
       "axisScores": {
-        "D1": 10,
-        "D2": 18,
+        "D1": 15,
+        "D2": 12,
         "D3": 4,
-        "D4": 8,
-        "D5": 6,
-        "K1": 52,
+        "D4": 4,
+        "D5": 8,
+        "K1": 30,
         "K2": 8,
-        "K3": 28,
+        "K3": 22,
         "K4": 22,
         "K5": 4,
         "K6": 50
       },
-      "stackScore": 17
+      "stackScore": 15
     },
     {
       "fixtureId": "F07",
       "run": 2,
       "axisScores": {
-        "D1": 10,
+        "D1": 15,
         "D2": 18,
         "D3": 4,
-        "D4": 8,
+        "D4": 6,
         "D5": 6,
-        "K1": 52,
-        "K2": 10,
-        "K3": 32,
-        "K4": 28,
-        "K5": 4,
+        "K1": 32,
+        "K2": 8,
+        "K3": 28,
+        "K4": 20,
+        "K5": 3,
         "K6": 50
       },
-      "stackScore": 18
+      "stackScore": 16
     },
     {
       "fixtureId": "F07",
       "run": 3,
       "axisScores": {
-        "D1": 12,
-        "D2": 14,
-        "D3": 4,
-        "D4": 5,
+        "D1": 20,
+        "D2": 22,
+        "D3": 6,
+        "D4": 6,
         "D5": 8,
-        "K1": 52,
-        "K2": 10,
-        "K3": 30,
-        "K4": 25,
+        "K1": 35,
+        "K2": 12,
+        "K3": 28,
+        "K4": 20,
         "K5": 5,
         "K6": 50
       },
@@ -3348,49 +3348,31 @@
       "run": 1,
       "axisScores": {
         "D1": 8,
-        "D2": 24,
-        "D3": 4,
-        "D4": 6,
-        "D5": 8,
+        "D2": 14,
+        "D3": 3,
+        "D4": 4,
+        "D5": 5,
         "K1": 15,
-        "K2": 25,
-        "K3": 28,
+        "K2": 18,
+        "K3": 24,
         "K4": 2,
-        "K5": 4,
+        "K5": 3,
         "K6": 50
       },
-      "stackScore": 15
+      "stackScore": 12
     },
     {
       "fixtureId": "F08",
       "run": 2,
       "axisScores": {
-        "D1": 8,
-        "D2": 22,
-        "D3": 4,
-        "D4": 5,
-        "D5": 8,
+        "D1": 10,
+        "D2": 15,
+        "D3": 3,
+        "D4": 4,
+        "D5": 6,
         "K1": 15,
         "K2": 18,
         "K3": 28,
-        "K4": 2,
-        "K5": 4,
-        "K6": 50
-      },
-      "stackScore": 14
-    },
-    {
-      "fixtureId": "F08",
-      "run": 3,
-      "axisScores": {
-        "D1": 8,
-        "D2": 22,
-        "D3": 3,
-        "D4": 4,
-        "D5": 5,
-        "K1": 12,
-        "K2": 20,
-        "K3": 24,
         "K4": 2,
         "K5": 3,
         "K6": 50
@@ -3398,19 +3380,37 @@
       "stackScore": 13
     },
     {
+      "fixtureId": "F08",
+      "run": 3,
+      "axisScores": {
+        "D1": 10,
+        "D2": 15,
+        "D3": 3,
+        "D4": 4,
+        "D5": 5,
+        "K1": 15,
+        "K2": 18,
+        "K3": 22,
+        "K4": 2,
+        "K5": 3,
+        "K6": 50
+      },
+      "stackScore": 12
+    },
+    {
       "fixtureId": "F09",
       "run": 1,
       "axisScores": {
-        "D1": 32,
-        "D2": 68,
+        "D1": 28,
+        "D2": 72,
         "D3": 22,
-        "D4": 5,
+        "D4": 6,
         "D5": 52,
-        "K1": 82,
+        "K1": 80,
         "K2": 52,
-        "K3": 58,
-        "K4": 45,
-        "K5": 36,
+        "K3": 60,
+        "K4": 38,
+        "K5": 42,
         "K6": 50
       },
       "stackScore": 44
@@ -3419,33 +3419,33 @@
       "fixtureId": "F09",
       "run": 2,
       "axisScores": {
-        "D1": 35,
-        "D2": 70,
+        "D1": 30,
+        "D2": 66,
         "D3": 22,
-        "D4": 6,
-        "D5": 55,
+        "D4": 8,
+        "D5": 45,
         "K1": 80,
-        "K2": 50,
-        "K3": 62,
-        "K4": 42,
-        "K5": 36,
+        "K2": 55,
+        "K3": 58,
+        "K4": 32,
+        "K5": 40,
         "K6": 50
       },
-      "stackScore": 45
+      "stackScore": 42
     },
     {
       "fixtureId": "F09",
       "run": 3,
       "axisScores": {
-        "D1": 30,
-        "D2": 64,
-        "D3": 22,
-        "D4": 5,
-        "D5": 42,
-        "K1": 82,
-        "K2": 48,
-        "K3": 58,
-        "K4": 42,
+        "D1": 28,
+        "D2": 72,
+        "D3": 20,
+        "D4": 8,
+        "D5": 45,
+        "K1": 80,
+        "K2": 55,
+        "K3": 55,
+        "K4": 35,
         "K5": 35,
         "K6": 50
       },
@@ -3455,15 +3455,15 @@
       "fixtureId": "F10",
       "run": 1,
       "axisScores": {
-        "D1": 76,
+        "D1": 80,
         "D2": 84,
-        "D3": 80,
-        "D4": 72,
-        "D5": 80,
+        "D3": 79,
+        "D4": 70,
+        "D5": 78,
         "K1": 86,
-        "K2": 64,
-        "K3": 78,
-        "K4": 63,
+        "K2": 72,
+        "K3": 80,
+        "K4": 56,
         "K5": 72,
         "K6": 50
       },
@@ -3473,34 +3473,34 @@
       "fixtureId": "F10",
       "run": 2,
       "axisScores": {
-        "D1": 77,
-        "D2": 82,
-        "D3": 76,
-        "D4": 72,
-        "D5": 78,
-        "K1": 83,
-        "K2": 73,
-        "K3": 80,
-        "K4": 64,
-        "K5": 76,
+        "D1": 80,
+        "D2": 84,
+        "D3": 79,
+        "D4": 74,
+        "D5": 79,
+        "K1": 86,
+        "K2": 71,
+        "K3": 81,
+        "K4": 60,
+        "K5": 73,
         "K6": 50
       },
-      "stackScore": 74
+      "stackScore": 75
     },
     {
       "fixtureId": "F10",
       "run": 3,
       "axisScores": {
-        "D1": 76,
+        "D1": 78,
         "D2": 84,
-        "D3": 78,
+        "D3": 79,
         "D4": 68,
-        "D5": 77,
-        "K1": 86,
-        "K2": 72,
-        "K3": 80,
-        "K4": 60,
-        "K5": 76,
+        "D5": 82,
+        "K1": 85,
+        "K2": 66,
+        "K3": 78,
+        "K4": 58,
+        "K5": 74,
         "K6": 50
       },
       "stackScore": 74
@@ -3518,8 +3518,8 @@
           "label": "Requirement Framing",
           "values": [
             88,
-            88,
-            86
+            86,
+            88
           ],
           "mean": 87.33333333333333,
           "sd": 1.1547005383792517,
@@ -3535,83 +3535,83 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            79,
-            79,
-            76
+            80,
+            72,
+            78
           ],
-          "mean": 78,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 76.66666666666667,
+          "sd": 4.163331998932265,
+          "range": 8,
           "band": [
             78,
             95
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": -1.3333333333333286,
+          "inBand": false
         },
         {
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            84,
             82,
-            72
+            78,
+            80
           ],
-          "mean": 79.33333333333333,
-          "sd": 6.429100507328636,
-          "range": 12,
+          "mean": 80,
+          "sd": 2,
+          "range": 4,
           "band": [
             82,
             98
           ],
-          "deviation": -2.6666666666666714,
+          "deviation": -2,
           "inBand": false
         },
         {
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            80,
-            75,
-            72
+            76,
+            72,
+            76
           ],
-          "mean": 75.66666666666667,
-          "sd": 4.041451884327381,
-          "range": 8,
+          "mean": 74.66666666666667,
+          "sd": 2.3094010767585034,
+          "range": 4,
           "band": [
             78,
             95
           ],
-          "deviation": -2.3333333333333286,
+          "deviation": -3.3333333333333286,
           "inBand": false
         },
         {
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            75,
-            72,
-            72
+            76,
+            76,
+            68
           ],
-          "mean": 73,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 73.33333333333333,
+          "sd": 4.618802153517006,
+          "range": 8,
           "band": [
             82,
             98
           ],
-          "deviation": -9,
+          "deviation": -8.666666666666671,
           "inBand": false
         },
         {
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            82,
-            80,
+            78,
+            78,
             80
           ],
-          "mean": 80.66666666666667,
+          "mean": 78.66666666666667,
           "sd": 1.1547005383792517,
           "range": 2,
           "band": [
@@ -3625,29 +3625,29 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            55,
-            56,
-            52
+            52,
+            48,
+            50
           ],
-          "mean": 54.333333333333336,
-          "sd": 2.0816659994661326,
+          "mean": 50,
+          "sd": 2,
           "range": 4,
           "band": [
             70,
             92
           ],
-          "deviation": -15.666666666666664,
+          "deviation": -20,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
-            78,
-            76,
-            74
+            74,
+            72,
+            76
           ],
-          "mean": 76,
+          "mean": 74,
           "sd": 2,
           "range": 4,
           "band": [
@@ -3661,37 +3661,37 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            50,
-            52,
-            48
+            44,
+            40,
+            38
           ],
-          "mean": 50,
-          "sd": 2,
-          "range": 4,
+          "mean": 40.666666666666664,
+          "sd": 3.055050463303893,
+          "range": 6,
           "band": [
             55,
             85
           ],
-          "deviation": -5,
+          "deviation": -14.333333333333336,
           "inBand": false
         },
         {
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            40,
-            40,
-            40
+            38,
+            34,
+            33
           ],
-          "mean": 40,
-          "sd": 0,
-          "range": 0,
+          "mean": 35,
+          "sd": 2.6457513110645907,
+          "range": 5,
           "band": [
             40,
             70
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": -5,
+          "inBand": false
         },
         {
           "axis": "K6",
@@ -3711,18 +3711,18 @@
       ],
       "stackScore": {
         "values": [
-          71,
-          70,
+          69,
+          66,
           67
         ],
-        "mean": 69.33333333333333,
-        "sd": 2.081665999466133,
-        "range": 4,
+        "mean": 67.33333333333333,
+        "sd": 1.5275252316519468,
+        "range": 3,
         "band": [
           74,
           92
         ],
-        "deviation": -4.666666666666671,
+        "deviation": -6.666666666666671,
         "inBand": false
       },
       "dissociation": null,
@@ -3738,13 +3738,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            27,
+            32,
             30,
-            28
+            27
           ],
-          "mean": 28.333333333333332,
-          "sd": 1.5275252316519468,
-          "range": 3,
+          "mean": 29.666666666666668,
+          "sd": 2.5166114784235836,
+          "range": 5,
           "band": [
             25,
             55
@@ -3756,30 +3756,30 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            52,
             50,
-            58
+            50,
+            42
           ],
-          "mean": 53.333333333333336,
-          "sd": 4.163331998932266,
+          "mean": 47.333333333333336,
+          "sd": 4.618802153517007,
           "range": 8,
           "band": [
             65,
             88
           ],
-          "deviation": -11.666666666666664,
+          "deviation": -17.666666666666664,
           "inBand": false
         },
         {
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            12,
-            20,
-            12
+            14,
+            22,
+            14
           ],
-          "mean": 14.666666666666666,
-          "sd": 4.618802153517006,
+          "mean": 16.666666666666668,
+          "sd": 4.618802153517007,
           "range": 8,
           "band": [
             8,
@@ -3792,49 +3792,49 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            8,
+            10,
             8,
             8
           ],
-          "mean": 8,
-          "sd": 0,
-          "range": 0,
+          "mean": 8.666666666666666,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             10,
             38
           ],
-          "deviation": -2,
+          "deviation": -1.333333333333334,
           "inBand": false
         },
         {
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            33,
-            28,
+            38,
+            24,
             28
           ],
-          "mean": 29.666666666666668,
-          "sd": 2.886751345948129,
-          "range": 5,
+          "mean": 30,
+          "sd": 7.211102550927978,
+          "range": 14,
           "band": [
             30,
             58
           ],
-          "deviation": -0.33333333333333215,
-          "inBand": false
+          "deviation": 0,
+          "inBand": true
         },
         {
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            58,
+            52,
             45,
             50
           ],
-          "mean": 51,
-          "sd": 6.557438524302,
-          "range": 13,
+          "mean": 49,
+          "sd": 3.605551275463989,
+          "range": 7,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -3843,31 +3843,31 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            27,
+            42,
             30,
             32
           ],
-          "mean": 29.666666666666668,
-          "sd": 2.5166114784235836,
-          "range": 5,
+          "mean": 34.666666666666664,
+          "sd": 6.429100507328637,
+          "range": 12,
           "band": [
             55,
             82
           ],
-          "deviation": -25.333333333333332,
+          "deviation": -20.333333333333336,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            56,
             58,
-            60,
-            62
+            58
           ],
-          "mean": 60,
-          "sd": 2,
-          "range": 4,
+          "mean": 57.333333333333336,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -3876,13 +3876,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            35,
-            35,
-            32
+            28,
+            28,
+            22
           ],
-          "mean": 34,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 26,
+          "sd": 3.4641016151377544,
+          "range": 6,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -3891,13 +3891,13 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
+            32,
             30,
-            30,
-            33
+            27
           ],
-          "mean": 31,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 29.666666666666668,
+          "sd": 2.5166114784235836,
+          "range": 5,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -3920,18 +3920,18 @@
       ],
       "stackScore": {
         "values": [
-          34,
-          34,
-          34
+          35,
+          33,
+          31
         ],
-        "mean": 34,
-        "sd": 0,
-        "range": 0,
+        "mean": 33,
+        "sd": 2,
+        "range": 4,
         "band": [
           35,
           60
         ],
-        "deviation": -1,
+        "deviation": -2,
         "inBand": false
       },
       "dissociation": {
@@ -3943,9 +3943,9 @@
           "D4"
         ],
         "why": "The architecture itself (dedicated service, atomic Lua, correct under 6 containers, observability) is competent engineering and D2 scores 'soundness and clarity of the proposed structure'. Only the cost reasoning is absent, which is what D3 and D4 measure. If D2 falls with them, the judge is scoring an overall impression.",
-        "holdsMean": 53.333333333333336,
-        "dropsMean": 11.333333333333334,
-        "gap": 42,
+        "holdsMean": 47.333333333333336,
+        "dropsMean": 12.666666666666666,
+        "gap": 34.66666666666667,
         "holdsInBand": false,
         "pass": false
       },
@@ -3961,29 +3961,29 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            42,
-            42,
-            46
+            46,
+            46,
+            40
           ],
-          "mean": 43.333333333333336,
-          "sd": 2.309401076758503,
-          "range": 4,
+          "mean": 44,
+          "sd": 3.4641016151377544,
+          "range": 6,
           "band": [
             48,
             75
           ],
-          "deviation": -4.666666666666664,
+          "deviation": -4,
           "inBand": false
         },
         {
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            66,
-            67,
-            68
+            65,
+            64,
+            66
           ],
-          "mean": 67,
+          "mean": 65,
           "sd": 1,
           "range": 2,
           "band": [
@@ -3997,13 +3997,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            58,
             56,
-            58
+            56,
+            55
           ],
-          "mean": 57.333333333333336,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 55.666666666666664,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": [
             45,
             72
@@ -4015,12 +4015,12 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            58,
-            58,
-            63
+            52,
+            55,
+            57
           ],
-          "mean": 59.666666666666664,
-          "sd": 2.8867513459481287,
+          "mean": 54.666666666666664,
+          "sd": 2.516611478423583,
           "range": 5,
           "band": [
             48,
@@ -4033,13 +4033,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            60,
-            64,
-            56
+            55,
+            55,
+            55
           ],
-          "mean": 60,
-          "sd": 4,
-          "range": 8,
+          "mean": 55,
+          "sd": 0,
+          "range": 0,
           "band": [
             42,
             70
@@ -4051,11 +4051,11 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
+            68,
             70,
-            72,
-            68
+            66
           ],
-          "mean": 70,
+          "mean": 68,
           "sd": 2,
           "range": 4,
           "band": [
@@ -4069,19 +4069,19 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            50,
             48,
-            48
+            45,
+            50
           ],
-          "mean": 48.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 47.666666666666664,
+          "sd": 2.516611478423583,
+          "range": 5,
           "band": [
             48,
             75
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": -0.3333333333333357,
+          "inBand": false
         },
         {
           "axis": "K3",
@@ -4105,154 +4105,11 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            50,
-            48,
-            48
-          ],
-          "mean": 48.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        },
-        {
-          "axis": "K5",
-          "label": "Testing & Observability",
-          "values": [
-            32,
-            32,
-            36
-          ],
-          "mean": 33.333333333333336,
-          "sd": 2.309401076758503,
-          "range": 4,
-          "band": [
             35,
-            65
+            36,
+            38
           ],
-          "deviation": -1.6666666666666643,
-          "inBand": false
-        },
-        {
-          "axis": "K6",
-          "label": "AI Collaboration Quality",
-          "values": [
-            50,
-            50,
-            50
-          ],
-          "mean": 50,
-          "sd": 0,
-          "range": 0,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        }
-      ],
-      "stackScore": {
-        "values": [
-          55,
-          55,
-          55
-        ],
-        "mean": 55,
-        "sd": 0,
-        "range": 0,
-        "band": [
-          45,
-          68
-        ],
-        "deviation": 0,
-        "inBand": true
-      },
-      "dissociation": null,
-      "hardAssertions": []
-    },
-    {
-      "id": "F04",
-      "label": "Mid — good design, materially broken code",
-      "role": "Mid",
-      "runs": 3,
-      "axes": [
-        {
-          "axis": "D1",
-          "label": "Requirement Framing",
-          "values": [
-            60,
-            56,
-            60
-          ],
-          "mean": 58.666666666666664,
-          "sd": 2.309401076758503,
-          "range": 4,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        },
-        {
-          "axis": "D2",
-          "label": "Architecture & Component Design",
-          "values": [
-            76,
-            72,
-            73
-          ],
-          "mean": 73.66666666666667,
-          "sd": 2.0816659994661326,
-          "range": 4,
-          "band": [
-            58,
-            85
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "D3",
-          "label": "Tradeoff Reasoning",
-          "values": [
-            60,
-            58,
-            58
-          ],
-          "mean": 58.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": [
-            50,
-            78
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "D4",
-          "label": "Constraint Satisfaction",
-          "values": [
-            60,
-            58,
-            63
-          ],
-          "mean": 60.333333333333336,
-          "sd": 2.516611478423583,
-          "range": 5,
-          "band": [
-            52,
-            80
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "D5",
-          "label": "Adaptability",
-          "values": [
-            60,
-            62,
-            63
-          ],
-          "mean": 61.666666666666664,
+          "mean": 36.333333333333336,
           "sd": 1.5275252316519465,
           "range": 3,
           "band": null,
@@ -4260,88 +4117,22 @@
           "inBand": null
         },
         {
-          "axis": "K1",
-          "label": "Design-Code Alignment",
-          "values": [
-            35,
-            30,
-            35
-          ],
-          "mean": 33.333333333333336,
-          "sd": 2.8867513459481287,
-          "range": 5,
-          "band": [
-            5,
-            35
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "K2",
-          "label": "Correctness & Edge Cases",
-          "values": [
-            32,
-            30,
-            30
-          ],
-          "mean": 30.666666666666668,
-          "sd": 1.1547005383792515,
-          "range": 2,
-          "band": [
-            5,
-            35
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "K3",
-          "label": "Code Quality & Maintainability",
-          "values": [
-            58,
-            58,
-            60
-          ],
-          "mean": 58.666666666666664,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": [
-            45,
-            75
-          ],
-          "deviation": 0,
-          "inBand": true
-        },
-        {
-          "axis": "K4",
-          "label": "Security & Defensive Coding",
-          "values": [
-            42,
-            40,
-            42
-          ],
-          "mean": 41.333333333333336,
-          "sd": 1.1547005383792517,
-          "range": 2,
-          "band": null,
-          "deviation": null,
-          "inBand": null
-        },
-        {
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            15,
-            12,
-            12
+            33,
+            36,
+            32
           ],
-          "mean": 13,
-          "sd": 1.7320508075688772,
-          "range": 3,
-          "band": null,
-          "deviation": null,
-          "inBand": null
+          "mean": 33.666666666666664,
+          "sd": 2.0816659994661326,
+          "range": 4,
+          "band": [
+            35,
+            65
+          ],
+          "deviation": -1.3333333333333357,
+          "inBand": false
         },
         {
           "axis": "K6",
@@ -4362,12 +4153,221 @@
       "stackScore": {
         "values": [
           52,
-          50,
+          53,
           52
         ],
+        "mean": 52.333333333333336,
+        "sd": 0.5773502691896258,
+        "range": 1,
+        "band": [
+          45,
+          68
+        ],
+        "deviation": 0,
+        "inBand": true
+      },
+      "dissociation": null,
+      "hardAssertions": []
+    },
+    {
+      "id": "F04",
+      "label": "Mid — good design, materially broken code",
+      "role": "Mid",
+      "runs": 3,
+      "axes": [
+        {
+          "axis": "D1",
+          "label": "Requirement Framing",
+          "values": [
+            55,
+            60,
+            64
+          ],
+          "mean": 59.666666666666664,
+          "sd": 4.509249752822894,
+          "range": 9,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "D2",
+          "label": "Architecture & Component Design",
+          "values": [
+            72,
+            74,
+            73
+          ],
+          "mean": 73,
+          "sd": 1,
+          "range": 2,
+          "band": [
+            58,
+            85
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "D3",
+          "label": "Tradeoff Reasoning",
+          "values": [
+            58,
+            58,
+            62
+          ],
+          "mean": 59.333333333333336,
+          "sd": 2.309401076758503,
+          "range": 4,
+          "band": [
+            50,
+            78
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "D4",
+          "label": "Constraint Satisfaction",
+          "values": [
+            60,
+            60,
+            66
+          ],
+          "mean": 62,
+          "sd": 3.4641016151377544,
+          "range": 6,
+          "band": [
+            52,
+            80
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "D5",
+          "label": "Adaptability",
+          "values": [
+            60,
+            64,
+            66
+          ],
+          "mean": 63.333333333333336,
+          "sd": 3.055050463303893,
+          "range": 6,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "K1",
+          "label": "Design-Code Alignment",
+          "values": [
+            35,
+            35,
+            34
+          ],
+          "mean": 34.666666666666664,
+          "sd": 0.5773502691896258,
+          "range": 1,
+          "band": [
+            5,
+            35
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "K2",
+          "label": "Correctness & Edge Cases",
+          "values": [
+            32,
+            32,
+            30
+          ],
+          "mean": 31.333333333333332,
+          "sd": 1.1547005383792515,
+          "range": 2,
+          "band": [
+            5,
+            35
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "K3",
+          "label": "Code Quality & Maintainability",
+          "values": [
+            55,
+            58,
+            58
+          ],
+          "mean": 57,
+          "sd": 1.7320508075688772,
+          "range": 3,
+          "band": [
+            45,
+            75
+          ],
+          "deviation": 0,
+          "inBand": true
+        },
+        {
+          "axis": "K4",
+          "label": "Security & Defensive Coding",
+          "values": [
+            35,
+            30,
+            36
+          ],
+          "mean": 33.666666666666664,
+          "sd": 3.214550253664318,
+          "range": 6,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "K5",
+          "label": "Testing & Observability",
+          "values": [
+            12,
+            12,
+            14
+          ],
+          "mean": 12.666666666666666,
+          "sd": 1.1547005383792517,
+          "range": 2,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        },
+        {
+          "axis": "K6",
+          "label": "AI Collaboration Quality",
+          "values": [
+            50,
+            50,
+            50
+          ],
+          "mean": 50,
+          "sd": 0,
+          "range": 0,
+          "band": null,
+          "deviation": null,
+          "inBand": null
+        }
+      ],
+      "stackScore": {
+        "values": [
+          50,
+          51,
+          53
+        ],
         "mean": 51.333333333333336,
-        "sd": 1.1547005383792517,
-        "range": 2,
+        "sd": 1.5275252316519465,
+        "range": 3,
         "band": [
           33,
           58
@@ -4386,9 +4386,9 @@
           "K2"
         ],
         "why": "The design is sound and even names the exact concurrency trap the code then falls into. Design axes should hold while the code axes collapse; if the design axes fall too, a broken implementation is contaminating the design score.",
-        "holdsMean": 64.22222222222223,
-        "dropsMean": 32,
-        "gap": 32.22222222222223,
+        "holdsMean": 64.77777777777777,
+        "dropsMean": 33,
+        "gap": 31.77777777777777,
         "holdsInBand": true,
         "pass": true
       },
@@ -4404,13 +4404,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            28,
+            33,
             30,
             30
           ],
-          "mean": 29.333333333333332,
-          "sd": 1.1547005383792515,
-          "range": 2,
+          "mean": 31,
+          "sd": 1.7320508075688772,
+          "range": 3,
           "band": [
             10,
             38
@@ -4422,31 +4422,31 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            55,
-            53,
+            56,
+            56,
             55
           ],
-          "mean": 54.333333333333336,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 55.666666666666664,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": [
             25,
             55
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": 0.6666666666666643,
+          "inBand": false
         },
         {
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
             18,
-            24,
-            20
+            17,
+            26
           ],
-          "mean": 20.666666666666668,
-          "sd": 3.0550504633038935,
-          "range": 6,
+          "mean": 20.333333333333332,
+          "sd": 4.932882862316247,
+          "range": 9,
           "band": [
             8,
             35
@@ -4458,9 +4458,9 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
+            27,
             26,
-            28,
-            27
+            28
           ],
           "mean": 27,
           "sd": 1,
@@ -4476,31 +4476,31 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            36,
-            26,
-            33
+            38,
+            42,
+            40
           ],
-          "mean": 31.666666666666668,
-          "sd": 5.131601439446884,
-          "range": 10,
+          "mean": 40,
+          "sd": 2,
+          "range": 4,
           "band": [
             8,
             35
           ],
-          "deviation": 0,
-          "inBand": true
+          "deviation": 5,
+          "inBand": false
         },
         {
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
+            74,
             78,
-            72,
-            74
+            76
           ],
-          "mean": 74.66666666666667,
-          "sd": 3.055050463303893,
-          "range": 6,
+          "mean": 76,
+          "sd": 2,
+          "range": 4,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -4509,31 +4509,31 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            68,
-            66,
-            63
+            60,
+            63,
+            64
           ],
-          "mean": 65.66666666666667,
-          "sd": 2.5166114784235836,
-          "range": 5,
+          "mean": 62.333333333333336,
+          "sd": 2.0816659994661326,
+          "range": 4,
           "band": [
             70,
             95
           ],
-          "deviation": -4.333333333333329,
+          "deviation": -7.666666666666664,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
-            62,
+            63,
             62,
             62
           ],
-          "mean": 62,
-          "sd": 0,
-          "range": 0,
+          "mean": 62.333333333333336,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": [
             60,
             88
@@ -4545,13 +4545,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            57,
-            55,
-            56
+            50,
+            54,
+            55
           ],
-          "mean": 56,
-          "sd": 1,
-          "range": 2,
+          "mean": 53,
+          "sd": 2.6457513110645907,
+          "range": 5,
           "band": [
             50,
             80
@@ -4563,18 +4563,18 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            67,
+            64,
             66,
             66
           ],
-          "mean": 66.33333333333333,
-          "sd": 0.5773502691896257,
-          "range": 1,
+          "mean": 65.33333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             70,
             95
           ],
-          "deviation": -3.6666666666666714,
+          "deviation": -4.666666666666671,
           "inBand": false
         },
         {
@@ -4595,13 +4595,13 @@
       ],
       "stackScore": {
         "values": [
-          47,
           46,
-          46
+          47,
+          48
         ],
-        "mean": 46.333333333333336,
-        "sd": 0.5773502691896258,
-        "range": 1,
+        "mean": 47,
+        "sd": 1,
+        "range": 2,
         "band": [
           30,
           55
@@ -4622,13 +4622,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            15,
-            15,
+            12,
+            18,
             15
           ],
           "mean": 15,
-          "sd": 0,
-          "range": 0,
+          "sd": 3,
+          "range": 6,
           "band": [
             8,
             35
@@ -4640,12 +4640,12 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            35,
+            30,
             32,
-            32
+            33
           ],
-          "mean": 33,
-          "sd": 1.7320508075688772,
+          "mean": 31.666666666666668,
+          "sd": 1.5275252316519465,
           "range": 3,
           "band": [
             12,
@@ -4658,13 +4658,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
+            8,
             10,
-            18,
-            10
+            15
           ],
-          "mean": 12.666666666666666,
-          "sd": 4.618802153517006,
-          "range": 8,
+          "mean": 11,
+          "sd": 3.605551275463989,
+          "range": 7,
           "band": [
             2,
             25
@@ -4676,13 +4676,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            12,
+            10,
             12,
             12
           ],
-          "mean": 12,
-          "sd": 0,
-          "range": 0,
+          "mean": 11.333333333333334,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             5,
             32
@@ -4694,13 +4694,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            30,
-            22,
-            25
+            20,
+            35,
+            30
           ],
-          "mean": 25.666666666666668,
-          "sd": 4.041451884327381,
-          "range": 8,
+          "mean": 28.333333333333332,
+          "sd": 7.637626158259733,
+          "range": 15,
           "band": [
             12,
             42
@@ -4712,31 +4712,31 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            75,
-            72,
-            74
+            76,
+            78,
+            76
           ],
-          "mean": 73.66666666666667,
-          "sd": 1.5275252316519468,
-          "range": 3,
+          "mean": 76.66666666666667,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             40,
             72
           ],
-          "deviation": 1.6666666666666714,
+          "deviation": 4.666666666666671,
           "inBand": false
         },
         {
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            35,
-            35,
+            30,
+            32,
             30
           ],
-          "mean": 33.333333333333336,
-          "sd": 2.8867513459481287,
-          "range": 5,
+          "mean": 30.666666666666668,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": [
             8,
             38
@@ -4749,11 +4749,11 @@
           "label": "Code Quality & Maintainability",
           "values": [
             58,
-            58,
+            56,
             55
           ],
-          "mean": 57,
-          "sd": 1.7320508075688772,
+          "mean": 56.333333333333336,
+          "sd": 1.5275252316519465,
           "range": 3,
           "band": [
             35,
@@ -4766,13 +4766,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            45,
-            40,
-            45
+            33,
+            35,
+            27
           ],
-          "mean": 43.333333333333336,
-          "sd": 2.8867513459481287,
-          "range": 5,
+          "mean": 31.666666666666668,
+          "sd": 4.163331998932266,
+          "range": 8,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -4781,11 +4781,11 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            12,
-            12,
-            10
+            8,
+            10,
+            8
           ],
-          "mean": 11.333333333333334,
+          "mean": 8.666666666666666,
           "sd": 1.1547005383792517,
           "range": 2,
           "band": [
@@ -4813,13 +4813,13 @@
       ],
       "stackScore": {
         "values": [
-          32,
+          28,
           31,
           30
         ],
-        "mean": 31,
-        "sd": 1,
-        "range": 2,
+        "mean": 29.666666666666668,
+        "sd": 1.5275252316519468,
+        "range": 3,
         "band": [
           15,
           40
@@ -4840,13 +4840,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            10,
-            10,
-            12
+            15,
+            15,
+            20
           ],
-          "mean": 10.666666666666666,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 16.666666666666668,
+          "sd": 2.886751345948129,
+          "range": 5,
           "band": [
             0,
             18
@@ -4858,13 +4858,13 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
+            12,
             18,
-            18,
-            14
+            22
           ],
-          "mean": 16.666666666666668,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "mean": 17.333333333333332,
+          "sd": 5.033222956847167,
+          "range": 10,
           "band": [
             0,
             20
@@ -4878,11 +4878,11 @@
           "values": [
             4,
             4,
-            4
+            6
           ],
-          "mean": 4,
-          "sd": 0,
-          "range": 0,
+          "mean": 4.666666666666667,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             12
@@ -4894,13 +4894,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            8,
-            8,
-            5
+            4,
+            6,
+            6
           ],
-          "mean": 7,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 5.333333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             15
@@ -4912,11 +4912,11 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            6,
+            8,
             6,
             8
           ],
-          "mean": 6.666666666666667,
+          "mean": 7.333333333333333,
           "sd": 1.1547005383792517,
           "range": 2,
           "band": [
@@ -4930,18 +4930,18 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            52,
-            52,
-            52
+            30,
+            32,
+            35
           ],
-          "mean": 52,
-          "sd": 0,
-          "range": 0,
+          "mean": 32.333333333333336,
+          "sd": 2.516611478423583,
+          "range": 5,
           "band": [
             0,
             30
           ],
-          "deviation": 22,
+          "deviation": 2.3333333333333357,
           "inBand": false
         },
         {
@@ -4949,12 +4949,12 @@
           "label": "Correctness & Edge Cases",
           "values": [
             8,
-            10,
-            10
+            8,
+            12
           ],
           "mean": 9.333333333333334,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "sd": 2.3094010767585034,
+          "range": 4,
           "band": [
             0,
             20
@@ -4966,18 +4966,18 @@
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            22,
             28,
-            32,
-            30
+            28
           ],
-          "mean": 30,
-          "sd": 2,
-          "range": 4,
+          "mean": 26,
+          "sd": 3.4641016151377544,
+          "range": 6,
           "band": [
             0,
             25
           ],
-          "deviation": 5,
+          "deviation": 1,
           "inBand": false
         },
         {
@@ -4985,12 +4985,12 @@
           "label": "Security & Defensive Coding",
           "values": [
             22,
-            28,
-            25
+            20,
+            20
           ],
-          "mean": 25,
-          "sd": 3,
-          "range": 6,
+          "mean": 20.666666666666668,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": [
             0,
             25
@@ -5003,12 +5003,12 @@
           "label": "Testing & Observability",
           "values": [
             4,
-            4,
+            3,
             5
           ],
-          "mean": 4.333333333333333,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 4,
+          "sd": 1,
+          "range": 2,
           "band": [
             0,
             15
@@ -5034,13 +5034,13 @@
       ],
       "stackScore": {
         "values": [
-          17,
-          18,
+          15,
+          16,
           18
         ],
-        "mean": 17.666666666666668,
-        "sd": 0.5773502691896258,
-        "range": 1,
+        "mean": 16.333333333333332,
+        "sd": 1.5275252316519465,
+        "range": 3,
         "band": [
           0,
           20
@@ -5062,12 +5062,12 @@
           "label": "Requirement Framing",
           "values": [
             8,
-            8,
-            8
+            10,
+            10
           ],
-          "mean": 8,
-          "sd": 0,
-          "range": 0,
+          "mean": 9.333333333333334,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             25
@@ -5079,13 +5079,13 @@
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            24,
-            22,
-            22
+            14,
+            15,
+            15
           ],
-          "mean": 22.666666666666668,
-          "sd": 1.1547005383792515,
-          "range": 2,
+          "mean": 14.666666666666666,
+          "sd": 0.5773502691896257,
+          "range": 1,
           "band": [
             0,
             30
@@ -5097,13 +5097,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            4,
-            4,
+            3,
+            3,
             3
           ],
-          "mean": 3.6666666666666665,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 3,
+          "sd": 0,
+          "range": 0,
           "band": [
             0,
             20
@@ -5115,13 +5115,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            6,
-            5,
+            4,
+            4,
             4
           ],
-          "mean": 5,
-          "sd": 1,
-          "range": 2,
+          "mean": 4,
+          "sd": 0,
+          "range": 0,
           "band": [
             0,
             22
@@ -5133,13 +5133,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            8,
-            8,
+            5,
+            6,
             5
           ],
-          "mean": 7,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 5.333333333333333,
+          "sd": 0.5773502691896258,
+          "range": 1,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5150,11 +5150,11 @@
           "values": [
             15,
             15,
-            12
+            15
           ],
-          "mean": 14,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 15,
+          "sd": 0,
+          "range": 0,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5163,13 +5163,13 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            25,
             18,
-            20
+            18,
+            18
           ],
-          "mean": 21,
-          "sd": 3.605551275463989,
-          "range": 7,
+          "mean": 18,
+          "sd": 0,
+          "range": 0,
           "band": [
             0,
             35
@@ -5181,13 +5181,13 @@
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            24,
             28,
-            28,
-            24
+            22
           ],
-          "mean": 26.666666666666668,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "mean": 24.666666666666668,
+          "sd": 3.0550504633038935,
+          "range": 6,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5214,13 +5214,13 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            4,
-            4,
+            3,
+            3,
             3
           ],
-          "mean": 3.6666666666666665,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 3,
+          "sd": 0,
+          "range": 0,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5243,13 +5243,13 @@
       ],
       "stackScore": {
         "values": [
-          15,
-          14,
-          13
+          12,
+          13,
+          12
         ],
-        "mean": 14,
-        "sd": 1,
-        "range": 2,
+        "mean": 12.333333333333334,
+        "sd": 0.5773502691896257,
+        "range": 1,
         "band": [
           0,
           28
@@ -5281,10 +5281,10 @@
             25
           ],
           "why": "Same mandate names D3 alongside K4 as the axes that must absorb the penalty.",
-          "observedMean": 3.6666666666666665,
+          "observedMean": 3,
           "values": [
-            4,
-            4,
+            3,
+            3,
             3
           ],
           "pass": true
@@ -5301,30 +5301,30 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            32,
-            35,
-            30
+            28,
+            30,
+            28
           ],
-          "mean": 32.333333333333336,
-          "sd": 2.516611478423583,
-          "range": 5,
+          "mean": 28.666666666666668,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": [
             0,
             30
           ],
-          "deviation": 2.3333333333333357,
-          "inBand": false
+          "deviation": 0,
+          "inBand": true
         },
         {
           "axis": "D2",
           "label": "Architecture & Component Design",
           "values": [
-            68,
-            70,
-            64
+            72,
+            66,
+            72
           ],
-          "mean": 67.33333333333333,
-          "sd": 3.055050463303893,
+          "mean": 70,
+          "sd": 3.4641016151377544,
           "range": 6,
           "band": [
             35,
@@ -5339,11 +5339,11 @@
           "values": [
             22,
             22,
-            22
+            20
           ],
-          "mean": 22,
-          "sd": 0,
-          "range": 0,
+          "mean": 21.333333333333332,
+          "sd": 1.1547005383792515,
+          "range": 2,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5352,13 +5352,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            5,
             6,
-            5
+            8,
+            8
           ],
-          "mean": 5.333333333333333,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 7.333333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             0,
             30
@@ -5371,12 +5371,12 @@
           "label": "Adaptability",
           "values": [
             52,
-            55,
-            42
+            45,
+            45
           ],
-          "mean": 49.666666666666664,
-          "sd": 6.8068592855540455,
-          "range": 13,
+          "mean": 47.333333333333336,
+          "sd": 4.041451884327381,
+          "range": 7,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5385,13 +5385,13 @@
           "axis": "K1",
           "label": "Design-Code Alignment",
           "values": [
-            82,
             80,
-            82
+            80,
+            80
           ],
-          "mean": 81.33333333333333,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 80,
+          "sd": 0,
+          "range": 0,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5401,30 +5401,30 @@
           "label": "Correctness & Edge Cases",
           "values": [
             52,
-            50,
-            48
+            55,
+            55
           ],
-          "mean": 50,
-          "sd": 2,
-          "range": 4,
+          "mean": 54,
+          "sd": 1.7320508075688772,
+          "range": 3,
           "band": [
             60,
             90
           ],
-          "deviation": -10,
+          "deviation": -6,
           "inBand": false
         },
         {
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
+            60,
             58,
-            62,
-            58
+            55
           ],
-          "mean": 59.333333333333336,
-          "sd": 2.309401076758503,
-          "range": 4,
+          "mean": 57.666666666666664,
+          "sd": 2.516611478423583,
+          "range": 5,
           "band": [
             55,
             85
@@ -5436,13 +5436,13 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            45,
-            42,
-            42
+            38,
+            32,
+            35
           ],
-          "mean": 43,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 35,
+          "sd": 3,
+          "range": 6,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5451,13 +5451,13 @@
           "axis": "K5",
           "label": "Testing & Observability",
           "values": [
-            36,
-            36,
+            42,
+            40,
             35
           ],
-          "mean": 35.666666666666664,
-          "sd": 0.5773502691896258,
-          "range": 1,
+          "mean": 39,
+          "sd": 3.605551275463989,
+          "range": 7,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5481,12 +5481,12 @@
       "stackScore": {
         "values": [
           44,
-          45,
+          42,
           42
         ],
-        "mean": 43.666666666666664,
-        "sd": 1.5275252316519465,
-        "range": 3,
+        "mean": 42.666666666666664,
+        "sd": 1.1547005383792517,
+        "range": 2,
         "band": [
           15,
           45
@@ -5503,13 +5503,13 @@
             30
           ],
           "why": "The COHERENCE CHECK clause requires lowering D1 when the Stage 2 design ignores the facts uncovered in Stage 1. Here it proposes the one thing Stage 1 ruled out twice.",
-          "observedMean": 32.333333333333336,
+          "observedMean": 28.666666666666668,
           "values": [
-            32,
-            35,
-            30
+            28,
+            30,
+            28
           ],
-          "pass": false
+          "pass": true
         },
         {
           "axis": "D4",
@@ -5518,11 +5518,11 @@
             30
           ],
           "why": "Same clause names D4. The design violates a hard platform rule (no new managed services) and prices against $50 when Stage 1 established $12 of headroom.",
-          "observedMean": 5.333333333333333,
+          "observedMean": 7.333333333333333,
           "values": [
-            5,
             6,
-            5
+            8,
+            8
           ],
           "pass": true
         }
@@ -5538,13 +5538,13 @@
           "axis": "D1",
           "label": "Requirement Framing",
           "values": [
-            76,
-            77,
-            76
+            80,
+            80,
+            78
           ],
-          "mean": 76.33333333333333,
-          "sd": 0.5773502691896257,
-          "range": 1,
+          "mean": 79.33333333333333,
+          "sd": 1.1547005383792517,
+          "range": 2,
           "band": [
             55,
             85
@@ -5557,12 +5557,12 @@
           "label": "Architecture & Component Design",
           "values": [
             84,
-            82,
+            84,
             84
           ],
-          "mean": 83.33333333333333,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 84,
+          "sd": 0,
+          "range": 0,
           "band": [
             62,
             88
@@ -5574,13 +5574,13 @@
           "axis": "D3",
           "label": "Tradeoff Reasoning",
           "values": [
-            80,
-            76,
-            78
+            79,
+            79,
+            79
           ],
-          "mean": 78,
-          "sd": 2,
-          "range": 4,
+          "mean": 79,
+          "sd": 0,
+          "range": 0,
           "band": [
             65,
             92
@@ -5592,13 +5592,13 @@
           "axis": "D4",
           "label": "Constraint Satisfaction",
           "values": [
-            72,
-            72,
+            70,
+            74,
             68
           ],
           "mean": 70.66666666666667,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "sd": 3.055050463303893,
+          "range": 6,
           "band": [
             60,
             88
@@ -5610,13 +5610,13 @@
           "axis": "D5",
           "label": "Adaptability",
           "values": [
-            80,
             78,
-            77
+            79,
+            82
           ],
-          "mean": 78.33333333333333,
-          "sd": 1.5275252316519468,
-          "range": 3,
+          "mean": 79.66666666666667,
+          "sd": 2.081665999466133,
+          "range": 4,
           "band": [
             65,
             92
@@ -5629,12 +5629,12 @@
           "label": "Design-Code Alignment",
           "values": [
             86,
-            83,
-            86
+            86,
+            85
           ],
-          "mean": 85,
-          "sd": 1.7320508075688772,
-          "range": 3,
+          "mean": 85.66666666666667,
+          "sd": 0.5773502691896257,
+          "range": 1,
           "band": null,
           "deviation": null,
           "inBand": null
@@ -5643,13 +5643,13 @@
           "axis": "K2",
           "label": "Correctness & Edge Cases",
           "values": [
-            64,
-            73,
-            72
+            72,
+            71,
+            66
           ],
           "mean": 69.66666666666667,
-          "sd": 4.932882862316247,
-          "range": 9,
+          "sd": 3.214550253664318,
+          "range": 6,
           "band": [
             68,
             92
@@ -5661,13 +5661,13 @@
           "axis": "K3",
           "label": "Code Quality & Maintainability",
           "values": [
-            78,
             80,
-            80
+            81,
+            78
           ],
-          "mean": 79.33333333333333,
-          "sd": 1.1547005383792517,
-          "range": 2,
+          "mean": 79.66666666666667,
+          "sd": 1.5275252316519468,
+          "range": 3,
           "band": [
             60,
             88
@@ -5679,12 +5679,12 @@
           "axis": "K4",
           "label": "Security & Defensive Coding",
           "values": [
-            63,
-            64,
-            60
+            56,
+            60,
+            58
           ],
-          "mean": 62.333333333333336,
-          "sd": 2.0816659994661326,
+          "mean": 58,
+          "sd": 2,
           "range": 4,
           "band": null,
           "deviation": null,
@@ -5695,12 +5695,12 @@
           "label": "Testing & Observability",
           "values": [
             72,
-            76,
-            76
+            73,
+            74
           ],
-          "mean": 74.66666666666667,
-          "sd": 2.3094010767585034,
-          "range": 4,
+          "mean": 73,
+          "sd": 1,
+          "range": 2,
           "band": [
             62,
             90
@@ -5730,12 +5730,12 @@
       "stackScore": {
         "values": [
           74,
-          74,
+          75,
           74
         ],
-        "mean": 74,
-        "sd": 0,
-        "range": 0,
+        "mean": 74.33333333333333,
+        "sd": 0.5773502691896257,
+        "range": 1,
         "band": [
           58,
           82

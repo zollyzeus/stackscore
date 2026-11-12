@@ -66,6 +66,10 @@ export async function POST(req: NextRequest) {
     let feedback: Record<string, string>;
     let evidence: Record<string, string> = {};
     let thinkingLog: string | undefined;
+    // Set only on the fallback path below. Everything downstream that presents or
+    // aggregates this score has to be able to tell a judged card from a substituted one.
+    let judgeFallback = false;
+    let judgeFallbackReason: string | undefined;
 
     const sessionAny = session as unknown as Record<string, unknown>;
     try {
@@ -75,7 +79,12 @@ export async function POST(req: NextRequest) {
       }));
     } catch (judgeErr: unknown) {
       // Judge failed — score based on what was submitted (blank = 0, something = 20 baseline)
-      console.error("[evaluate] judge failed, using fallback scores:", judgeErr instanceof Error ? judgeErr.message : judgeErr);
+      // JUDGE_FALLBACK is the alert token: the service stays healthy during a judge
+      // outage, so this log line is the only runtime signal that scoring is broken.
+      // Alert on it. AUDIT_TODO D8 ran undetected for want of exactly this.
+      judgeFallbackReason = judgeErr instanceof Error ? judgeErr.message : String(judgeErr);
+      judgeFallback = true;
+      console.error("[evaluate] JUDGE_FALLBACK judge failed, substituting mechanical scores:", judgeFallbackReason);
       const hasDesign = submissionInput.designProposal.trim().length > 20;
       const hasCode = submissionInput.code.trim().length > 20;
       const hasClarify = submissionInput.clarifyingTranscript.trim().length > 10;
@@ -134,6 +143,7 @@ export async function POST(req: NextRequest) {
       ...(typeof tabSwitchCount === "number" && tabSwitchCount > 0 ? { tabSwitchCount } : {}),
       ...(thinkingLog ? { thinkingLog } : {}),
       ...(Object.keys(evidence).length > 0 ? { evidence } : {}),
+      ...(judgeFallback ? { judgeFallback: true, judgeFallbackReason } : {}),
     });
 
     // Webhook on completion (non-fatal, background)
@@ -154,6 +164,7 @@ export async function POST(req: NextRequest) {
           role: sessionAny.role,
           fastSubmit,
           tabSwitchCount,
+          judgeFallback,
           scoreCardUrl: `/score/${publicSlug}`,
           timestamp: new Date().toISOString(),
         }),
@@ -166,6 +177,7 @@ export async function POST(req: NextRequest) {
       candidateEmail: sessionAny.candidateEmail as string | undefined,
       stackScore: scoreCard.stackScore,
       gradeLabel: gradeLabel(scoreCard.stackScore),
+      judgeFallback,
       scoreCardUrl: `/score/${publicSlug}`,
       role: sessionAny.role as string | undefined,
     }).catch(console.error);

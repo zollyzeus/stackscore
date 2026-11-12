@@ -399,7 +399,7 @@ cannot tell which they got. The honest fix is a null/not-assessed state distinct
 weighted sum — out of scope for an anchors change, and it would alter how the StackScore is
 computed for every submission with no AI evidence. Flagged rather than smuggled in.
 
-### D12. Anchors introduced two scoring regressions — **[OPEN]**
+### D12. Anchors introduced two scoring regressions — **[FIXED 2026-11-12]**
 
 Measured by the post-anchor sweep (see D10). Both are defects in the anchor text I wrote,
 not in the judge, and both have precise causes.
@@ -422,17 +422,29 @@ anchors happen to align with the coherence requirement rather than cut across it
 the proposal", which is trivially satisfied when there is almost no code and almost no
 proposal. Absence of evidence is being read as alignment.
 
-Fix both in the anchor text, then re-run and compare against `post-anchor-report.md`:
+**Both fixed and re-measured; the sweep gate now passes** (5/5 rule compliance, 30/30 calls,
+R² 0.848, 8/10 band compliance).
 
-1. Add a coherence cap to D1's anchors (correctness bug — do this first).
-2. Rewrite K1's `25-49`/`50-74` boundary so insufficient material scores low, not middle.
-3. Soften the "expected bar for a timed submission" language on K2/K4/K5. It over-delivered:
-   the aim was to stop those three being 12-17 points stricter than everything else, not to
-   raise the floor across the whole set.
-4. Target: 5/5 rule compliance, slope ≥ 0.85, bottom-end implied error under ~4 points,
-   F02's D2 holding above 50, K1 lean under ~5.
+- D12a: restated the coherence rule as a `note` on D1, applied as a cap before the bands are
+  read. F09/D1 is now 28.7 against the required 0-30.
+- D12b: K1's low bands now say that too little material to establish alignment scores low,
+  not middle. F07's K1 went 52.0 → 32.3, below its pre-anchor 35.0.
+- D12c: softened the "expected bar for a timed submission" language on K2/K4/K5, which had
+  over-delivered. The weak fixtures came back down (F07 17.7 → 16.3, F08 14.0 → 12.3).
 
-### D11. Judge failure silently produces a fake score — **[OPEN — highest-severity open item]**
+Deliberately **not** chased, and recorded as such in `data/calibration/README.md`: slope is
+0.799 against a pre-anchor 0.835, so compression did not improve. Closing that gap means
+tuning against bands one person authored, which §7 of the report says not to do. K1's
+residual +14.7 lean is largely an artifact — the median K1 fixture (F04, 34.7) is *inside*
+its band of [5, 35], and the lean measures distance from a wide band's midpoint.
+
+The lesson worth keeping is from D12a: **an anchor that omits a rule silently overrides it.**
+Anchors are the most specific instruction the judge has about an axis, so any rule stated
+once in the preamble must be restated in the anchors of every axis it constrains. D4 never
+regressed only because its anchors happen to align with the coherence requirement rather
+than cut across it.
+
+### D11. Judge failure silently produced a fake score — **[FIXED 2026-11-12 — was the highest-severity open item]**
 
 Found 2026-11-12 while assessing deployment readiness. Not a regression; it has always
 behaved this way, and it is what made D8 survive in production instead of paging someone.
@@ -471,8 +483,30 @@ from a real result**. Minimum fix, roughly in order of value per unit of work:
 5. Reconsider whether the candidate should instead be offered a retry, which keeps the
    submission and avoids inventing a number at all.
 
-Until at least (1) and (2) ship, the honest statement is that the product can report a score
-it did not measure. That is a different claim from the one the calibration dataset supports.
+**Fixed.** A judged card and a substituted one are now distinguishable everywhere a score is
+presented or counted:
+
+- `judgeFallback` / `judgeFallbackReason` persist through `saveScore` and are projected in
+  `SCORE_LIST_FIELDS`, so list queries can see the flag.
+- `/score/[id]` renders a banner **above** the number, not beside it — a reader who sees the
+  figure first has already drawn the conclusion.
+- The panelist email carries a banner and a `[JUDGE FAILED - not a real score]` subject
+  prefix, because a subject line is all a panelist sees in a notification list.
+- The `assessment.completed` webhook carries `judgeFallback` so consumers can discard it.
+- `isJudgedScore()` in `lib/firestore.ts` quarantines fallbacks from every statistic:
+  `/benchmarks` excludes them outright, the score page's percentile and axis medians exclude
+  them from the peer set, and the dashboard keeps the rows listed (a panelist needs to see a
+  failed submission) while removing them from the headline stats and showing a count.
+- The log line now carries a `JUDGE_FALLBACK` token to alert on — the piece that would have
+  caught D8 on the first real submission.
+
+Five unit tests cover the quarantine, including that only a real boolean `true` excludes: a
+stray truthy value must not silently drop a genuine score out of every statistic.
+
+**Still open, deliberately:** the candidate is not offered a retry, so a fallback card is
+still created rather than the submission being held. Flagging it is the smaller fix and the
+one that stops the silent-bad-data failure; offering a retry is the better product answer
+and a larger change to the assessment flow.
 
 ---
 
@@ -637,8 +671,9 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
    `auth-setup` detects the rejection and skips rather than reporting a false failure. Every anonymous/attacker-perspective assertion — the
    security-relevant surface — does run against production. Creating the secrets (item 1) and
    supplying `CANDIDATE_SECRET` in the environment closes the gap.
-6. **A judge failure is reported as a real score.** See D11 — the highest-severity open
-   item in this document, and the one that should gate the next candidate-facing deploy.
+6. **A judge failure still creates a card rather than offering a retry.** It is now clearly
+   marked everywhere and excluded from every statistic (D11), so it no longer produces
+   silent bad data, but the better product answer is to hold the submission.
 7. **No token-usage instrumentation.** `msg.usage` is never read anywhere, so the per-call
    cost, the prompt-cache hit rate and the effect of D10's +2.5k system-prompt tokens are
    all unmeasured. Every cost figure in this document is an estimate, including that one.
@@ -646,16 +681,12 @@ a missing-anchors root cause that is now fixed (D10). That is what a calibration
 
 ## Suggested next steps
 
-1. **D11 — stop the judge-failure fallback from presenting as a real score.** Highest
-   severity open item; it is the reason D8 ran in production unnoticed. At minimum persist
-   and display a `judgeFallback` flag before the next candidate-facing deploy.
-2. **Add token-usage instrumentation.** `msg.usage` is never read, so no one can say what a
+1. ~~D11 — judge-failure fallback presenting as a real score~~ — **done 2026-11-12.**
+2. ~~D12 — the two anchor regressions~~ — **done 2026-11-12**, sweep gate green.
+3. **Add token-usage instrumentation.** `msg.usage` is never read, so no one can say what a
    judge call costs, whether the prompt cache is ever hit, or whether cost moved when the
    anchors added ~2.5k tokens to the system prompt. Log `input_tokens`,
    `cache_creation_input_tokens`, `cache_read_input_tokens` and `output_tokens` per call.
-3. **Fix D12a and D12b, then re-run the sweep.** The anchor sweep has run; the gate is red
-   on F09/D1 and K1 is vacuously generous. Until D12a is fixed the judge is not applying a
-   rule it was explicitly given, which is a bug rather than drift.
 4. Restore `ADMIN_IP_ALLOWLIST` (gap 2) — admin UI is 403 for everyone until then.
 5. Decide on secret rotation (gap 3).
 6. Architecture slide reframe (F2) and the outcome-capture promotion (F3).

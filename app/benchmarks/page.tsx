@@ -1,4 +1,4 @@
-import { getAllScores } from "../../lib/firestore";
+import { getAllScores, isJudgedScore } from "../../lib/firestore";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -20,7 +20,9 @@ function percentile(arr: number[], p: number): number {
 export default async function BenchmarksPage() {
   let scores: Awaited<ReturnType<typeof getAllScores>> = [];
   try {
-    scores = await getAllScores(500);
+    // Every number on this page is a population statistic, so unmeasured fallback cards
+    // are excluded outright rather than flagged. See AUDIT_TODO D11.
+    scores = (await getAllScores(500)).filter(isJudgedScore);
   } catch { /* non-fatal */ }
 
   const total = scores.length;

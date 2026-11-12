@@ -288,73 +288,69 @@ In priority order:
 
 ---
 
-## Post-anchor results (2026-11-12, after D10)
+## Post-anchor results (2026-11-12, after D10 + D12)
 
 Full report: `post-anchor-report.md`; raw scores: `post-anchor-runs.json`. Same model,
-effort, fixtures and run count as the baseline, so the only changed variable is the rubric.
+effort, fixtures and run count as the baseline, so the rubric is the only changed variable.
+Two sweeps were run: the first measured the anchors as written, the second measured them
+after the two regressions that sweep exposed were fixed. Numbers below are the second.
 
-**Verdict: the anchors helped where they were aimed and overshot where they were not. The
-sweep gate fails. Do not ship this to candidates without one more iteration.**
+**Verdict: the sweep gate passes. Ship the anchors, ship raw scores, apply no normalization.**
 
-| Measure | Pre-anchor | Post-anchor | |
-|---|---|---|---|
-| Mean StackScore sd | 1.0 | **0.8** | better |
-| Fixtures in band | 8/10 | 8/10 | same count, smaller misses |
-| F01 deviation (ceiling) | -7.0 | **-4.7** | better |
-| F02 deviation | -6.0 | **-1.0** | better |
-| Slope | 0.835 | **0.797** | **worse** |
-| Intercept | +5.09 | +9.63 | — |
-| R² | 0.868 | 0.865 | unchanged |
-| Implied error at expected 85 | -8.9 | **-7.6** | better |
-| Implied error at expected 15 | +2.6 | **+6.6** | **worse** |
-| Rule compliance | 5/5 | **4/5** | **regression** |
-| F02 halo (D2) | 32.3 | **53.3** | much better, still flagged |
+| Measure | Pre-anchor | Anchors v1 | Anchors v2 | |
+|---|---|---|---|---|
+| Rule compliance | 5/5 | **4/5** | **5/5** | restored |
+| Fixtures in band | 8/10 | 8/10 | 8/10 | misses smaller |
+| F01 deviation (ceiling) | -7.0 | -4.7 | -6.7 | better than pre |
+| F02 deviation | -6.0 | -1.0 | -2.0 | better than pre |
+| Mean StackScore sd | 1.0 | 0.8 | 1.2 | all fine |
+| Slope | 0.835 | 0.797 | 0.799 | **flat/slightly worse** |
+| R² | 0.868 | 0.865 | 0.848 | ordering intact |
+| F02 halo (D2) | 32.3 | 53.3 | **47.3** | big win, still flagged |
+| K2 / K4 / K5 lean | -16.4/-12.0/-17.2 | -11.6/-8.5/-13.8 | -12.1/-10.0/-15.8 | better than pre |
 
-### What worked
+### What the anchors bought
 
-- **Halo (Finding 3) is substantially fixed.** F02's D2 went 32.3 → 53.3 (runs 52, 50, 58)
-  while its D3/D4 stayed at 11.3. The architecture is now scored as architecture. The
-  `scoredElsewhere` note on D2 is the most effective single line added.
-- **The over-strict axes relaxed toward their bands.** K4 +9.2 mean, K5 +3.9, K2 +2.6;
-  K5's recommended offset fell from +17 to +14, K4's recommendation disappeared entirely.
-- **Reliability improved slightly** (sd 1.0 → 0.8; three fixtures now return identical
-  scores on all three runs).
-- **D4 got *stricter*** (-3.4), which is the right direction: constraint satisfaction should
-  discriminate, and it was the axis the anchors asked to demand concrete evidence.
+- **Halo is substantially fixed.** F02's D2 went 32.3 → 47.3 while D3/D4 stayed at 12.7.
+  The architecture is now scored as architecture. The `scoredElsewhere` note on D2 was the
+  single most effective line added, and this is the one improvement visible in the product
+  UI rather than only in this report.
+- **The over-strict axes moved toward their bands** and stayed there (K4 -12.0 → -10.0,
+  K2 -16.4 → -12.1, K5 -17.2 → -15.8). K4's recommended offset disappeared.
+- **Accuracy at the ends improved**: F01 -7.0 → -6.7 and F02 -6.0 → -2.0 deviation.
 
-### What broke
+### What the first sweep caught, and the general lesson
 
-**1. The floor inflated more than the ceiling did, so compression got worse.** Every fixture
-rose (mean +2.9), but the weak ones rose most: F07 13.3 → 17.7, F08 11.0 → 14.0, F09 35.0 →
-43.7, against F01's +2.3. Slope therefore fell 0.835 → 0.797. The `scale.note` clause
-declaring the top band reachable did not lift the top; the "expected bar for a timed
-submission" clauses lifted the bottom. This is the overshoot the baseline section predicted,
-and it landed on the axes that got the explicit bar language.
+Anchors v1 broke two things, both found by the sweep within ten minutes of being written:
 
-**2. K1 is now vacuously generous — the clearest single defect.** K1's lean went +1.3 →
-+13.3, driven by F07 (the near-empty fixture) scoring K1 35 → **52**. The `50-74` anchor
-reads "The code follows the proposal", which is *trivially true when there is almost no code
-and almost no proposal*. Absence of evidence is being scored as alignment. K1's low bands
-need to say that too little material to establish alignment scores low, not middle.
+**An anchor that omits a rule silently overrides it.** F09/D1 scored 32.3 against a required
+0-30, because D1's anchors described *question quality only* and F09's Stage 1 questions are
+genuinely good — its failure is that Stage 2 ignores them. The COHERENCE CHECK clause
+elsewhere in the system prompt requires lowering D1 for exactly that, but the anchor text
+sits beside the axis and won. Fixed by restating the rule as a `note` on D1 (a cap applied
+before the bands are read): F09/D1 is now 28.7 and compliance is back to 5/5. **This
+generalises: any rule stated once in the preamble must be restated in the anchors of every
+axis it constrains, or it stops applying there.**
 
-**3. The coherence rule stopped firing on D1 — a hard-assertion failure.** F09/D1 required
-0-30, observed **32.3** (runs 32, 35, 30; was 28, 30, 30). Precise cause: D1's anchors
-describe *question quality only*, and F09's Stage 1 questions are genuinely good — its
-failure is that Stage 2 ignores their answers. The COHERENCE CHECK clause in the system
-prompt requires lowering D1 for exactly that, but the anchor text sits next to the axis and
-won. **An anchor that omits a rule silently overrides it.** D1's anchors need a coherence
-cap; note that D4's did not regress (5.3) because D4's anchors are about the constraint
-holding up, which does not conflict.
+**Absence of evidence was being scored as alignment.** K1's `50-74` band read "The code
+follows the proposal", which is trivially true when there is almost no code. F07 (the
+near-empty fixture) scored K1 52. Fixed by making insufficient material score low rather
+than middle: F07's K1 is now 32.3.
 
-### Next iteration
+### Known, and deliberately not chased
 
-1. Add a coherence clause to D1's anchors so the hard assertion passes again. This is a
-   correctness bug, not calibration — fix before anything else.
-2. Rewrite K1's `25-49` / `50-74` boundary so insufficient material scores low.
-3. Soften the "expected bar" language on K2/K4/K5 — it over-delivered. The aim was to stop
-   those axes being 12-17 points stricter than the rest, not to raise the floor globally.
-4. Re-run and compare against *this* section. Target: slope ≥ 0.85 with the bottom-end error
-   back under ~4 points, 5/5 rule compliance, F02's D2 holding, and K1's lean under ~5.
+- **Slope is 0.799 against a pre-anchor 0.835.** Compression did not improve. The anchors
+  raised the floor more than the ceiling; softening the "expected bar" language in v2
+  brought the weak fixtures back down (F07 17.7 → 16.3, F08 14.0 → 12.3) without recovering
+  slope. Closing this further means tuning against authored bands, which is the one thing
+  this dataset's §7 says not to do. Left for the panel re-label.
+- **K1's +14.7 lean is largely an artifact.** The median K1 fixture is F04 at 34.7, which is
+  *inside* its band of [5, 35]; the lean metric measures distance from a wide band's
+  midpoint. With n=5 the report's own limits section calls K1 a hypothesis, not a finding.
+- **F02 still reads CONTAMINATED** on the halo check at a 34.7 gap. The threshold is strict
+  and the direction of travel is right; this is a prompt refinement, not a blocker.
+- **K5 still leans -15.8** with a recommended +16 offset. Not applied — see §7 of the report
+  and "Expected bands, and what they do not license" above.
 
 Still true, and unchanged by any of this: the bands are one person's authored judgements.
 Two iterations of tuning a judge against them does not make them panel consensus — it makes

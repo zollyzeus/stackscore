@@ -1,4 +1,4 @@
-import { getAllScores } from "../../lib/firestore";
+import { getAllScores, isJudgedScore } from "../../lib/firestore";
 import DashboardTable from "../components/DashboardTable";
 import PendingFeedbackBanner from "../components/PendingFeedbackBanner";
 
@@ -35,9 +35,14 @@ export default async function Dashboard({
     return true;
   }).map(serialize);
 
-  const passing = filtered.filter((s) => (s.stackScore as number) >= threshold);
-  const avg = filtered.length
-    ? Math.round(filtered.reduce((acc, s) => acc + (s.stackScore as number), 0) / filtered.length)
+  // Rows stay listed -- a panelist needs to see that a submission failed to score -- but
+  // they are kept out of the headline stats, which would otherwise read a judge outage as a
+  // cohort of weak candidates. See AUDIT_TODO D11.
+  const judged = filtered.filter(isJudgedScore);
+  const fallbackCount = filtered.length - judged.length;
+  const passing = judged.filter((s) => (s.stackScore as number) >= threshold);
+  const avg = judged.length
+    ? Math.round(judged.reduce((acc, s) => acc + (s.stackScore as number), 0) / judged.length)
     : 0;
 
   // 90-day feedback: hired 85-180 days ago with no outcomeFeedback
@@ -117,11 +122,30 @@ export default async function Dashboard({
         </div>
         <div className="stat-card">
           <div className="stat-val">
-            {filtered.length ? Math.round((passing.length / filtered.length) * 100) : 0}%
+            {judged.length ? Math.round((passing.length / judged.length) * 100) : 0}%
           </div>
           <div className="stat-lbl">Pass rate</div>
         </div>
       </div>
+
+      {fallbackCount > 0 && (
+        <div
+          role="alert"
+          style={{
+            margin: "0 0 20px", padding: "12px 14px", borderRadius: 10,
+            background: "rgba(163,51,51,0.12)", border: "1px solid #a33",
+            color: "#ffb3b3", fontSize: 13, lineHeight: 1.5,
+          }}
+        >
+          <strong>
+            {fallbackCount} submission{fallbackCount === 1 ? "" : "s"} could not be scored by
+            the AI judge
+          </strong>{" "}
+          and {fallbackCount === 1 ? "carries a" : "carry"} placeholder value. They are listed
+          below but excluded from the statistics above. Re-run their evaluations — and if this
+          count is climbing, the judge is down.
+        </div>
+      )}
 
       {/* Filters */}
       <form className="db-filters" method="GET">

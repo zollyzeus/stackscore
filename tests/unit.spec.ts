@@ -8,6 +8,7 @@ import { canonicalise, signCredential, verifyCredential } from "../lib/credentia
 import { computeScoreCard, type AxisScores, type AxisId } from "../lib/scoring";
 import { runJavaScript } from "../lib/sandbox";
 import rubric from "../data/rubric.json";
+import { isJudgedScore } from "../lib/firestore";
 
 const SECRET = "test-secret-at-least-32-characters-long!!";
 
@@ -304,5 +305,48 @@ test.describe("sandbox (direct)", () => {
     const r = runJavaScript(`console.log("before"); throw new Error("boom");`);
     expect(r.error).toContain("boom");
     expect(r.logs).toContain("before"); // partial output preserved
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/firestore.ts — judge-fallback quarantine (AUDIT_TODO D11)
+// ─────────────────────────────────────────────────────────────────────────────
+test.describe("judge fallback quarantine", () => {
+  // The defect this guards against is not a crash: a fallback card carries real-looking
+  // numbers that no judge produced, and before D11 nothing distinguished it. Letting one
+  // into a mean or a percentile reads a scoring outage as a cohort of weak candidates.
+
+  test("a score with no flag is treated as judged", () => {
+    expect(isJudgedScore({})).toBe(true);
+  });
+
+  test("an explicitly non-fallback score is judged", () => {
+    expect(isJudgedScore({ judgeFallback: false })).toBe(true);
+  });
+
+  test("a fallback score is excluded", () => {
+    expect(isJudgedScore({ judgeFallback: true })).toBe(false);
+  });
+
+  test("only a real boolean true excludes — a truthy string does not silently pass", () => {
+    // Firestore returns whatever was written. A stray "true" must not be read as a flag,
+    // because the failure mode is silent: it would quietly drop a genuine score from every
+    // statistic. Exclusion requires the exact boolean this codebase writes.
+    expect(isJudgedScore({ judgeFallback: "true" })).toBe(true);
+    expect(isJudgedScore({ judgeFallback: 1 })).toBe(true);
+  });
+
+  test("filtering a mixed cohort removes only the fallbacks", () => {
+    const cohort = [
+      { stackScore: 80 }, { stackScore: 20, judgeFallback: true },
+      { stackScore: 60, judgeFallback: false }, { stackScore: 20, judgeFallback: true },
+    ];
+    const judged = cohort.filter(isJudgedScore);
+    expect(judged.map((s) => s.stackScore)).toEqual([80, 60]);
+    // The point of the filter, stated as the number a panelist would otherwise read:
+    const avgAll = cohort.reduce((a, s) => a + s.stackScore, 0) / cohort.length;
+    const avgJudged = judged.reduce((a, s) => a + s.stackScore, 0) / judged.length;
+    expect(Math.round(avgAll)).toBe(45);
+    expect(Math.round(avgJudged)).toBe(70);
   });
 });

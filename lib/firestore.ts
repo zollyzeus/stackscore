@@ -101,6 +101,12 @@ export async function saveScore(
     candidateName?: string; candidateEmail?: string;
     tabSwitchCount?: number; summary?: string; tips?: Record<string, string>;
     thinkingLog?: string; designProposal?: string;
+    // Set when the judge never ran and app/api/evaluate substituted mechanical scores.
+    // Without this the fallback card is indistinguishable from a real evaluation, which is
+    // how a total scoring outage (AUDIT_TODO D8) ran in production unnoticed: candidates
+    // got a plausible ~20 StackScore instead of an error. Anything that reads a score has
+    // to be able to ask whether a judge produced it.
+    judgeFallback?: boolean; judgeFallbackReason?: string;
   }
 ) {
   const data = Object.fromEntries(
@@ -109,6 +115,17 @@ export async function saveScore(
   );
   await db().collection("scores").doc(sessionId).set(data);
   await db().collection("sessions").doc(sessionId).update({ status: "evaluated" });
+}
+
+/**
+ * A score the AI judge actually produced. Fallback cards (AUDIT_TODO D11) carry real-looking
+ * numbers that were never measured -- ~20 per populated stage -- so including them in any
+ * mean, median, percentile or distribution silently drags the whole cohort toward 20 and
+ * makes a judge outage look like a population of weak candidates. Statistical surfaces must
+ * filter with this; surfaces that list individual candidates should show them, flagged.
+ */
+export function isJudgedScore(s: { judgeFallback?: unknown }): boolean {
+  return s.judgeFallback !== true;
 }
 
 export async function getScoreBySlug(publicSlug: string) {
@@ -147,7 +164,7 @@ const SCORE_LIST_FIELDS = [
   "sessionId", "publicSlug", "stackScore", "levelScores", "axisScores",
   "role", "candidateName", "candidateEmail", "decision", "hiredAt",
   "notes", "createdAt", "rowLabel", "columnLabel", "fastSubmit",
-  "tabSwitchCount", "summary",
+  "tabSwitchCount", "summary", "judgeFallback",
 ];
 
 export async function getAllScores(limit = 100): Promise<Record<string, unknown>[]> {

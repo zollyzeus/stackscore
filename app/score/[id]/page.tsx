@@ -1,4 +1,4 @@
-import { getScoreBySlug, getAllScores } from "../../../lib/firestore";
+import { getScoreBySlug, getAllScores, isJudgedScore } from "../../../lib/firestore";
 import { rubricDefinition } from "../../../lib/scoring";
 import type { AxisScores } from "../../../lib/scoring";
 import { grade } from "../../../lib/grade";
@@ -151,7 +151,9 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
   let axisMedians: Record<string, number> | null = null;
   let benchmarkCount = 0;
   try {
-    const allScores = await getAllScores(500);
+    // Fallback cards are excluded from the peer set: a percentile computed against
+    // unmeasured ~20s overstates every real candidate. See AUDIT_TODO D11.
+    const allScores = (await getAllScores(500)).filter(isJudgedScore);
     const rolePeer = allScores.filter((s) => !doc.role || s.role === doc.role);
     const peer = rolePeer.length >= 20 ? rolePeer : allScores;
     benchmarkCount = peer.length;
@@ -288,6 +290,27 @@ export default async function ScoreCard({ params }: { params: { id: string } }) 
           </div>
         </a>
       </div>
+
+      {/* A substituted score must not present as an assessment result. This sits above the
+          number rather than beside it: a reader who sees the figure first has already drawn
+          the conclusion. See AUDIT_TODO D11. */}
+      {doc.judgeFallback === true && (
+        <div
+          role="alert"
+          style={{
+            margin: "0 0 20px", padding: "14px 16px", borderRadius: 10,
+            background: "rgba(163,51,51,0.12)", border: "1px solid #a33",
+            color: "#ffb3b3", fontSize: 14, lineHeight: 1.5,
+          }}
+        >
+          <strong style={{ display: "block", marginBottom: 4 }}>
+            This is not a judged score.
+          </strong>
+          The AI judge could not evaluate this submission, so StackScore substituted a
+          placeholder derived only from which stages contained text. It does not reflect the
+          quality of the work and must not be used to make a decision. Re-run the evaluation.
+        </div>
+      )}
 
       {/* Hero score */}
       <div className="sc-hero">
