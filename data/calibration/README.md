@@ -337,6 +337,42 @@ follows the proposal", which is trivially true when there is almost no code. F07
 near-empty fixture) scored K1 52. Fixed by making insufficient material score low rather
 than middle: F07's K1 is now 32.3.
 
+### The two claims that need no panel
+
+Everything in this file that speaks to **accuracy** is measured against 75 bands written by
+one person, and is only as good as those bands. These two are not. They use nothing but the
+judge's own scores across independent runs — no ground truth, no panel, nothing to dispute.
+
+```bash
+npx tsx scripts/rank-stability.ts
+```
+
+**1. Rank stability: Spearman ρ = 1.000, zero inversions.** Across three independent runs
+the judge produced the *identical* ordering of all ten submissions, and answered all 45
+"is A stronger than B?" questions the same way every time:
+
+```
+run 1: F10 > F01 > F03 > F04 > F05 > F09 > F02 > F06 > F07 > F08
+run 2: F10 > F01 > F03 > F04 > F05 > F09 > F02 > F06 > F07 > F08
+run 3: F10 > F01 > F03 > F04 > F05 > F09 > F02 > F06 > F07 > F08
+```
+
+This is the measure that matters most commercially, because **ranking is the deliverable**.
+A hiring team does not act on "this candidate scored 68"; it acts on "this candidate is
+stronger than that one". Scale compression shifts the numbers without touching the order —
+which is exactly why the slope finding, while real, does not undermine the product's core
+function.
+
+**2. Separation: every adjacent pair is ≥ 2.3 sd apart**, against a pooled run-to-run sd of
+1.18 points. This is the necessary companion to reliability: a judge that scores every
+candidate 50 every time is perfectly reliable and perfectly useless. The gaps it reports are
+2.3 to 14.4 standard deviations wide, so they are real distinctions rather than noise.
+
+**What neither measure says is that the scores are RIGHT.** A judge can rank consistently
+and separate cleanly while being uniformly too harsh — which, per the slope of 0.814, it
+somewhat is at the top of the range. Establishing the absolute level needs the panel, and no
+amount of run-to-run analysis substitutes for it. See `PANEL.md`.
+
 ### Current evidence (2026-11-13, after the D1 cap change)
 
 `post-anchor-report.md` and `post-anchor-runs.json` were regenerated against the current
