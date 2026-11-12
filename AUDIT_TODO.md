@@ -562,6 +562,28 @@ remains the single source of truth for the deploy either way.
 
 ---
 
+### E9. Build version numbers can repeat and go backwards — **[OPEN — cosmetic, but breaks rollback]**
+
+The 2026-11-12 13:35 deploy produced version **`261112000`**, deployed as revision
+`stackscore-00065-yur` and now serving 100% of traffic — but the *previous* deploy that day
+was `261112001`. The newest code carries a lower version string than the code it replaced.
+
+`cloudbuild.yaml`'s `compute-version` step derives the sequence by listing today's image
+tags and incrementing the highest. A `000` suffix is not reachable from either branch of
+that logic (an empty result yields `001`, a found tag yields at least `002`), so `SEQ`
+evaluated to empty and `printf '%03d'` turned that into `000`. The step swallows errors with
+`2>/dev/null`, so whatever failed left no trace, and the build reported success.
+
+Why it matters beyond tidiness: the version string is how a human picks a rollback target.
+With `261112001` ordering *above* the newer `261112000`, "roll back to the previous version"
+selects the wrong revision, and the tagged canary URLs (`v261112000---…`) inherit the same
+confusion. Revision numbers (`00065`) are still monotonic, so recovery is possible — it just
+cannot be driven off the version tag.
+
+Fix: drop `2>/dev/null` so a failed `list-tags` is visible, and fail the build when `SEQ` is
+empty rather than formatting it as zero. A version this scheme cannot compute should stop
+the deploy, not label it.
+
 ## F. Product moat & buildathon positioning
 
 ### F1. Solo-team eligibility — **[VERIFIED]** Confirmed acceptable 2026-11-11.
