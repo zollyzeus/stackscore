@@ -8,8 +8,7 @@ export const metadata = {
   },
 };
 
-const VIDEO_URL =
-  "https://storage.googleapis.com/stackscore-media/demo/stackscore-demo.webm";
+const VIDEO_URL = "/demo.mp4";
 
 export default function WatchPage() {
   return (
@@ -95,18 +94,18 @@ export default function WatchPage() {
       </div>
 
       <div className="watch-cta">
-        <a href="/assessment" className="watch-cta a btn-primary">
+        <a href="/assessment" className="btn-primary" style={{ display:"inline-flex",alignItems:"center",gap:".4rem",fontSize:".9rem",fontWeight:700,padding:".55rem 1.3rem",borderRadius:"8px",textDecoration:"none",background:"var(--accent)",color:"#fff",transition:"opacity .15s" }}>
           Try it free →
         </a>
-        <a href="/why" className="watch-cta a btn-secondary">
+        <a href="/why" className="btn-secondary" style={{ display:"inline-flex",alignItems:"center",gap:".4rem",fontSize:".9rem",fontWeight:700,padding:".55rem 1.3rem",borderRadius:"8px",textDecoration:"none",background:"none",color:"var(--accent)",border:"1.5px solid var(--accent)",transition:"opacity .15s" }}>
           Why StackScore
         </a>
         <a
           href={VIDEO_URL}
-          download="stackscore-demo.webm"
+          download="stackscore-demo.mp4"
           style={{ fontSize: ".82rem", color: "var(--text-muted)", marginLeft: ".25rem" }}
         >
-          ↓ Download (.webm)
+          ↓ Download (.mp4)
         </a>
       </div>
 
