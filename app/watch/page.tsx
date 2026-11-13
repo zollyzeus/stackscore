@@ -1,9 +1,9 @@
 export const metadata = {
   title: "StackScore Demo",
-  description: "Watch a full 3-minute walkthrough of StackScore — the AI-judged engineering assessment platform.",
+  description: "Watch a 90-second walkthrough of StackScore — the AI-judged engineering assessment platform.",
   openGraph: {
     title: "StackScore Demo",
-    description: "Watch a full 3-minute walkthrough of StackScore — the AI-judged engineering assessment platform.",
+    description: "Watch a 90-second walkthrough of StackScore — the AI-judged engineering assessment platform.",
     type: "video.other",
   },
 };
@@ -78,7 +78,7 @@ export default function WatchPage() {
       <div className="watch-hero">
         <h1>See StackScore in action</h1>
         <p>
-          A 3-minute walkthrough — from assessment start through AI judging,
+          A 90-second walkthrough — from assessment start through AI judging,
           provenance banners, scenario bank resilience, and the hiring dashboard.
         </p>
       </div>
@@ -114,17 +114,15 @@ export default function WatchPage() {
         <div className="chapter-list">
           {[
             { t: "0:00", label: "Landing & value prop",      desc: "Eleven axes, role-calibrated, shareable score URL" },
-            { t: "0:12", label: "Eleven-axis rubric",        desc: "Five design axes + six code axes, bias prevention" },
-            { t: "0:44", label: "Assessment start",          desc: "Gemini 3.8 Flash generates a fresh brief per session" },
-            { t: "0:52", label: "Clarify stage",             desc: "AI stakeholder Q&A, brief pinned in sidebar" },
-            { t: "1:08", label: "Build stage",               desc: "In-browser Node.js sandbox, mobile brief banner" },
-            { t: "1:16", label: "Score card",                desc: "Claude Opus 5.5 adaptive thinking, per-axis feedback" },
-            { t: "1:26", label: "Provenance banners",        desc: "Green / amber / red — system never silently fails" },
-            { t: "1:34", label: "Benchmarks",                desc: "Spearman ρ=1.000, Gemini cross-validation" },
-            { t: "1:42", label: "Dashboard & reviewer",      desc: "Shortlist, Kanban, bias-free human review" },
-            { t: "1:55", label: "Scenario bank",             desc: "4-tier generation chain, zero candidate-facing downtime" },
-            { t: "2:08", label: "Compare & history",         desc: "Side-by-side radar, candidate trajectory" },
-            { t: "2:16", label: "Closing",                   desc: "\"Not what they memorised. How they think.\"" },
+            { t: "0:08", label: "Eleven-axis rubric",        desc: "Five design axes + six code axes, bias prevention" },
+            { t: "0:22", label: "Assessment start",          desc: "Gemini 3.8 Flash generates a fresh brief per session" },
+            { t: "0:30", label: "Clarify stage",             desc: "AI stakeholder Q&A, brief pinned in sidebar" },
+            { t: "0:40", label: "Build stage",               desc: "In-browser Node.js sandbox, mobile brief banner" },
+            { t: "0:48", label: "Score card",                desc: "Claude Opus 5.5 adaptive thinking, per-axis feedback" },
+            { t: "0:57", label: "Provenance banners",        desc: "Green / amber / red — system never silently fails" },
+            { t: "1:04", label: "Dashboard & reviewer",      desc: "Shortlist, Kanban, bias-free human review" },
+            { t: "1:16", label: "Scenario bank",             desc: "4-tier generation chain, zero candidate-facing downtime" },
+            { t: "1:24", label: "Closing",                   desc: "\"Not what they memorised. How they think.\"" },
           ].map(({ t, label, desc }) => (
             <div key={t} className="chapter">
               <span className="chapter-time">{t}</span>
